@@ -4,18 +4,17 @@ import HeaderLink from './HeaderLink.astro';
 
 <header id="site-header">
   <nav>
-    <a href="/" class="logo" aria-label="joaopster — home">
+    <a href="/" class="logo" aria-label="joaopster home">
       <span class="logo-mark" aria-hidden="true">›</span>
       <span class="logo-word">joaopster</span>
     </a>
     <div class="nav-center">
       <HeaderLink href="/blog">Blog</HeaderLink>
-      <HeaderLink href="/projects">Projects</HeaderLink>
-      <HeaderLink href="/about">About</HeaderLink>
+      <a href="https://github.com/J-Pster" class="nav-text-link" target="_blank" rel="noopener noreferrer">Open source</a>
     </div>
     <div class="nav-end">
       <a
-        href="https://github.com/joaopster"
+        href="https://github.com/J-Pster"
         class="nav-github"
         target="_blank"
         rel="noopener noreferrer"
@@ -44,14 +43,18 @@ import HeaderLink from './HeaderLink.astro';
   </nav>
   <div class="nav-mobile" id="nav-mobile" aria-hidden="true">
     <a href="/blog" class="nav-mobile-link">Blog</a>
-    <a href="/projects" class="nav-mobile-link">Projects</a>
-    <a href="/about" class="nav-mobile-link">About</a>
     <a
-      href="https://github.com/joaopster"
+      href="https://github.com/J-Pster"
       class="nav-mobile-link"
       target="_blank"
       rel="noopener noreferrer"
-    >GitHub</a>
+    >Open source</a>
+    <a
+      href="https://www.linkedin.com/in/ojoaopster/"
+      class="nav-mobile-link"
+      target="_blank"
+      rel="noopener noreferrer"
+    >LinkedIn</a>
     <a href="mailto:joaopster@proton.me" class="nav-mobile-link nav-mobile-cta">Get in touch</a>
   </div>
 </header>
@@ -117,6 +120,17 @@ import HeaderLink from './HeaderLink.astro';
     gap: 2px;
     flex: 1;
   }
+  .nav-text-link {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding: 6px var(--space-xs);
+    border-radius: var(--radius-md);
+    transition: color 0.15s ease;
+  }
+  .nav-text-link:hover { color: var(--color-text-link); text-decoration: none; }
   .nav-end {
     display: flex;
     align-items: center;

@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import HeroSection from '../components/sections/HeroSection.astro';
 import DarkAboutSection from '../components/sections/DarkAboutSection.astro';
+import ExperienceSection from '../components/sections/ExperienceSection.astro';
 import FeaturesGridSection from '../components/sections/FeaturesGridSection.astro';
 import WorkflowSection from '../components/sections/WorkflowSection.astro';
 import StackSection from '../components/sections/StackSection.astro';
@@ -23,28 +24,29 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
     <div class="page-sections">
       <HeroSection />
       <DarkAboutSection />
+      <ExperienceSection />
       <FeaturesGridSection />
       <WorkflowSection
         variant="build"
         label="How I ship"
         heading="Ship products that work,\nand keep working."
-        body="Good software isn't about clever abstractions. It's about the boring discipline of clear boundaries, typed contracts, and tests that actually run. Every project I ship is meant to last longer than the enthusiasm that built it."
-        cta={{ text: 'See my projects →', href: '/projects' }}
+        body="Good software isn't about clever abstractions. It's about the boring discipline of clear boundaries, typed contracts, and tests that actually run. Every system I ship is meant to last longer than the enthusiasm that built it."
+        cta={{ text: "See what I've built", href: '#projects' }}
       />
       <WorkflowSection
         variant="write"
         label="The writing"
         heading="Write to think.\nPublish to share."
         body="Writing is how I understand what I actually know. I publish deep-dives on tooling, architecture decisions, and the kind of tradeoffs that don't fit in a tweet. If one post saves you an afternoon of debugging, that's enough."
-        cta={{ text: 'Read the blog →', href: '/blog' }}
+        cta={{ text: 'Read the blog', href: '/blog' }}
         flip={true}
       />
       <WorkflowSection
         variant="opensource"
         label="Open source"
         heading="Build in the open.\nShare what works."
-        body="The tools I reach for most started as personal scripts. When something solves a real problem cleanly, it goes on GitHub. Not for the stars — because the next person hitting the same wall deserves a head start."
-        cta={{ text: 'View GitHub →', href: 'https://github.com/joaopster' }}
+        body="The tools I reach for most started as personal scripts. When something solves a real problem cleanly, it goes on GitHub. Not for the stars, but because the next person hitting the same wall deserves a head start."
+        cta={{ text: 'View GitHub', href: 'https://github.com/J-Pster' }}
       />
       <StackSection />
       <ProjectsSection />

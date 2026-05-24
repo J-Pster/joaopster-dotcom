@@ -5,32 +5,33 @@
     <div class="stack-text">
       <p class="section-label">How I build</p>
       <h2 class="section-heading">The same stack.<br/>Refined over time.</h2>
-      <p class="section-body">I settled on a set of tools that let me move fast without accumulating debt. TypeScript everywhere, server-first where it makes sense, and component libraries only when they earn their keep.</p>
+      <p class="section-body">Six years of shipping production code taught me to settle on tools that move fast without piling up debt. TypeScript everywhere, NestJS on the server, and abstractions only when they earn their keep.</p>
       <ul class="stack-list">
-        <li><span class="check">✓</span> <strong>TypeScript-first</strong> — types are documentation that never goes stale</li>
-        <li><span class="check">✓</span> <strong>Astro for content</strong> — zero JS by default, ships fast, scales simply</li>
-        <li><span class="check">✓</span> <strong>React where needed</strong> — only when interactivity justifies the runtime</li>
-        <li><span class="check">✓</span> <strong>Node.js on the server</strong> — same language end to end, no context switching</li>
+        <li><span class="check">✓</span> <strong>TypeScript-first</strong>: types are documentation that never goes stale</li>
+        <li><span class="check">✓</span> <strong>NestJS on the server</strong>: typed modules and DI that scale cleanly</li>
+        <li><span class="check">✓</span> <strong>React where it earns it</strong>: only when interactivity justifies the runtime</li>
+        <li><span class="check">✓</span> <strong>AI with discipline</strong>: phased, documented, reviewed, never one-shot guesses</li>
       </ul>
-      <a href="/blog" class="stack-cta">Read how I think about tooling →</a>
+      <a href="/blog" class="stack-cta">Read how I think about engineering →</a>
     </div>
     <div class="stack-code">
       <div class="code-window">
         <div class="code-header">
           <span class="code-lang">TypeScript</span>
-          <span class="code-file">src/pages/blog/index.astro</span>
+          <span class="code-file">src/posts/posts.controller.ts</span>
         </div>
-        <pre class="code-body"><code><span class="ck">import</span> <span class="cv">&#123; getCollection &#125;</span> <span class="ck">from</span> <span class="cs">'astro:content'</span>
-<span class="ck">import type</span> <span class="cv">&#123; CollectionEntry &#125;</span> <span class="ck">from</span> <span class="cs">'astro:content'</span>
+        <pre class="code-body"><code><span class="ck">import</span> <span class="cv">&#123; Controller, Get &#125;</span> <span class="ck">from</span> <span class="cs">'@nestjs/common'</span>
+<span class="ck">import</span> <span class="cv">&#123; PostsService &#125;</span> <span class="ck">from</span> <span class="cs">'./posts.service'</span>
 
-<span class="ck">const</span> <span class="cv">posts</span> <span class="ck">=</span> (<span class="ck">await</span> getCollection(<span class="cs">'blog'</span>))
-  .sort((<span class="cv">a</span>, <span class="cv">b</span>) <span class="ck">=&gt;</span>
-    <span class="cv">b</span>.data.pubDate.valueOf()
-    <span class="ck">-</span> <span class="cv">a</span>.data.pubDate.valueOf()
-  )
+<span class="cc">@</span><span class="cv">Controller</span>(<span class="cs">'posts'</span>)
+<span class="ck">export class</span> <span class="cv">PostsController</span> &#123;
+  <span class="ck">constructor</span>(<span class="ck">private readonly</span> posts<span class="ck">:</span> <span class="cv">PostsService</span>) &#123;&#125;
 
-<span class="cc">// Fully typed, zero runtime overhead</span>
-<span class="ck">type</span> <span class="cv">Post</span> <span class="ck">=</span> CollectionEntry&lt;<span class="cs">'blog'</span>&gt;</code></pre>
+  <span class="cc">@</span><span class="cv">Get</span>()
+  findAll()<span class="ck">:</span> <span class="cv">Promise</span>&lt;<span class="cv">Post</span>[]&gt; &#123;
+    <span class="ck">return</span> <span class="cv">this</span>.posts.findAll()
+  &#125;
+&#125;</code></pre>
       </div>
     </div>
   </div>

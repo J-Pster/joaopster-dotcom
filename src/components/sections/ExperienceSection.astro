@@ -1,0 +1,152 @@
+---
+const roles = [
+  {
+    role: 'Co-founder & Developer',
+    company: 'Stealth · PropTech',
+    meta: 'United States · Remote',
+    dates: '2025 - Present',
+    current: true,
+    desc: "Co-founding and building an AI-driven platform for the US real-estate market. AI lives in the product core and across its features, and I'm the one writing it end to end, with AI under real engineering discipline. Scalable, maintainable, high-quality code shipped fast.",
+    tags: ['AI-driven', 'Spec-driven dev', 'TypeScript', 'Scale'],
+  },
+  {
+    role: 'Senior Software Development Engineer',
+    company: 'adMixt',
+    meta: 'United States · Remote',
+    dates: '2025',
+    desc: 'Modernized 20+ year legacy PHP systems with modern, dependency-free Vanilla JS, building bridges between new architecture and established systems without compromising core stability.',
+    tags: ['Vanilla JS', 'Legacy modernization', 'PHP', 'AWS'],
+  },
+  {
+    role: 'Principal Software Architect & AI Engineer',
+    company: 'Howhow',
+    meta: 'São Paulo · Hybrid',
+    dates: '2024 - 2025',
+    desc: 'Architected and developed an influencer-marketing platform powered by AI, NLP and data analysis. Built a complex multi-user system covering proposals, contracts and content review, shipping the MVP that drove it toward a Series A.',
+    tags: ['AI / NLP', 'Architecture', 'Node.js', 'Full-stack'],
+  },
+  {
+    role: 'Lead Developer',
+    company: 'Artweb · João Pster',
+    meta: 'Brazil · Remote',
+    dates: '2023 - 2025',
+    desc: 'Built 5 integrated apps across TV, web and mobile for an art-streaming platform, contributing to 200k+ lines of code, architected to scale past 500k users.',
+    tags: ['React', 'React Native', 'Angular', 'Flutter', 'GCP'],
+  },
+  {
+    role: 'Technology Teacher',
+    company: 'Independent',
+    meta: 'Brazil · Remote',
+    dates: '2021 - 2024',
+    desc: 'Taught React, React Native, Angular, Node, NestJS and cloud to 100+ students, turning hard concepts into things people could actually ship.',
+    tags: ['React', 'Node', 'NestJS', 'Cloud'],
+  },
+];
+---
+<section class="experience">
+  <div class="exp-inner">
+    <p class="exp-label">Experience</p>
+    <h2 class="exp-heading">Six years, shipping<br/>the whole way.</h2>
+    <p class="exp-sub">From freelance to founding, hands on the code the whole way, across marketing tech, media, and now PropTech.</p>
+
+    <div class="exp-timeline">
+      {roles.map(r => (
+        <div class:list={['exp-item', r.current && 'is-current']}>
+          <div class="exp-head">
+            <h3 class="exp-role">{r.role}</h3>
+            <span class="exp-dates">{r.dates}</span>
+          </div>
+          <p class="exp-company">
+            <span class="exp-company-name">{r.company}</span>
+            <span class="exp-company-meta">{r.meta}</span>
+          </p>
+          <p class="exp-desc">{r.desc}</p>
+          <div class="exp-tags">
+            {r.tags.map(t => <span class="exp-tag">{t}</span>)}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="exp-note">Earlier: senior front-end & full-stack consulting at AfterSale, Digital Republic and Verzel, plus 50+ independent projects.</p>
+  </div>
+</section>
+
+<style>
+  .experience {
+    background: var(--color-canvas);
+    padding: var(--space-section) var(--space-xl);
+    border-top: 1px solid var(--color-hairline);
+  }
+  .exp-inner { max-width: 760px; margin: 0 auto; }
+  .exp-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
+    color: var(--color-muted); margin-bottom: var(--space-md);
+  }
+  .exp-heading {
+    font-size: 36px; font-weight: 600; color: var(--color-ink);
+    letter-spacing: -1.08px; line-height: 1.15; margin: 0 0 var(--space-base);
+  }
+  .exp-sub { font-size: 16px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-xxl); }
+
+  .exp-timeline {
+    border-left: 1px solid var(--color-hairline-strong);
+    padding-left: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+  .exp-item { position: relative; }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--space-xl) - 5px);
+    top: 5px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--color-hairline-strong);
+    border: 2px solid var(--color-canvas);
+    box-shadow: 0 0 0 1px var(--color-hairline-strong);
+  }
+  .exp-item.is-current::before {
+    background: #28c840;
+    box-shadow: 0 0 0 1px #28c840, 0 0 0 5px rgba(40, 200, 64, 0.12);
+  }
+
+  .exp-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: 2px;
+  }
+  .exp-role { font-size: 17px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.2px; line-height: 1.35; margin: 0; }
+  .exp-dates {
+    font-size: 12px; font-weight: 500; color: var(--color-muted);
+    font-family: 'JetBrains Mono', monospace; white-space: nowrap; flex-shrink: 0;
+  }
+  .exp-company { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-xs) var(--space-sm); margin: 0 0 var(--space-sm); }
+  .exp-company-name { font-size: 14px; font-weight: 600; color: var(--color-text-link); }
+  .exp-company-meta { font-size: 13px; color: var(--color-muted); }
+  .exp-desc { font-size: 14px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-md); }
+  .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .exp-tag {
+    font-size: 11px; font-weight: 500; color: var(--color-ink);
+    background: var(--color-surface-strong); border-radius: var(--radius-pill); padding: 3px 10px;
+  }
+
+  .exp-note {
+    margin: var(--space-xl) 0 0;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-hairline);
+    font-size: 14px; color: var(--color-muted); line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .experience { padding: var(--space-section) var(--space-base); }
+    .exp-heading { font-size: 28px; }
+    .exp-head { flex-direction: column; gap: 2px; }
+    .exp-timeline { padding-left: var(--space-lg); }
+    .exp-item::before { left: calc(-1 * var(--space-lg) - 5px); }
+  }
+</style>

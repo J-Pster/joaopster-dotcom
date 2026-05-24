@@ -1,21 +1,21 @@
 ---
 const projects = [
-  { title: 'devlog', desc: 'CLI for tracking development decisions as you code. Never lose context on why something was built a certain way.', dark: true, icon: 'M3 4h12v10a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 4l2-2h8l2 2M7 8h4M7 11h2' },
-  { title: 'schema-guard', desc: 'TypeScript-first schema validation with zero dependencies. Runtime types that mirror your static types without boilerplate.', dark: true, icon: 'M2 5h14v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zM5 5V4a2 2 0 014 0v1M6 10h6' },
-  { title: 'astro-blog-kit', desc: 'Opinionated Astro starter for personal blogs — design tokens, RSS, MDX, dark mode. Everything I wish existed when starting this site.', dark: true, icon: 'M2 14l4-4 3 3 4-5 3 3' },
-  { title: 'tempo', desc: "Minimal time-tracking for developers. Log what you're working on from the terminal without breaking flow.", dark: false, icon: 'M8 1a7 7 0 100 14A7 7 0 008 1zM8 4v4l3 2' },
-  { title: 'api-kit', desc: 'Typed REST API client builder. Define your API contract once in TypeScript, get a type-safe client with zero codegen.', dark: false, icon: 'M15 6H1M12 3l3 3-3 3M1 12h14M4 9l-3 3 3 3' },
-  { title: 'dotfiles', desc: 'Cross-platform dotfiles manager that works on Windows, macOS and Linux. Because everyone deserves a fast terminal.', dark: false, icon: 'M8 1L1 6v8h4V9h6v5h4V6L8 1z' },
+  { title: 'Dynadok API', desc: 'A NestJS REST API using MongoDB, Redis and Kafka, fully Dockerized. A deep-dive on clean, event-driven service design.', dark: true, icon: 'M2 5h14v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zM5 5V4a2 2 0 014 0v1M6 10h6', url: 'https://github.com/J-Pster/Dynadok-Test' },
+  { title: 'arenabreakout-br', desc: 'Community platform for the Brazilian and Portuguese Arena Breakout Infinite scene, with ammo charts, a forum and Discord connections.', dark: true, url: 'https://github.com/J-Pster/arenabreakoutbr-site', icon: 'M3 4h12v10a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 4l2-2h8l2 2M7 8h4M7 11h2' },
+  { title: 'Pterodactyl-uMod-Valheim', desc: 'One-command Valheim dedicated server with uMod, packaged for Pterodactyl. Game-server tooling for the long tail.', dark: false, icon: 'M8 1L1 6v8h4V9h6v5h4V6L8 1z', url: 'https://github.com/J-Pster/Pterodactyl-Umod-Valheim' },
+  { title: 'react-crop-uploader', desc: 'A drop-in upload button with built-in image cropping, rotate and zoom. Small, focused, reusable.', dark: false, icon: 'M2 13l4-4 3 3 4-5 3 4M2 3h14v12H2z', url: 'https://github.com/J-Pster/react-crop-uploader' },
+  { title: 'Psters AI Workflow', desc: 'An anti-vibe-coding, agentic AI workflow that brings engineering rigor to any project, language or framework. Model-agnostic, with a native Cursor plugin.', dark: true, icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
+  { title: 'InventoryCleaner', desc: 'A C# Oxide plugin that lets players clear items from specific inventory sections. Small utility, real users.', dark: false, icon: 'M4 5h10l-1 9a1 1 0 01-1 1H6a1 1 0 01-1-1L4 5zM3 5h12M7 3h4', url: 'https://github.com/J-Pster/InventoryCleaner' },
 ];
 ---
-<section class="projects-section">
+<section class="projects-section" id="projects">
   <div class="projects-inner">
-    <p class="proj-label">Projects</p>
+    <p class="proj-label">Open source</p>
     <h2 class="proj-heading">Things I've built.</h2>
-    <p class="proj-sub">Side projects, open source tools, and experiments. Each one scratching a real itch.</p>
+    <p class="proj-sub">Side projects, technical deep-dives, and tools that scratch a real itch. Each one shipped in the open.</p>
     <div class="proj-grid">
       {projects.map(p => (
-        <a href="https://github.com/joaopster" target="_blank" rel="noopener noreferrer" class={`proj-card ${p.dark ? 'proj-card--dark' : 'proj-card--light'}`}>
+        <a href={p.url} target="_blank" rel="noopener noreferrer" class={`proj-card ${p.dark ? 'proj-card--dark' : 'proj-card--light'}`}>
           <div class={`proj-icon ${p.dark ? '' : 'proj-icon--light'}`}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path d={p.icon} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -28,7 +28,7 @@ const projects = [
       ))}
     </div>
     <div class="proj-footer">
-      <a href="https://github.com/joaopster" target="_blank" rel="noopener noreferrer" class="proj-all-btn">View all on GitHub →</a>
+      <a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="proj-all-btn">View all on GitHub →</a>
     </div>
   </div>
 </section>
@@ -43,10 +43,10 @@ const projects = [
   .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
   .proj-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-decoration: none; }
   .proj-card--dark { background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06); }
-  .proj-card--dark h3 { color: var(--color-on-dark); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); }
+  .proj-card--dark h3 { color: var(--color-on-dark); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.3px; }
   .proj-card--dark p { color: var(--color-on-dark-soft); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
   .proj-card--light { background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); }
-  .proj-card--light h3 { color: var(--color-ink); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); }
+  .proj-card--light h3 { color: var(--color-ink); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.3px; }
   .proj-card--light p { color: var(--color-body); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
   .proj-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); }
   .proj-icon--light { background: var(--color-surface-strong); color: var(--color-ink); }
