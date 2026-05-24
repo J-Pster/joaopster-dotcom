@@ -1,0 +1,357 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const GITHUB = 'https://github.com/joaopster';
+
+const projects = [
+  {
+    title: 'schema-guard',
+    desc: 'TypeScript-first schema validation with zero dependencies. Runtime types that mirror your static types without boilerplate.',
+    tags: ['TypeScript', 'Validation', 'Zero-dep'],
+    dark: true,
+    icon: 'M2 5h14v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zM5 5V4a2 2 0 014 0v1M6 10h6',
+  },
+  {
+    title: 'astro-blog-kit',
+    desc: 'Opinionated Astro starter for personal blogs — design tokens, RSS, MDX, dark mode. Everything I wish existed when starting this site.',
+    tags: ['Astro', 'MDX', 'Template'],
+    dark: true,
+    icon: 'M2 14l4-4 3 3 4-5 3 3',
+  },
+  {
+    title: 'result-ts',
+    desc: 'A tiny Result/Either type for TypeScript. Model failures as values, keep the happy path readable, and stop throwing across boundaries.',
+    tags: ['TypeScript', 'Errors', 'Zero-dep'],
+    dark: true,
+    icon: 'M4 10l3 3 7-7',
+  },
+  {
+    title: 'tempo',
+    desc: "Minimal time-tracking for developers. Log what you're working on from the terminal without breaking flow.",
+    tags: ['TypeScript', 'CLI', 'Tooling'],
+    dark: false,
+    icon: 'M8 1a7 7 0 100 14A7 7 0 008 1zM8 4v4l3 2',
+  },
+  {
+    title: 'api-kit',
+    desc: 'Typed REST API client builder. Define your API contract once in TypeScript, get a type-safe client with zero codegen.',
+    tags: ['TypeScript', 'REST', 'Codegen-free'],
+    dark: false,
+    icon: 'M15 6H1M12 3l3 3-3 3M1 12h14M4 9l-3 3 3 3',
+  },
+  {
+    title: 'dotfiles',
+    desc: 'Cross-platform dotfiles manager that works on Windows, macOS and Linux. Because everyone deserves a fast terminal.',
+    tags: ['Shell', 'Cross-platform', 'Config'],
+    dark: false,
+    icon: 'M8 1L1 6v8h4V9h6v5h4V6L8 1z',
+  },
+];
+
+const stats = [
+  { n: '20+', l: 'Projects shipped', d: 'Side projects, tools, and experiments that solve a real problem.' },
+  { n: '124', l: 'GitHub stars', d: 'Quiet validation that the next person hit the same wall too.' },
+  { n: '8', l: 'Public repos', d: 'Built in the open whenever the problem generalizes.' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title="Projects — joaopster"
+      description="Side projects, open source tools, and experiments — each one scratching a real itch. TypeScript-first, built to last."
+    />
+  </head>
+  <body>
+    <Header />
+
+    <!-- Hero -->
+    <section class="proj-hero">
+      <div class="proj-hero-inner">
+        <span class="badge">Projects</span>
+        <h1>Things I've built.</h1>
+        <p class="proj-hero-sub">
+          Side projects, open source tools, and experiments. Each one started as a personal
+          itch — when the fix generalized cleanly, it went on GitHub.
+        </p>
+        <div class="proj-hero-ctas">
+          <a href={GITHUB} target="_blank" rel="noopener noreferrer" class="btn-primary">View all on GitHub</a>
+          <a href="#all-projects" class="btn-secondary">Browse projects ↓</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured -->
+    <section class="featured-section">
+      <div class="featured-inner">
+        <div class="featured-text">
+          <span class="section-label">Featured</span>
+          <h2 class="featured-title">devlog</h2>
+          <p class="featured-desc">
+            A CLI for tracking development decisions as you code. Never lose context on
+            <em>why</em> something was built a certain way — capture the reasoning at the
+            moment you have it, search it back months later.
+          </p>
+          <div class="tag-row">
+            <span class="tag">TypeScript</span>
+            <span class="tag">CLI</span>
+            <span class="tag">SQLite</span>
+          </div>
+          <a href={GITHUB} target="_blank" rel="noopener noreferrer" class="featured-cta">View on GitHub →</a>
+        </div>
+        <div class="featured-mockup">
+          <div class="mockup-window">
+            <div class="mockup-bar">
+              <div class="mockup-dots">
+                <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+              </div>
+              <span class="mockup-title">~/projects/devlog — zsh</span>
+            </div>
+            <div class="mockup-body">
+              <div class="ml"><span class="mp">❯</span> <span class="mc">devlog add</span> <span class="ms">"chose Astro over Next for zero-JS"</span></div>
+              <div class="ml mo"><span class="mg">✓</span> entry saved <span class="mdim">#a3f9 · 2m ago</span></div>
+              <div class="ml mt8"><span class="mp">❯</span> <span class="mc">devlog why</span> <span class="ms">astro</span></div>
+              <div class="ml mo"><span class="mb">→</span> chose Astro over Next for zero-JS</div>
+              <div class="ml mo mdim">  content-first, ships fast, scales simply</div>
+              <div class="ml mo mdim">  logged 2025-01-12 on feat/site-rebuild</div>
+              <div class="ml mt8"><span class="mp">❯</span> <span class="mc-cursor">█</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All projects grid -->
+    <section class="grid-section" id="all-projects">
+      <div class="grid-inner">
+        <p class="section-label">Open source</p>
+        <h2 class="grid-heading">More things I've shipped.</h2>
+        <p class="grid-sub">Small, focused tools. Each does one thing and gets out of the way.</p>
+        <div class="proj-grid">
+          {projects.map(p => (
+            <a href={GITHUB} target="_blank" rel="noopener noreferrer" class={`proj-card ${p.dark ? 'proj-card--dark' : 'proj-card--light'}`}>
+              <div class={`proj-icon ${p.dark ? '' : 'proj-icon--light'}`}>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d={p.icon} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+              <div class="card-tags">
+                {p.tags.map(t => <span class={`card-tag ${p.dark ? 'card-tag--dark' : ''}`}>{t}</span>)}
+              </div>
+              <span class={p.dark ? 'proj-link' : 'proj-link-light'}>GitHub →</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats band -->
+    <section class="stats-band">
+      <div class="stats-inner">
+        <div class="stats-header">
+          <span class="section-label section-label--dark">In numbers</span>
+          <h2 class="stats-heading">Built in the open.</h2>
+        </div>
+        <div class="stats-grid">
+          {stats.map(s => (
+            <div class="stat-card">
+              <span class="stat-number">{s.n}</span>
+              <span class="stat-label">{s.l}</span>
+              <p class="stat-desc">{s.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-band">
+      <div class="cta-inner">
+        <h2>Have a problem worth solving?</h2>
+        <p>I'm occasionally available for freelance work and always happy to talk tools, architecture, or what you're building.</p>
+        <div class="cta-actions">
+          <a href="mailto:joaopster@proton.me" class="btn-primary">Get in touch</a>
+          <a href="/blog" class="btn-secondary">Read the blog →</a>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Shared section label */
+  .section-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: var(--space-md);
+  }
+  .section-label--dark { color: var(--color-on-dark-soft); }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex; align-items: center;
+    background: var(--color-primary); color: var(--color-on-primary);
+    font-size: 14px; font-weight: 500; padding: 10px 18px; height: 40px;
+    border-radius: var(--radius-md); text-decoration: none; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--color-primary-active); text-decoration: none; }
+  .btn-secondary {
+    display: inline-flex; align-items: center;
+    background: transparent; color: var(--color-ink);
+    font-size: 14px; font-weight: 500; padding: 9px 17px; height: 40px;
+    border-radius: var(--radius-md); border: 1px solid var(--color-hairline-strong);
+    text-decoration: none; transition: border-color 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--color-muted); text-decoration: none; }
+
+  /* Hero */
+  .proj-hero {
+    background:
+      radial-gradient(ellipse 110% 70% at 50% -15%, #cfe7ff 0%, #daeeff 20%, transparent 58%),
+      var(--color-canvas);
+    padding: 96px var(--space-xl) 80px;
+    text-align: center;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .proj-hero-inner { max-width: 680px; margin: 0 auto; }
+  .badge {
+    display: inline-block;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
+    color: var(--color-muted); background: var(--color-surface-strong);
+    padding: 4px 12px; border-radius: var(--radius-pill); margin-bottom: var(--space-lg);
+  }
+  .proj-hero h1 {
+    font-size: 48px; font-weight: 600; color: var(--color-ink);
+    letter-spacing: -1.44px; line-height: 1.1; margin-bottom: var(--space-lg);
+  }
+  .proj-hero-sub {
+    font-size: 18px; color: var(--color-body); line-height: 1.65;
+    max-width: 540px; margin: 0 auto var(--space-xl);
+  }
+  .proj-hero-ctas { display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap; }
+
+  /* Featured */
+  .featured-section {
+    background: var(--color-canvas);
+    padding: var(--space-section) var(--space-xl);
+  }
+  .featured-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .featured-title {
+    font-size: 36px; font-weight: 600; color: var(--color-ink);
+    letter-spacing: -1.08px; line-height: 1.15; margin: 0 0 var(--space-base);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .featured-desc { font-size: 16px; color: var(--color-body); line-height: 1.7; margin: 0 0 var(--space-lg); }
+  .featured-desc em { color: var(--color-ink); font-style: italic; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-bottom: var(--space-lg); }
+  .tag {
+    font-size: 12px; font-weight: 500; color: var(--color-ink);
+    background: var(--color-surface-strong); border-radius: var(--radius-pill); padding: 4px 12px;
+  }
+  .featured-cta { font-size: 14px; font-weight: 500; color: var(--color-text-link); text-decoration: none; }
+  .featured-cta:hover { text-decoration: underline; }
+
+  /* Terminal mockup (shared DNA with home hero) */
+  .mockup-window {
+    background: #0d0d0d; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.06);
+  }
+  .mockup-bar {
+    background: #1a1a1a; padding: 12px 16px; display: flex; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .mockup-dots { display: flex; gap: 6px; }
+  .dot-r, .dot-y, .dot-g { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #ffbd2e; } .dot-g { background: #28c840; }
+  .mockup-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #555; margin: 0 auto; }
+  .mockup-body { padding: 20px 24px 28px; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.8; }
+  .ml { display: block; color: #e0e0e0; }
+  .mo { color: #777; padding-left: 16px; }
+  .mt8 { margin-top: 8px; }
+  .mp { color: #47c2ff; margin-right: 8px; }
+  .mc { color: #e0e0e0; }
+  .ms { color: #c3e88d; }
+  .mg { color: #28c840; }
+  .mb { color: #47c2ff; }
+  .mdim { color: #555; }
+  .mc-cursor { color: #47c2ff; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Grid */
+  .grid-section {
+    background: var(--color-canvas-soft);
+    border-top: 1px solid var(--color-hairline);
+    border-bottom: 1px solid var(--color-hairline);
+    padding: var(--space-section) var(--space-xl);
+    scroll-margin-top: 80px;
+  }
+  .grid-inner { max-width: 1100px; margin: 0 auto; }
+  .grid-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
+  .grid-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
+  .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+  .proj-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-decoration: none; }
+  .proj-card--dark { background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06); }
+  .proj-card--dark h3 { color: var(--color-on-dark); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.3px; }
+  .proj-card--dark p { color: var(--color-on-dark-soft); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
+  .proj-card--light { background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); }
+  .proj-card--light h3 { color: var(--color-ink); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.3px; }
+  .proj-card--light p { color: var(--color-body); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
+  .proj-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); }
+  .proj-icon--light { background: var(--color-surface-strong); color: var(--color-ink); }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-md); }
+  .card-tag { font-size: 11px; font-weight: 500; color: var(--color-body); background: var(--color-surface-strong); border-radius: var(--radius-pill); padding: 3px 9px; }
+  .card-tag--dark { color: var(--color-on-dark-soft); background: rgba(255,255,255,0.07); }
+  .proj-link { font-size: 13px; font-weight: 500; color: #47c2ff; }
+  .proj-link-light { font-size: 13px; font-weight: 500; color: var(--color-text-link); }
+
+  /* Stats band */
+  .stats-band { background: var(--color-surface-dark); }
+  .stats-inner { max-width: 1100px; margin: 0 auto; padding: var(--space-section) var(--space-xl); }
+  .stats-header { text-align: center; margin-bottom: var(--space-xxl); }
+  .stats-heading { font-size: 36px; font-weight: 600; color: var(--color-on-dark); letter-spacing: -1.08px; line-height: 1.15; margin: 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: var(--space-xl); display: flex; flex-direction: column; }
+  .stat-number { font-size: 56px; font-weight: 600; color: var(--color-on-dark); letter-spacing: -1.68px; line-height: 1; }
+  .stat-label { font-size: 18px; font-weight: 600; color: var(--color-on-dark); margin-top: var(--space-xs); line-height: 1.4; }
+  .stat-desc { font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.6; margin: var(--space-xs) 0 0; }
+
+  /* CTA */
+  .cta-band { padding: var(--space-section) var(--space-xl); background: var(--color-canvas); text-align: center; }
+  .cta-inner { max-width: 640px; margin: 0 auto; }
+  .cta-band h2 { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-lg); }
+  .cta-band p { font-size: 16px; color: var(--color-body); line-height: 1.6; margin-bottom: var(--space-xxl); }
+  .cta-actions { display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .featured-inner { grid-template-columns: 1fr; gap: 40px; }
+    .proj-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .proj-hero { padding: 64px var(--space-base) 56px; }
+    .proj-hero h1 { font-size: 36px; letter-spacing: -1.08px; }
+    .proj-hero-sub { font-size: 16px; }
+    .featured-section, .grid-section, .stats-inner, .cta-band { padding-left: var(--space-base); padding-right: var(--space-base); }
+    .stats-inner { padding: 64px var(--space-base); }
+    .proj-grid { grid-template-columns: 1fr; }
+    .grid-heading, .stats-heading, .cta-band h2 { font-size: 28px; }
+  }
+</style>

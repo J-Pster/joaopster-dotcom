@@ -1,0 +1,53 @@
+---
+const techs = [
+  { name: 'TypeScript', abbr: 'TS' },
+  { name: 'React', abbr: 'Re' },
+  { name: 'Next.js', abbr: 'Nx' },
+  { name: 'Astro', abbr: 'As' },
+  { name: 'Node.js', abbr: 'No' },
+  { name: 'PostgreSQL', abbr: 'Pg' },
+  { name: 'Tailwind', abbr: 'Tw' },
+  { name: 'Vercel', abbr: 'Ve' },
+  { name: 'Git', abbr: 'Gi' },
+  { name: 'VS Code', abbr: 'VS' },
+  { name: 'Vitest', abbr: 'Vi' },
+  { name: 'Docker', abbr: 'Do' },
+];
+---
+<section class="ecosystem-section">
+  <div class="eco-inner">
+    <p class="eco-label">My toolkit</p>
+    <h2 class="eco-heading">Trusted technologies.</h2>
+    <p class="eco-sub">The tools that have earned a permanent spot in my workflow.</p>
+    <div class="eco-grid">
+      {techs.map(t => (
+        <div class="eco-tile" title={t.name}>
+          <span class="eco-abbr">{t.abbr}</span>
+          <span class="eco-name">{t.name}</span>
+        </div>
+      ))}
+    </div>
+    <blockquote class="eco-quote">
+      <p>"The best tech stack is the one your team can ship with confidently and maintain without dread."</p>
+      <footer>— João Pster</footer>
+    </blockquote>
+  </div>
+</section>
+
+<style>
+  .ecosystem-section { padding: var(--space-section) var(--space-xl); background: var(--color-canvas); border-top: 1px solid var(--color-hairline); }
+  .eco-inner { max-width: 1000px; margin: 0 auto; }
+  .eco-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
+  .eco-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
+  .eco-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
+  .eco-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-sm); margin-bottom: var(--space-section); }
+  .eco-tile { background: var(--color-surface-card); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: border-color 0.15s, box-shadow 0.15s; cursor: default; }
+  .eco-tile:hover { border-color: var(--color-hairline-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .eco-abbr { font-size: 16px; font-weight: 700; color: var(--color-ink); letter-spacing: -0.3px; font-family: 'JetBrains Mono', monospace; }
+  .eco-name { font-size: 11px; color: var(--color-muted); font-weight: 500; }
+  .eco-quote { border-left: none; padding: var(--space-xxl); margin: 0; background: var(--color-canvas-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); text-align: center; font-style: normal; }
+  .eco-quote p { font-size: 20px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.5px; line-height: 1.4; margin-bottom: var(--space-md); }
+  .eco-quote footer { font-size: 13px; color: var(--color-muted); }
+  @media (max-width: 900px) { .eco-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 600px) { .ecosystem-section { padding: var(--space-section) var(--space-base); } .eco-grid { grid-template-columns: repeat(3, 1fr); } .eco-heading { font-size: 28px; } .eco-quote { padding: var(--space-xl); } .eco-quote p { font-size: 16px; } }
+</style>

@@ -1,0 +1,205 @@
+:root {
+  /* Colors */
+  --color-primary: #000000;
+  --color-primary-active: #1a1a1a;
+  --color-text-link: #0d74ce;
+  --color-text-link-secondary: #476cff;
+  --color-ink: #171717;
+  --color-body: #60646c;
+  --color-muted: #999999;
+  --color-muted-soft: #cccccc;
+  --color-hairline: #f0f0f3;
+  --color-hairline-soft: #f5f5f7;
+  --color-hairline-strong: #dcdee0;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-surface-card: #ffffff;
+  --color-surface-strong: #f0f0f3;
+  --color-surface-dark: #171717;
+  --color-surface-dark-elevated: #1a1a1a;
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #b0b4ba;
+  --color-gradient-sky-light: #cfe7ff;
+  --color-gradient-sky-mid: #a8c8e8;
+
+  /* Spacing */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-base: 16px;
+  --space-md: 20px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 96px;
+
+  /* Border radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-xxl: 24px;
+  --radius-pill: 9999px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-body);
+  background: var(--color-canvas);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 0.5rem 0;
+}
+
+h1 { font-size: 64px; line-height: 1.05; letter-spacing: -1.92px; }
+h2 { font-size: 48px; line-height: 1.1; letter-spacing: -1.44px; }
+h3 { font-size: 36px; line-height: 1.15; letter-spacing: -1.08px; }
+h4 { font-size: 28px; line-height: 1.2; letter-spacing: -0.84px; }
+h5 { font-size: 22px; line-height: 1.25; letter-spacing: -0.5px; }
+h6 { font-size: 18px; line-height: 1.4; letter-spacing: 0; }
+
+a { color: var(--color-text-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+p { margin-bottom: 1em; }
+
+strong, b { font-weight: 600; color: var(--color-ink); }
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  background: var(--color-surface-strong);
+  color: var(--color-ink);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}
+
+pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+pre > code {
+  all: unset;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 13px;
+}
+
+blockquote {
+  border-left: 4px solid var(--color-hairline-strong);
+  padding: 0 0 0 var(--space-lg);
+  margin: 0 0 1em 0;
+  color: var(--color-body);
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-hairline);
+  margin: var(--space-lg) 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: var(--space-xs) var(--space-sm); border-bottom: 1px solid var(--color-hairline); text-align: left; }
+th { font-weight: 600; color: var(--color-ink); }
+
+textarea, input, select {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+ul, ol { padding-left: var(--space-lg); }
+li { margin-bottom: 0.25em; }
+
+@media (max-width: 640px) {
+  h1 { font-size: 32px; letter-spacing: -0.96px; }
+  h2 { font-size: 28px; letter-spacing: -0.84px; }
+  h3 { font-size: 24px; letter-spacing: -0.72px; }
+  h4 { font-size: 22px; }
+  h5 { font-size: 18px; }
+  main { padding: 0 var(--space-base); }
+}
+
+.sr-only {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Scroll-triggered animations ─────────────────────── */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 420ms ease-out, transform 420ms ease-out;
+  transition-delay: calc(var(--anim-delay, 0) * 80ms);
+}
+[data-animate].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Typing cursor ────────────────────────────────────── */
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--color-ink);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Spring hover cards ───────────────────────────────── */
+.spring-card {
+  cursor: pointer;
+  will-change: transform;
+}

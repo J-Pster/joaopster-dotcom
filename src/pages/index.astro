@@ -1,0 +1,63 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import DarkAboutSection from '../components/sections/DarkAboutSection.astro';
+import FeaturesGridSection from '../components/sections/FeaturesGridSection.astro';
+import WorkflowSection from '../components/sections/WorkflowSection.astro';
+import StackSection from '../components/sections/StackSection.astro';
+import ProjectsSection from '../components/sections/ProjectsSection.astro';
+import EcosystemSection from '../components/sections/EcosystemSection.astro';
+import StatsBandSection from '../components/sections/StatsBandSection.astro';
+import CTASection from '../components/sections/CTASection.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <div class="page-sections">
+      <HeroSection />
+      <DarkAboutSection />
+      <FeaturesGridSection />
+      <WorkflowSection
+        variant="build"
+        label="How I ship"
+        heading="Ship products that work,\nand keep working."
+        body="Good software isn't about clever abstractions. It's about the boring discipline of clear boundaries, typed contracts, and tests that actually run. Every project I ship is meant to last longer than the enthusiasm that built it."
+        cta={{ text: 'See my projects →', href: '/projects' }}
+      />
+      <WorkflowSection
+        variant="write"
+        label="The writing"
+        heading="Write to think.\nPublish to share."
+        body="Writing is how I understand what I actually know. I publish deep-dives on tooling, architecture decisions, and the kind of tradeoffs that don't fit in a tweet. If one post saves you an afternoon of debugging, that's enough."
+        cta={{ text: 'Read the blog →', href: '/blog' }}
+        flip={true}
+      />
+      <WorkflowSection
+        variant="opensource"
+        label="Open source"
+        heading="Build in the open.\nShare what works."
+        body="The tools I reach for most started as personal scripts. When something solves a real problem cleanly, it goes on GitHub. Not for the stars — because the next person hitting the same wall deserves a head start."
+        cta={{ text: 'View GitHub →', href: 'https://github.com/joaopster' }}
+      />
+      <StackSection />
+      <ProjectsSection />
+      <EcosystemSection />
+      <StatsBandSection />
+      <CTASection />
+    </div>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .page-sections {
+    width: 100%;
+  }
+</style>

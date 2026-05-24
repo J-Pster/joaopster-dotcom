@@ -1,0 +1,60 @@
+---
+const projects = [
+  { title: 'devlog', desc: 'CLI for tracking development decisions as you code. Never lose context on why something was built a certain way.', dark: true, icon: 'M3 4h12v10a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 4l2-2h8l2 2M7 8h4M7 11h2' },
+  { title: 'schema-guard', desc: 'TypeScript-first schema validation with zero dependencies. Runtime types that mirror your static types without boilerplate.', dark: true, icon: 'M2 5h14v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zM5 5V4a2 2 0 014 0v1M6 10h6' },
+  { title: 'astro-blog-kit', desc: 'Opinionated Astro starter for personal blogs — design tokens, RSS, MDX, dark mode. Everything I wish existed when starting this site.', dark: true, icon: 'M2 14l4-4 3 3 4-5 3 3' },
+  { title: 'tempo', desc: "Minimal time-tracking for developers. Log what you're working on from the terminal without breaking flow.", dark: false, icon: 'M8 1a7 7 0 100 14A7 7 0 008 1zM8 4v4l3 2' },
+  { title: 'api-kit', desc: 'Typed REST API client builder. Define your API contract once in TypeScript, get a type-safe client with zero codegen.', dark: false, icon: 'M15 6H1M12 3l3 3-3 3M1 12h14M4 9l-3 3 3 3' },
+  { title: 'dotfiles', desc: 'Cross-platform dotfiles manager that works on Windows, macOS and Linux. Because everyone deserves a fast terminal.', dark: false, icon: 'M8 1L1 6v8h4V9h6v5h4V6L8 1z' },
+];
+---
+<section class="projects-section">
+  <div class="projects-inner">
+    <p class="proj-label">Projects</p>
+    <h2 class="proj-heading">Things I've built.</h2>
+    <p class="proj-sub">Side projects, open source tools, and experiments. Each one scratching a real itch.</p>
+    <div class="proj-grid">
+      {projects.map(p => (
+        <a href="https://github.com/joaopster" target="_blank" rel="noopener noreferrer" class={`proj-card ${p.dark ? 'proj-card--dark' : 'proj-card--light'}`}>
+          <div class={`proj-icon ${p.dark ? '' : 'proj-icon--light'}`}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d={p.icon} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>{p.title}</h3>
+          <p>{p.desc}</p>
+          <span class={p.dark ? 'proj-link' : 'proj-link-light'}>GitHub →</span>
+        </a>
+      ))}
+    </div>
+    <div class="proj-footer">
+      <a href="https://github.com/joaopster" target="_blank" rel="noopener noreferrer" class="proj-all-btn">View all on GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-section { padding: var(--space-section) var(--space-xl); background: var(--color-canvas-soft); border-top: 1px solid var(--color-hairline); border-bottom: 1px solid var(--color-hairline); }
+  .projects-inner { max-width: 1000px; margin: 0 auto; }
+  .proj-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
+  .proj-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
+  .proj-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
+  .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+  .proj-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-decoration: none; }
+  .proj-card--dark { background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06); }
+  .proj-card--dark h3 { color: var(--color-on-dark); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); }
+  .proj-card--dark p { color: var(--color-on-dark-soft); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
+  .proj-card--light { background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); }
+  .proj-card--light h3 { color: var(--color-ink); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); }
+  .proj-card--light p { color: var(--color-body); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
+  .proj-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); }
+  .proj-icon--light { background: var(--color-surface-strong); color: var(--color-ink); }
+  .proj-link { font-size: 13px; font-weight: 500; color: #47c2ff; }
+  .proj-link-light { font-size: 13px; font-weight: 500; color: var(--color-text-link); }
+  .proj-footer { margin-top: var(--space-xxl); text-align: center; }
+  .proj-all-btn { display: inline-flex; align-items: center; border: 1px solid var(--color-hairline-strong); background: var(--color-canvas); color: var(--color-ink); font-size: 14px; font-weight: 500; padding: 10px 20px; height: 40px; border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s; }
+  .proj-all-btn:hover { border-color: var(--color-muted); text-decoration: none; }
+  @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .projects-section { padding: var(--space-section) var(--space-base); } .proj-grid { grid-template-columns: 1fr; } .proj-heading { font-size: 28px; } }
+</style>

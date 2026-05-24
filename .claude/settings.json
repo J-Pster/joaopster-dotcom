@@ -1,0 +1,49 @@
+{
+  "enabledPlugins": {
+    "oh-my-claudecode@omc": true
+  },
+  "extraKnownMarketplaces": {
+    "omc": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
+      }
+    }
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": ["Bash(*)", "Read(*)", "Write(*)", "Edit(*)", "Glob(*)", "Grep(*)"]
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "enableAllProjectMcpServers": true,
+  "mcpServers": {
+    "memory": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-memory"]
+    },
+    "qdrant-memory": {
+      "command": "uvx",
+      "args": ["mcp-server-qdrant"],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333",
+        "COLLECTION_NAME": "memory",
+        "EMBEDDING_MODEL": "sentence-transformers/all-MiniLM-L6-v2"
+      }
+    },
+    "exa": {
+      "command": "npx",
+      "args": ["-y", "exa-mcp-server"],
+      "env": {
+        "EXA_API_KEY": "7fc260dd-71e0-4e5a-9266-0ce33cd74fbd"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/joaop/Desktop/Repos/joaopster-dotcom"
+      ]
+    }
+  }
+}

@@ -1,0 +1,63 @@
+---
+---
+<section class="stack-section">
+  <div class="stack-inner">
+    <div class="stack-text">
+      <p class="section-label">How I build</p>
+      <h2 class="section-heading">The same stack.<br/>Refined over time.</h2>
+      <p class="section-body">I settled on a set of tools that let me move fast without accumulating debt. TypeScript everywhere, server-first where it makes sense, and component libraries only when they earn their keep.</p>
+      <ul class="stack-list">
+        <li><span class="check">✓</span> <strong>TypeScript-first</strong> — types are documentation that never goes stale</li>
+        <li><span class="check">✓</span> <strong>Astro for content</strong> — zero JS by default, ships fast, scales simply</li>
+        <li><span class="check">✓</span> <strong>React where needed</strong> — only when interactivity justifies the runtime</li>
+        <li><span class="check">✓</span> <strong>Node.js on the server</strong> — same language end to end, no context switching</li>
+      </ul>
+      <a href="/blog" class="stack-cta">Read how I think about tooling →</a>
+    </div>
+    <div class="stack-code">
+      <div class="code-window">
+        <div class="code-header">
+          <span class="code-lang">TypeScript</span>
+          <span class="code-file">src/pages/blog/index.astro</span>
+        </div>
+        <pre class="code-body"><code><span class="ck">import</span> <span class="cv">&#123; getCollection &#125;</span> <span class="ck">from</span> <span class="cs">'astro:content'</span>
+<span class="ck">import type</span> <span class="cv">&#123; CollectionEntry &#125;</span> <span class="ck">from</span> <span class="cs">'astro:content'</span>
+
+<span class="ck">const</span> <span class="cv">posts</span> <span class="ck">=</span> (<span class="ck">await</span> getCollection(<span class="cs">'blog'</span>))
+  .sort((<span class="cv">a</span>, <span class="cv">b</span>) <span class="ck">=&gt;</span>
+    <span class="cv">b</span>.data.pubDate.valueOf()
+    <span class="ck">-</span> <span class="cv">a</span>.data.pubDate.valueOf()
+  )
+
+<span class="cc">// Fully typed, zero runtime overhead</span>
+<span class="ck">type</span> <span class="cv">Post</span> <span class="ck">=</span> CollectionEntry&lt;<span class="cs">'blog'</span>&gt;</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack-section { padding: var(--space-section) var(--space-xl); background: var(--color-canvas); border-top: 1px solid var(--color-hairline); }
+  .stack-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-section); align-items: center; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
+  .section-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-lg); }
+  .section-body { font-size: 15px; color: var(--color-body); line-height: 1.7; margin-bottom: var(--space-xl); }
+  .stack-list { list-style: none; padding: 0; margin: 0 0 var(--space-xl); display: flex; flex-direction: column; gap: var(--space-sm); }
+  .stack-list li { font-size: 14px; color: var(--color-body); line-height: 1.5; display: flex; gap: var(--space-sm); align-items: flex-start; }
+  .stack-list li strong { color: var(--color-ink); font-weight: 600; }
+  .check { color: var(--color-ink); font-weight: 600; flex-shrink: 0; }
+  .stack-cta { font-size: 14px; font-weight: 500; color: var(--color-text-link); text-decoration: none; }
+  .stack-cta:hover { text-decoration: underline; }
+  .code-window { background: var(--color-surface-dark); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+  .code-header { background: var(--color-surface-dark-elevated); padding: 10px 16px; display: flex; align-items: center; gap: var(--space-sm); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .code-lang { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #47c2ff; }
+  .code-file { font-size: 12px; color: #555; font-family: 'JetBrains Mono', monospace; margin-left: auto; }
+  .code-body { margin: 0; padding: var(--space-lg) var(--space-xl); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; background: transparent; color: var(--color-on-dark); border-radius: 0; overflow-x: auto; }
+  .code-body code { all: unset; font-family: inherit; font-size: inherit; }
+  .ck { color: #c792ea; }
+  .cv { color: #82aaff; }
+  .cs { color: #c3e88d; }
+  .cc { color: #546e7a; font-style: italic; }
+  @media (max-width: 900px) { .stack-inner { grid-template-columns: 1fr; gap: var(--space-xxl); } }
+  @media (max-width: 640px) { .stack-section { padding: var(--space-section) var(--space-base); } .section-heading { font-size: 28px; } }
+</style>

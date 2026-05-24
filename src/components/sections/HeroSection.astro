@@ -1,0 +1,190 @@
+---
+---
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-badge">Full-Stack Developer · Open Source</p>
+    <h1>Building for the web.<br/>Writing about it.</h1>
+    <p class="hero-sub">TypeScript, React, Astro — whatever ships the best product. I document every lesson along the way.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-n">50+</span>
+        <span class="stat-l">Articles written</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-n">20+</span>
+        <span class="stat-l">Projects shipped</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-n">5+</span>
+        <span class="stat-l">Years building</span>
+      </div>
+    </div>
+    <div class="hero-ctas">
+      <a href="/blog" class="btn-primary">Read the blog</a>
+      <a href="https://github.com/joaopster" target="_blank" rel="noopener noreferrer" class="btn-secondary">View GitHub →</a>
+    </div>
+  </div>
+  <div class="hero-mockup-wrap">
+    <div class="mockup-window">
+      <div class="mockup-bar">
+        <div class="mockup-dots">
+          <span class="dot-r"></span>
+          <span class="dot-y"></span>
+          <span class="dot-g"></span>
+        </div>
+        <span class="mockup-title">~/projects/joaopster-dotcom — zsh</span>
+      </div>
+      <div class="mockup-body">
+        <div class="ml"><span class="mp">❯</span> <span class="mc">npx create-astro@latest joaopster-dotcom</span></div>
+        <div class="ml mo"> How would you like to start your new project?</div>
+        <div class="ml mo"> <span class="mhi">A blog</span></div>
+        <div class="ml mo"><span class="mg">◼</span> Template copied</div>
+        <div class="ml mo"><span class="mg">◼</span> Dependencies installed</div>
+        <div class="ml mo"><span class="mg">◼</span> Git initialized</div>
+        <div class="ml mt8"><span class="mp">❯</span> <span class="mc">npm run dev</span></div>
+        <div class="ml mo">  watching for file changes...</div>
+        <div class="ml mo"><span class="mb">→</span> Local:   <span class="mb">http://localhost:4321/</span></div>
+        <div class="ml mo"><span class="mb">→</span> Network: <span class="mb">use --host to expose</span></div>
+        <div class="ml mt8"><span class="mp">❯</span> <span class="mc-cursor">█</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background:
+      radial-gradient(ellipse 110% 70% at 50% -15%, #cfe7ff 0%, #daeeff 20%, transparent 58%),
+      #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-inner {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 96px var(--space-xl) 64px;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-lg);
+  }
+  .hero h1 {
+    font-size: 64px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -1.92px;
+    line-height: 1.05;
+    margin-bottom: var(--space-lg);
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: var(--color-body);
+    line-height: 1.65;
+    max-width: 500px;
+    margin: 0 auto var(--space-xxl);
+  }
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xxl);
+  }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .stat-n { font-size: 28px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.84px; line-height: 1; }
+  .stat-l { font-size: 13px; color: var(--color-muted); line-height: 1.4; }
+  .stat-divider { width: 1px; height: 36px; background: var(--color-hairline-strong); flex-shrink: 0; }
+  .hero-ctas { display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center;
+    background: var(--color-primary); color: var(--color-on-primary);
+    font-size: 14px; font-weight: 500; padding: 10px 18px; height: 40px;
+    border-radius: var(--radius-md); text-decoration: none; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--color-primary-active); text-decoration: none; }
+  .btn-secondary {
+    display: inline-flex; align-items: center;
+    background: transparent; color: var(--color-ink);
+    font-size: 14px; font-weight: 500; padding: 9px 17px; height: 40px;
+    border-radius: var(--radius-md); border: 1px solid var(--color-hairline-strong);
+    text-decoration: none; transition: border-color 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--color-muted); text-decoration: none; }
+  .hero-mockup-wrap {
+    width: 100%;
+    max-width: 880px;
+    padding: 0 var(--space-xl);
+  }
+  .mockup-window {
+    background: #0d0d0d;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-bottom: none;
+  }
+  .mockup-bar {
+    background: #1a1a1a;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .mockup-dots { display: flex; gap: 6px; }
+  .dot-r, .dot-y, .dot-g { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28c840; }
+  .mockup-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #555;
+    margin: 0 auto;
+  }
+  .mockup-body {
+    padding: 20px 24px 32px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .ml { display: block; color: #e0e0e0; }
+  .mo { color: #777; padding-left: 16px; }
+  .mt8 { margin-top: 8px; }
+  .mp { color: #47c2ff; margin-right: 8px; }
+  .mc { color: #e0e0e0; }
+  .mc-cursor { color: #47c2ff; animation: blink 1s step-end infinite; }
+  .mhi { color: #cfe7ff; }
+  .mg { color: #28c840; }
+  .mb { color: #47c2ff; }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; letter-spacing: -1.2px; }
+    .hero-stats { gap: var(--space-lg); }
+    .stat-n { font-size: 22px; }
+  }
+  @media (max-width: 640px) {
+    .hero-inner { padding: 64px var(--space-base) 48px; }
+    .hero h1 { font-size: 32px; letter-spacing: -0.96px; }
+    .hero-sub { font-size: 16px; }
+    .stat-divider { display: none; }
+    .hero-stats { gap: var(--space-xl); flex-wrap: wrap; }
+    .hero-mockup-wrap { padding: 0; }
+  }
+</style>
