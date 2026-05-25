@@ -1,63 +1,65 @@
-# Astro Starter Kit: Blog
+# joaopster.com
 
-```sh
-npm create astro@latest -- --template blog
+Source code for my personal site at [joaopster.com](https://joaopster.com).
+
+Senior software engineer and AI engineer with 6+ years building production systems. The site is my professional home: who I am, what I build, how I think about engineering, and a blog where I write about the tradeoffs that don't fit in a tweet.
+
+## What's on the site
+
+- **Landing page** with hero, experience timeline, tech stack, open-source projects, and a workflow section
+- **Blog** with full-text search, tag filtering, and Giscus comments
+- **Multilingual** — Portuguese (default), English (`/en`), and Spanish (`/es`)
+- **RSS feed** at `/rss.xml`
+- No tracking. No analytics. No nonsense.
+
+## Tech
+
+- [Astro](https://astro.build) as the framework
+- TypeScript strict mode throughout
+- MDX for blog posts with content collections
+- Astro i18n routing with PT as the default locale
+- Giscus for comments (GitHub Discussions-backed)
+- Atkinson Hyperlegible font (self-hosted)
+- Deployed to [joaopster.com](https://joaopster.com)
+
+## Project structure
+
+```
+src/
+  components/
+    sections/       # Page sections (Hero, About, Experience, Stack, Projects…)
+    ContactModal.astro
+    Header.astro
+    Footer.astro
+    LanguageSelector.astro
+  content/
+    blog/
+      pt/           # Portuguese posts (default)
+  i18n/
+    ui.ts           # All UI strings for PT, EN, ES
+  layouts/
+    BlogPost.astro
+  pages/
+    index.astro     # PT (default)
+    en/             # EN routes
+    es/             # ES routes
+    blog/
+    rss.xml.js
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```bash
+npm install        # Install dependencies
+npm run dev        # Start dev server at localhost:4321
+npm run build      # Build for production → dist/
+npm run preview    # Preview production build locally
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Environment
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Copy `.env.example` to `.env` and fill in the values before running locally.
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+## License
 
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Code is MIT. Writing and content are mine.
