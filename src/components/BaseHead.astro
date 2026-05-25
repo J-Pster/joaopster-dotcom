@@ -16,6 +16,9 @@ const { title, description, image = '/og-image.png', type = 'website' } = Astro.
 
 const site = Astro.site ?? new URL('https://joaopster.com');
 const canonicalURL = new URL(Astro.url.pathname, site);
+
+// Cloudflare Web Analytics beacon (token is public; set via build env var)
+const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
 const imageURL = new URL(typeof image === 'string' ? image : image.src, site);
 
 const localeMap: Record<string, string> = { pt: 'pt_BR', en: 'en_US', es: 'es_ES' };
@@ -112,3 +115,13 @@ const siteLd = {
 <!-- Structured data -->
 <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
 <script type="application/ld+json" set:html={JSON.stringify(siteLd)} />
+
+<!-- Cloudflare Web Analytics -->
+{cfBeaconToken && (
+	<script
+		is:inline
+		defer
+		src="https://static.cloudflareinsights.com/beacon.min.js"
+		data-cf-beacon={`{"token": "${cfBeaconToken}"}`}
+	></script>
+)}
