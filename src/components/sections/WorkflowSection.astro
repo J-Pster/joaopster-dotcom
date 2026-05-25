@@ -547,4 +547,27 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
       min-height: auto;
     }
   }
+
+  @media (max-width: 640px) {
+    .workflow-inner {
+      gap: var(--space-xl);
+      padding: var(--space-section) var(--space-base);
+    }
+
+    .workflow-card {
+      padding: var(--space-base);
+      min-height: auto;
+    }
+
+    .waka-lang-name,
+    .waka-lang-pct,
+    .waka-metric-label {
+      font-size: 11px;
+    }
+
+    .waka-brand,
+    .waka-user {
+      font-size: 12px;
+    }
+  }
 </style>

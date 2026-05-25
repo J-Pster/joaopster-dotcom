@@ -321,13 +321,38 @@ const prefix = lang === 'pt' ? '' : `/${lang}`;
     .hero h1 { font-size: 40px; letter-spacing: -1.2px; }
     .hero-stats { gap: var(--space-lg); }
     .stat-n { font-size: 22px; }
+    .hero-blob-1 { width: 312px; height: 312px; filter: blur(40px); }
+    .hero-blob-2 { width: 264px; height: 264px; filter: blur(40px); }
+    .hero-blob-3 { width: 228px; height: 228px; filter: blur(40px); }
+    .hero-blob-4 { width: 360px; height: 360px; filter: blur(40px); }
   }
   @media (max-width: 640px) {
-    .hero-inner { padding: 64px var(--space-base) 48px; }
+    .hero-inner { padding: 56px var(--space-base) 40px; }
     .hero h1 { font-size: 32px; letter-spacing: -0.96px; }
     .hero-sub { font-size: 16px; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      align-items: start;
+    }
+    .stat-n { font-size: 20px; }
+    .stat-l { font-size: 12px; }
     .stat-divider { display: none; }
-    .hero-stats { gap: var(--space-xl); flex-wrap: wrap; }
-    .hero-mockup-wrap { padding: 0; }
+    .hero-ctas { width: 100%; }
+    .hero-ctas .btn-primary,
+    .hero-ctas .btn-secondary { flex: 1; justify-content: center; }
+    .hero-mockup-wrap { padding: 0 var(--space-base); }
+    .mockup-window {
+      border-radius: var(--radius-lg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    .mockup-body { padding: 14px var(--space-base) 18px; font-size: 11px; }
+    .mockup-bar { padding: 10px var(--space-base); }
+    .hero-blob { display: none; }
+  }
+  @media (max-width: 380px) {
+    .mockup-body { font-size: 10px; padding: 12px var(--space-sm) 16px; }
   }
 </style>

@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* Colors */
   --color-primary: #000000;
@@ -133,6 +139,7 @@ img {
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: var(--space-xs) var(--space-sm); border-bottom: 1px solid var(--color-hairline); text-align: left; }
 th { font-weight: 600; color: var(--color-ink); }
+.table-wrapper { overflow-x: auto; }
 
 textarea, input, select {
   font-family: inherit;
@@ -142,13 +149,24 @@ textarea, input, select {
 ul, ol { padding-left: var(--space-lg); }
 li { margin-bottom: 0.25em; }
 
+@media (max-width: 768px) {
+  h1 { font-size: 48px; letter-spacing: -1.44px; }
+  h2 { font-size: 36px; letter-spacing: -1.08px; }
+  h3 { font-size: 26px; letter-spacing: -0.78px; }
+}
+
 @media (max-width: 640px) {
+  /* Tighten the 96px section rhythm on phones: every section that uses
+     var(--space-section) for vertical padding inherits this reduced value. */
+  :root { --space-section: 60px; }
   h1 { font-size: 32px; letter-spacing: -0.96px; }
   h2 { font-size: 28px; letter-spacing: -0.84px; }
   h3 { font-size: 24px; letter-spacing: -0.72px; }
   h4 { font-size: 22px; }
   h5 { font-size: 18px; }
   main { padding: 0 var(--space-base); }
+  table { overflow-x: auto; display: block; }
+  blockquote { padding: 0 0 0 var(--space-base); }
 }
 
 .sr-only {

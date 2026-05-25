@@ -167,7 +167,18 @@ const columns = [
   .sub-desc { font-size: 13px; color: var(--color-body); line-height: 1.5; }
   .col-card--featured .sub-desc { color: var(--color-on-dark-soft); }
   @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .grid { grid-template-columns: 1fr 1fr 1fr; }
   }
-  @media (max-width: 600px) { .section-heading { font-size: 28px; } }
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .col-card { padding: var(--space-lg); }
+    .col-card--featured { grid-column: span 2; }
+  }
+  @media (max-width: 640px) {
+    .inner { padding: var(--space-section) var(--space-base); }
+    .grid { grid-template-columns: 1fr; }
+    .col-card { padding: var(--space-base); }
+    .col-card--featured { grid-column: span 1; }
+    .section-heading { font-size: 28px; }
+  }
 </style>

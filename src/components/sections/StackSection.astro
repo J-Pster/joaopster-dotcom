@@ -53,6 +53,8 @@ const prefix = lang === 'pt' ? '' : `/${lang}`;
 <style>
   .stack-section { padding: var(--space-section) var(--space-xl); background: var(--color-canvas); border-top: 1px solid var(--color-hairline); }
   .stack-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-section); align-items: center; }
+  /* Let the code column shrink so the <pre> scrolls internally instead of widening the page */
+  .stack-text, .stack-code { min-width: 0; }
   .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
   .section-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-lg); white-space: pre-line; }
   .section-body { font-size: 15px; color: var(--color-body); line-height: 1.7; margin-bottom: var(--space-xl); }
@@ -73,5 +75,5 @@ const prefix = lang === 'pt' ? '' : `/${lang}`;
   .cs { color: #c3e88d; }
   .cc { color: #546e7a; font-style: italic; }
   @media (max-width: 900px) { .stack-inner { grid-template-columns: 1fr; gap: var(--space-xxl); } }
-  @media (max-width: 640px) { .stack-section { padding: var(--space-section) var(--space-base); } .section-heading { font-size: 28px; } }
+  @media (max-width: 640px) { .stack-section { padding: var(--space-section) var(--space-base); } .section-heading { font-size: 28px; } .code-body { font-size: 12px; } }
 </style>

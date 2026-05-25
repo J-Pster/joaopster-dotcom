@@ -136,9 +136,10 @@ const today = new Date();
     .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xl) var(--space-lg); }
     .footer-brand { grid-column: 1 / -1; max-width: none; }
   }
-  @media (max-width: 480px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-    .footer-inner { padding: 48px var(--space-base) 32px; }
-    .footer-bottom { flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+  @media (max-width: 640px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-brand { grid-column: auto; }
+    .footer-inner { padding: var(--space-xxl) var(--space-base) var(--space-xl); }
+    .footer-bottom { flex-direction: column; align-items: center; gap: var(--space-sm); }
   }
 </style>
