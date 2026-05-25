@@ -14,11 +14,26 @@ const { title, description, pubDate, updatedDate, readingTime } = Astro.props;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const blogPath = lang === 'pt' ? '/blog' : `/${lang}/blog`;
+
+const site = Astro.site ?? new URL('https://joaopster.com');
+const blogLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	url: new URL(Astro.url.pathname, site).href,
+	datePublished: pubDate.toISOString(),
+	...(updatedDate && { dateModified: updatedDate.toISOString() }),
+	inLanguage: lang,
+	author: { '@type': 'Person', name: 'João Pster', url: site.href },
+	publisher: { '@type': 'Person', name: 'João Pster', url: site.href },
+};
 ---
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} type="article" />
+    <script type="application/ld+json" set:html={JSON.stringify(blogLd)} />
   </head>
   <body>
     <div class="reading-progress" id="reading-progress"></div>
