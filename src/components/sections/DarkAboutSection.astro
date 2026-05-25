@@ -3,13 +3,25 @@ import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
+
+const specialties = [
+  { title: t('about.spec.g1.title'), items: t('about.spec.g1.items').split(' | ') },
+  { title: t('about.spec.g2.title'), items: t('about.spec.g2.items').split(' | ') },
+  { title: t('about.spec.g3.title'), items: t('about.spec.g3.items').split(' | ') },
+  { title: t('about.spec.g4.title'), items: t('about.spec.g4.items').split(' | ') },
+  { title: t('about.spec.g5.title'), items: t('about.spec.g5.items').split(' | ') },
+  { title: t('about.spec.g6.title'), items: t('about.spec.g6.items').split(' | ') },
+];
 ---
 <section id="about" class="dark-about">
   <div class="dark-about-inner">
-    <p class="da-label">{t('about.label')}</p>
-    <h2 class="da-heading">{t('about.heading1')}<br/>{t('about.heading2')}</h2>
-    <p class="da-sub">{t('about.sub')}</p>
-    <div class="da-grid">
+    <div class="da-top">
+      <div class="da-intro">
+        <p class="da-label">{t('about.label')}</p>
+        <h2 class="da-heading">{t('about.heading1')}<br/>{t('about.heading2')}</h2>
+        <p class="da-sub">{t('about.sub')}</p>
+      </div>
+      <div class="da-grid">
       <div class="da-card">
         <div class="da-icon">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -32,6 +44,21 @@ const t = useTranslations(lang);
         <p>{t('about.card2.desc')}</p>
         <a href="#toolkit" class="da-link">{t('about.card2.link')}</a>
       </div>
+      </div>
+    </div>
+
+    <div class="da-specialties">
+      <p class="da-spec-label">{t('about.specialties.label')}</p>
+      <div class="da-spec-grid">
+        {specialties.map((g) => (
+          <div class="da-spec-card">
+            <h4>{g.title}</h4>
+            <ul>
+              {g.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
@@ -44,8 +71,10 @@ const t = useTranslations(lang);
   .dark-about-inner { max-width: 1000px; margin: 0 auto; }
   .da-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-on-dark-soft); margin-bottom: var(--space-lg); }
   .da-heading { font-size: 48px; font-weight: 600; color: var(--color-on-dark); letter-spacing: -1.44px; line-height: 1.1; margin-bottom: var(--space-lg); }
-  .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin-bottom: var(--space-xxl); }
-  .da-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-base); }
+  .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin-bottom: 0; }
+  .da-top { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-xxl); align-items: start; }
+  .da-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-base); }
+  @media (max-width: 860px) { .da-top { grid-template-columns: 1fr; gap: var(--space-xl); } }
   .da-card { background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: var(--space-lg); }
   .da-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.07); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); margin-bottom: var(--space-md); }
   .da-card h3 { font-size: 18px; font-weight: 600; color: var(--color-on-dark); margin-bottom: var(--space-sm); }
@@ -53,6 +82,16 @@ const t = useTranslations(lang);
   .da-card p strong { color: var(--color-on-dark); font-weight: 600; }
   .da-link { font-size: 14px; font-weight: 500; color: #47c2ff; text-decoration: none; }
   .da-link:hover { opacity: 0.8; text-decoration: none; }
+  .da-specialties { margin-top: var(--space-xxl); }
+  .da-spec-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-on-dark-soft); margin-bottom: var(--space-lg); }
+  .da-spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
+  .da-spec-card { background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: var(--space-lg); }
+  .da-spec-card h4 { font-size: 16px; font-weight: 600; color: var(--color-on-dark); margin: 0 0 var(--space-base); line-height: 1.4; }
+  .da-spec-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+  .da-spec-card li { position: relative; padding-left: 18px; font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.5; }
+  .da-spec-card li::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.28); }
+  @media (max-width: 900px) { .da-spec-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .da-spec-grid { grid-template-columns: 1fr; } }
   @media (max-width: 768px) { .da-heading { font-size: 36px; } .da-grid { grid-template-columns: 1fr; } }
   @media (max-width: 640px) {
     .dark-about { padding: var(--space-section) var(--space-base); }

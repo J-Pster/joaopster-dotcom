@@ -50,6 +50,69 @@ const roles = [
     descKey: 'exp.role5.desc' as const,
     tags: ['React', 'Node', 'NestJS', 'Cloud'],
   },
+  {
+    roleKey: 'exp.role6.role' as const,
+    company: 'João Pster',
+    meta: 'Brazil · Remote',
+    dates: '2023 - 2024',
+    current: false,
+    descKey: 'exp.role6.desc' as const,
+    tags: ['Tech lead', 'Consulting', 'Hands-on', 'Team building'],
+  },
+  {
+    roleKey: 'exp.role7.role' as const,
+    company: 'Howhow · João Pster',
+    meta: 'São Paulo · Hybrid',
+    dates: '2023 - 2024',
+    current: false,
+    descKey: 'exp.role7.desc' as const,
+    tags: ['CTO', 'AI / NLP', 'Leadership'],
+  },
+  {
+    roleKey: 'exp.role8.role' as const,
+    company: 'AfterSale',
+    meta: 'Brazil · Remote',
+    dates: '2023 - 2024',
+    current: false,
+    descKey: 'exp.role8.desc' as const,
+    tags: ['React', 'Front-end', 'Legacy'],
+  },
+  {
+    roleKey: 'exp.role9.role' as const,
+    company: 'Digital Republic',
+    meta: 'São Paulo · On-site',
+    dates: '2023',
+    current: false,
+    descKey: 'exp.role9.desc' as const,
+    tags: ['Next.js', 'Angular', 'Atomic Design'],
+  },
+  {
+    roleKey: 'exp.role10.role' as const,
+    company: 'Verzel',
+    meta: 'Brazil · Remote',
+    dates: '2022 - 2023',
+    current: false,
+    descKey: 'exp.role10.desc' as const,
+    tags: ['Angular', 'React', 'Node', 'Chatbot'],
+  },
+  {
+    roleKey: 'exp.role11.role' as const,
+    company: 'Independent',
+    meta: 'Brazil',
+    dates: '2020 - 2022',
+    current: false,
+    descKey: 'exp.role11.desc' as const,
+    tags: ['React', 'Angular', 'Vue', 'UI/UX'],
+  },
+  {
+    roleKey: 'exp.role12.role' as const,
+    company: 'Self-employed',
+    meta: 'Remote',
+    dates: '2019 - 2020',
+    current: false,
+    descKey: 'exp.role12.desc' as const,
+    tags: ['.NET', 'C#', 'HarmonyX', 'Game dev'],
+  },
 ];
 ---
 <section id="experience" class="experience">
@@ -59,8 +122,8 @@ const roles = [
     <p class="exp-sub">{t('exp.sub')}</p>
 
     <div class="exp-timeline">
-      {roles.map(r => (
-        <div class:list={['exp-item', r.current && 'is-current']}>
+      {roles.map((r, i) => (
+        <div class:list={['exp-item', r.current && 'is-current', i >= 2 && 'exp-extra']}>
           <div class="exp-head">
             <h3 class="exp-role">{t(r.roleKey)}</h3>
             <span class="exp-dates">{r.dates}</span>
@@ -69,7 +132,11 @@ const roles = [
             <span class="exp-company-name">{r.company}</span>
             <span class="exp-company-meta">{r.meta}</span>
           </p>
-          <p class="exp-desc">{t(r.descKey)}</p>
+          <div class="exp-desc">
+            {t(r.descKey).split('\n\n').map((para) => (
+              <p>{para.split('\n').map((line, li) => (<Fragment>{li > 0 && <br />}{line}</Fragment>))}</p>
+            ))}
+          </div>
           <div class="exp-tags">
             {r.tags.map(tag => <span class="exp-tag">{tag}</span>)}
           </div>
@@ -77,9 +144,25 @@ const roles = [
       ))}
     </div>
 
-    <p class="exp-note">{t('exp.note')}</p>
+    {roles.length > 2 && (
+      <div class="exp-more-wrap">
+        <button type="button" class="exp-more-btn" aria-expanded="false" data-more={t('exp.showMore')} data-less={t('exp.showLess')}>
+          {t('exp.showMore')}
+        </button>
+      </div>
+    )}
   </div>
 </section>
+
+<script>
+  const btn = document.querySelector('.exp-more-btn') as HTMLButtonElement | null;
+  const timeline = document.querySelector('.exp-timeline');
+  btn?.addEventListener('click', () => {
+    const expanded = timeline?.classList.toggle('is-expanded') ?? false;
+    btn.setAttribute('aria-expanded', String(expanded));
+    btn.textContent = expanded ? btn.dataset.less ?? '' : btn.dataset.more ?? '';
+  });
+</script>
 
 <style>
   .experience {
@@ -137,12 +220,27 @@ const roles = [
   .exp-company { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-xs) var(--space-sm); margin: 0 0 var(--space-sm); }
   .exp-company-name { font-size: 14px; font-weight: 600; color: var(--color-text-link); }
   .exp-company-meta { font-size: 13px; color: var(--color-muted); }
-  .exp-desc { font-size: 14px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-md); }
+  .exp-desc { margin: 0 0 var(--space-md); }
+  .exp-desc p { font-size: 14px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-sm); }
+  .exp-desc p:last-child { margin-bottom: 0; }
   .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .exp-tag {
     font-size: 11px; font-weight: 500; color: var(--color-ink);
     background: var(--color-surface-strong); border-radius: var(--radius-pill); padding: 3px 10px;
   }
+
+  .exp-extra { display: none; }
+  .exp-timeline.is-expanded .exp-extra { display: block; }
+  .exp-more-wrap { display: flex; justify-content: center; margin-top: var(--space-xl); }
+  .exp-more-btn {
+    display: inline-flex; align-items: center; gap: var(--space-xs);
+    background: var(--color-surface-card); color: var(--color-ink);
+    font-size: 14px; font-weight: 500; font-family: inherit;
+    padding: 9px 17px; height: 40px;
+    border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-md);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .exp-more-btn:hover { border-color: var(--color-muted); }
 
   .exp-note {
     margin: var(--space-xl) 0 0;

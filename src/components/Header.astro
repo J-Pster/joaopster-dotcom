@@ -43,6 +43,18 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
       )}
     </div>
     <div class="nav-end">
+      {codingTime && (
+        <a href={`${homePath}#opensource`} class="coding-time-pill coding-time-pill--mobile" title="Total coded">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span class="pill-text-wrap">
+            <span class="pill-time">{codingTime}</span>
+            <span class="pill-label">total coded</span>
+          </span>
+        </a>
+      )}
       <a
         href="https://github.com/J-Pster"
         class="nav-icon-link"
@@ -229,6 +241,7 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
   .pill-text-wrap { display: flex; flex-direction: column; gap: 1px; }
   .pill-time { font-size: 12px; font-weight: 600; color: var(--color-ink); line-height: 1.2; }
   .pill-label { font-size: 10px; font-weight: 600; color: var(--color-muted); letter-spacing: 0.5px; text-transform: uppercase; line-height: 1; }
+  .coding-time-pill--mobile { display: none; }
   .nav-end {
     display: flex;
     align-items: center;
@@ -402,6 +415,7 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     .nav-icon-link { display: none; }
     nav { position: relative; z-index: 2; padding: 0 var(--space-base); gap: var(--space-md); }
     .nav-end { margin-left: auto; gap: var(--space-xs); }
+    .coding-time-pill--mobile { display: inline-flex; }
     .nav-mobile { display: flex; }
     .nav-mobile.open {
       opacity: 1;
@@ -411,8 +425,11 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
   }
 
   @media (max-width: 640px) {
-    .coding-time-pill { display: none; }
     nav { padding: 0 var(--space-base); }
+  }
+
+  @media (max-width: 400px) {
+    .coding-time-pill--mobile .pill-label { display: none; }
   }
 </style>
 
