@@ -1,34 +1,90 @@
 ---
-const techs = [
-  { name: 'TypeScript', abbr: 'TS' },
-  { name: 'React', abbr: 'Re' },
-  { name: 'Angular', abbr: 'Ng' },
-  { name: 'React Native', abbr: 'RN' },
-  { name: 'NestJS', abbr: 'Ne' },
-  { name: 'Node.js', abbr: 'No' },
-  { name: 'AWS', abbr: 'Aw' },
-  { name: 'GCP', abbr: 'Gc' },
-  { name: 'Firebase', abbr: 'Fb' },
-  { name: 'Docker', abbr: 'Do' },
-  { name: 'MongoDB', abbr: 'Mo' },
-  { name: 'AI Workflows', abbr: 'AI' },
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+interface TechItem {
+  name: string;
+  abbr: string;
+  color: string;
+}
+
+interface Category {
+  label: string;
+  items: TechItem[];
+}
+
+const categories: Category[] = [
+  {
+    label: t('ecosystem.cat.languages'),
+    items: [
+      { name: 'TypeScript', abbr: 'TS', color: '#3178c6' },
+      { name: 'JavaScript', abbr: 'JS', color: '#b5920b' },
+      { name: 'Node.js', abbr: 'No', color: '#339933' },
+      { name: 'Python', abbr: 'Py', color: '#3776ab' },
+      { name: 'AWS', abbr: 'AWS', color: '#e08020' },
+      { name: 'PostgreSQL', abbr: 'PG', color: '#336791' },
+      { name: 'Redis', abbr: 'Rd', color: '#dc382d' },
+      { name: 'Docker', abbr: 'Dk', color: '#2496ed' },
+    ],
+  },
+  {
+    label: t('ecosystem.cat.frameworks'),
+    items: [
+      { name: 'Angular', abbr: 'Ng', color: '#dd0031' },
+      { name: 'React', abbr: 'Rc', color: '#149eca' },
+      { name: 'React Native', abbr: 'RN', color: '#149eca' },
+      { name: 'NestJS', abbr: 'Ne', color: '#e0234e' },
+      { name: 'Expo', abbr: 'Exp', color: '#1c1c1e' },
+      { name: 'Astro', abbr: 'As', color: '#ff5d01' },
+    ],
+  },
+  {
+    label: t('ecosystem.cat.ai'),
+    items: [
+      { name: 'Claude Code', abbr: 'CC', color: '#d97040' },
+      { name: 'oh-my-claudecode', abbr: 'OMC', color: '#b45309' },
+      { name: 'Cursor', abbr: 'Cur', color: '#1c1c1e' },
+      { name: 'Exa', abbr: 'Exa', color: '#6366f1' },
+      { name: 'Serena', abbr: 'Sr', color: '#8b5cf6' },
+      { name: 'Context7', abbr: 'C7', color: '#0ea5e9' },
+      { name: 'Memory', abbr: 'Mem', color: '#7c3aed' },
+      { name: 'Qdrant', abbr: 'Qd', color: '#dc244c' },
+      { name: 'Graphify', abbr: 'Gph', color: '#059669' },
+      { name: 'Linear', abbr: 'Ln', color: '#5e6ad2' },
+      { name: 'Sentry', abbr: 'Sn', color: '#362d59' },
+    ],
+  },
 ];
 ---
 <section class="ecosystem-section">
   <div class="eco-inner">
-    <p class="eco-label">My toolkit</p>
-    <h2 class="eco-heading">Trusted technologies.</h2>
-    <p class="eco-sub">The tools that have earned a permanent spot in my workflow.</p>
-    <div class="eco-grid">
-      {techs.map(t => (
-        <div class="eco-tile" title={t.name}>
-          <span class="eco-abbr">{t.abbr}</span>
-          <span class="eco-name">{t.name}</span>
+    <p class="eco-label">{t('ecosystem.label')}</p>
+    <h2 class="eco-heading">{t('ecosystem.heading')}</h2>
+    <p class="eco-sub">{t('ecosystem.sub')}</p>
+
+    <div class="eco-categories">
+      {categories.map((category) => (
+        <div class="eco-category">
+          <div class="eco-cat-header">
+            <span class="eco-cat-label">{category.label}</span>
+            <div class="eco-cat-line" />
+          </div>
+          <div class="eco-grid">
+            {category.items.map((item) => (
+              <div class="eco-tile" title={item.name}>
+                <span class="eco-abbr" style={`color: ${item.color}`}>{item.abbr}</span>
+                <span class="eco-name">{item.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
+
     <blockquote class="eco-quote">
-      <p>"The best tech stack is the one your team can ship with confidently and maintain without dread."</p>
+      <p>{t('ecosystem.quote')}</p>
       <footer>João Pster</footer>
     </blockquote>
   </div>
@@ -40,14 +96,29 @@ const techs = [
   .eco-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
   .eco-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
   .eco-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
-  .eco-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-sm); margin-bottom: var(--space-section); }
+
+  .eco-categories { display: flex; flex-direction: column; gap: var(--space-xxl); margin-bottom: var(--space-section); }
+
+  .eco-cat-header { display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); }
+  .eco-cat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); white-space: nowrap; }
+  .eco-cat-line { flex: 1; height: 1px; background: var(--color-hairline); }
+
+  .eco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: var(--space-sm); }
   .eco-tile { background: var(--color-surface-card); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: border-color 0.15s, box-shadow 0.15s; cursor: default; }
   .eco-tile:hover { border-color: var(--color-hairline-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-  .eco-abbr { font-size: 16px; font-weight: 700; color: var(--color-ink); letter-spacing: -0.3px; font-family: 'JetBrains Mono', monospace; }
-  .eco-name { font-size: 11px; color: var(--color-muted); font-weight: 500; }
+  .eco-abbr { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; font-family: 'JetBrains Mono', monospace; }
+  .eco-name { font-size: 10px; color: var(--color-muted); font-weight: 500; text-align: center; padding: 0 4px; line-height: 1.2; }
+
   .eco-quote { border-left: none; padding: var(--space-xxl); margin: 0; background: var(--color-canvas-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); text-align: center; font-style: normal; }
   .eco-quote p { font-size: 20px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.5px; line-height: 1.4; margin-bottom: var(--space-md); }
   .eco-quote footer { font-size: 13px; color: var(--color-muted); }
-  @media (max-width: 900px) { .eco-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 600px) { .ecosystem-section { padding: var(--space-section) var(--space-base); } .eco-grid { grid-template-columns: repeat(3, 1fr); } .eco-heading { font-size: 28px; } .eco-quote { padding: var(--space-xl); } .eco-quote p { font-size: 16px; } }
+
+  @media (max-width: 900px) { .eco-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); } }
+  @media (max-width: 600px) {
+    .ecosystem-section { padding: var(--space-section) var(--space-base); }
+    .eco-heading { font-size: 28px; }
+    .eco-quote { padding: var(--space-xl); }
+    .eco-quote p { font-size: 16px; }
+    .eco-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+  }
 </style>

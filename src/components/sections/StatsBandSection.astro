@@ -1,30 +1,34 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
 ---
 
 <section class="stats-band-section">
   <div class="inner">
     <div class="section-header">
-      <span class="section-label">The engineer behind the work</span>
-      <h2 class="section-heading">From solo tools to production systems.</h2>
+      <span class="section-label">{t('stats.label')}</span>
+      <h2 class="section-heading">{t('stats.heading')}</h2>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
         <span class="stat-number">6+</span>
-        <span class="stat-label">Years building</span>
-        <p class="stat-desc">From first commit to production systems serving real users.</p>
+        <span class="stat-label">{t('stats.s1.label')}</span>
+        <p class="stat-desc">{t('stats.s1.desc')}</p>
       </div>
 
       <div class="stat-card">
         <span class="stat-number">30</span>
-        <span class="stat-label">Open-source repos</span>
-        <p class="stat-desc">Tools, APIs, and deep-dives, shipped in the open for anyone to use.</p>
+        <span class="stat-label">{t('stats.s2.label')}</span>
+        <p class="stat-desc">{t('stats.s2.desc')}</p>
       </div>
 
       <div class="stat-card">
         <span class="stat-number">290+</span>
-        <span class="stat-label">GitHub stars</span>
-        <p class="stat-desc">Quiet proof the next person hit the same wall, and got a head start.</p>
+        <span class="stat-label">{t('stats.s3.label')}</span>
+        <p class="stat-desc">{t('stats.s3.desc')}</p>
       </div>
     </div>
   </div>

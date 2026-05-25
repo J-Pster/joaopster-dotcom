@@ -1,12 +1,17 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
 ---
 <section class="cta-band">
   <div class="cta-inner">
-    <h2>Want to build<br/>something together?</h2>
-    <p>I'm always happy to talk architecture, AI engineering, or what you're building, whether it's a project, a role, or just a good technical problem.</p>
+    <h2>{t('cta.heading1')}<br/>{t('cta.heading2')}</h2>
+    <p>{t('cta.body')}</p>
     <div class="cta-actions">
-      <a href="mailto:joaopster@proton.me" class="cta-btn-primary">Get in touch</a>
-      <a href="/blog" class="cta-btn-secondary">Read the blog</a>
+      <a href="mailto:joaopster@proton.me" class="cta-btn-primary" data-contact-open>{t('cta.primary')}</a>
+      <a href={`${prefix}/blog`} class="cta-btn-secondary">{t('cta.secondary')}</a>
     </div>
   </div>
 </section>

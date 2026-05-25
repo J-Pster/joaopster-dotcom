@@ -1,0 +1,68 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import HeroSection from '../../components/sections/HeroSection.astro';
+import DarkAboutSection from '../../components/sections/DarkAboutSection.astro';
+import ExperienceSection from '../../components/sections/ExperienceSection.astro';
+import FeaturesGridSection from '../../components/sections/FeaturesGridSection.astro';
+import WorkflowSection from '../../components/sections/WorkflowSection.astro';
+import StackSection from '../../components/sections/StackSection.astro';
+import ProjectsSection from '../../components/sections/ProjectsSection.astro';
+import EcosystemSection from '../../components/sections/EcosystemSection.astro';
+import StatsBandSection from '../../components/sections/StatsBandSection.astro';
+import CTASection from '../../components/sections/CTASection.astro';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={t('site.title')} description={t('site.description')} />
+  </head>
+  <body>
+    <Header />
+    <div class="page-sections">
+      <HeroSection />
+      <DarkAboutSection />
+      <ExperienceSection />
+      <FeaturesGridSection />
+      <WorkflowSection
+        variant="build"
+        label={t('workflow.build.label')}
+        heading={t('workflow.build.heading')}
+        body={t('workflow.build.body')}
+        cta={{ text: t('workflow.build.cta'), href: '#projects' }}
+      />
+      <WorkflowSection
+        variant="write"
+        label={t('workflow.write.label')}
+        heading={t('workflow.write.heading')}
+        body={t('workflow.write.body')}
+        cta={{ text: t('workflow.write.cta'), href: `${prefix}/blog` }}
+        flip={true}
+      />
+      <WorkflowSection
+        variant="opensource"
+        label={t('workflow.opensource.label')}
+        heading={t('workflow.opensource.heading')}
+        body={t('workflow.opensource.body')}
+        addendum={t('workflow.opensource.addendum')}
+        cta={{ text: t('workflow.opensource.cta'), href: 'https://github.com/J-Pster' }}
+      />
+      <StackSection />
+      <ProjectsSection />
+      <EcosystemSection />
+      <StatsBandSection />
+      <CTASection />
+    </div>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .page-sections { width: 100%; }
+</style>

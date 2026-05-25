@@ -1,74 +1,83 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
 const roles = [
   {
-    role: 'Co-founder & Developer',
+    roleKey: 'exp.role1.role' as const,
     company: 'Stealth · PropTech',
     meta: 'United States · Remote',
     dates: '2025 - Present',
     current: true,
-    desc: "Co-founding and building an AI-driven platform for the US real-estate market. AI lives in the product core and across its features, and I'm the one writing it end to end, with AI under real engineering discipline. Scalable, maintainable, high-quality code shipped fast.",
+    descKey: 'exp.role1.desc' as const,
     tags: ['AI-driven', 'Spec-driven dev', 'TypeScript', 'Scale'],
   },
   {
-    role: 'Senior Software Development Engineer',
+    roleKey: 'exp.role2.role' as const,
     company: 'adMixt',
     meta: 'United States · Remote',
     dates: '2025',
-    desc: 'Modernized 20+ year legacy PHP systems with modern, dependency-free Vanilla JS, building bridges between new architecture and established systems without compromising core stability.',
+    current: false,
+    descKey: 'exp.role2.desc' as const,
     tags: ['Vanilla JS', 'Legacy modernization', 'PHP', 'AWS'],
   },
   {
-    role: 'Principal Software Architect & AI Engineer',
+    roleKey: 'exp.role3.role' as const,
     company: 'Howhow',
     meta: 'São Paulo · Hybrid',
     dates: '2024 - 2025',
-    desc: 'Architected and developed an influencer-marketing platform powered by AI, NLP and data analysis. Built a complex multi-user system covering proposals, contracts and content review, shipping the MVP that drove it toward a Series A.',
+    current: false,
+    descKey: 'exp.role3.desc' as const,
     tags: ['AI / NLP', 'Architecture', 'Node.js', 'Full-stack'],
   },
   {
-    role: 'Lead Developer',
+    roleKey: 'exp.role4.role' as const,
     company: 'Artweb · João Pster',
     meta: 'Brazil · Remote',
     dates: '2023 - 2025',
-    desc: 'Built 5 integrated apps across TV, web and mobile for an art-streaming platform, contributing to 200k+ lines of code, architected to scale past 500k users.',
+    current: false,
+    descKey: 'exp.role4.desc' as const,
     tags: ['React', 'React Native', 'Angular', 'Flutter', 'GCP'],
   },
   {
-    role: 'Technology Teacher',
+    roleKey: 'exp.role5.role' as const,
     company: 'Independent',
     meta: 'Brazil · Remote',
     dates: '2021 - 2024',
-    desc: 'Taught React, React Native, Angular, Node, NestJS and cloud to 100+ students, turning hard concepts into things people could actually ship.',
+    current: false,
+    descKey: 'exp.role5.desc' as const,
     tags: ['React', 'Node', 'NestJS', 'Cloud'],
   },
 ];
 ---
-<section class="experience">
+<section id="experience" class="experience">
   <div class="exp-inner">
-    <p class="exp-label">Experience</p>
-    <h2 class="exp-heading">Six years, shipping<br/>the whole way.</h2>
-    <p class="exp-sub">From freelance to founding, hands on the code the whole way, across marketing tech, media, and now PropTech.</p>
+    <p class="exp-label">{t('exp.label')}</p>
+    <h2 class="exp-heading">{t('exp.heading1')}<br/>{t('exp.heading2')}</h2>
+    <p class="exp-sub">{t('exp.sub')}</p>
 
     <div class="exp-timeline">
       {roles.map(r => (
         <div class:list={['exp-item', r.current && 'is-current']}>
           <div class="exp-head">
-            <h3 class="exp-role">{r.role}</h3>
+            <h3 class="exp-role">{t(r.roleKey)}</h3>
             <span class="exp-dates">{r.dates}</span>
           </div>
           <p class="exp-company">
             <span class="exp-company-name">{r.company}</span>
             <span class="exp-company-meta">{r.meta}</span>
           </p>
-          <p class="exp-desc">{r.desc}</p>
+          <p class="exp-desc">{t(r.descKey)}</p>
           <div class="exp-tags">
-            {r.tags.map(t => <span class="exp-tag">{t}</span>)}
+            {r.tags.map(tag => <span class="exp-tag">{tag}</span>)}
           </div>
         </div>
       ))}
     </div>
 
-    <p class="exp-note">Earlier: senior front-end & full-stack consulting at AfterSale, Digital Republic and Verzel, plus 50+ independent projects.</p>
+    <p class="exp-note">{t('exp.note')}</p>
   </div>
 </section>
 

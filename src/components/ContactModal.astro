@@ -1,0 +1,250 @@
+---
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+interface Props { lang?: Lang; }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+---
+<div class="modal-backdrop" id="contact-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label={t('modal.close')}>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <p class="modal-eyebrow">{t('modal.eyebrow')}</p>
+    <h2 class="modal-title" id="contact-modal-title">{t('modal.title')}</h2>
+    <p class="modal-desc">{t('modal.desc')}</p>
+
+    <div class="modal-options">
+      <a href="mailto:joaopster@proton.me" class="modal-option">
+        <div class="modal-option-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="14" height="11" rx="2"/>
+            <path d="M2 7l7 4.5L16 7"/>
+          </svg>
+        </div>
+        <div class="modal-option-body">
+          <span class="modal-option-label">Email</span>
+          <span class="modal-option-value">joaopster@proton.me</span>
+        </div>
+        <svg class="modal-option-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+
+      <a href="https://www.linkedin.com/in/ojoaopster/" class="modal-option" target="_blank" rel="noopener noreferrer">
+        <div class="modal-option-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </div>
+        <div class="modal-option-body">
+          <span class="modal-option-label">LinkedIn</span>
+          <span class="modal-option-value">{t('modal.linkedin.value')}</span>
+        </div>
+        <svg class="modal-option-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(23, 23, 23, 0.48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-base);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-card {
+    position: relative;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-xl);
+    padding: 36px 32px 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+    transform: translateY(8px);
+    transition: transform 0.2s ease;
+  }
+  .modal-backdrop.open .modal-card {
+    transform: translateY(0);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-strong);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .modal-close:hover {
+    background: var(--color-hairline-strong);
+    color: var(--color-ink);
+  }
+
+  .modal-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: var(--space-sm);
+  }
+
+  .modal-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.84px;
+    line-height: 1.2;
+    margin-bottom: var(--space-sm);
+  }
+
+  .modal-desc {
+    font-size: 15px;
+    color: var(--color-body);
+    line-height: 1.6;
+    margin-bottom: var(--space-xl);
+  }
+
+  .modal-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .modal-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    padding: var(--space-base) var(--space-lg);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: var(--color-canvas);
+  }
+  .modal-option:hover {
+    border-color: var(--color-muted);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+  }
+
+  .modal-option-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-strong);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+  }
+
+  .modal-option-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .modal-option-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-ink);
+    line-height: 1.4;
+  }
+
+  .modal-option-value {
+    font-size: 13px;
+    color: var(--color-body);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .modal-option-arrow {
+    flex-shrink: 0;
+    color: var(--color-muted);
+    transition: color 0.15s, transform 0.15s;
+  }
+  .modal-option:hover .modal-option-arrow {
+    color: var(--color-ink);
+    transform: translateX(2px);
+  }
+
+  @media (max-width: 480px) {
+    .modal-card {
+      padding: 28px 20px 24px;
+    }
+    .modal-title {
+      font-size: 24px;
+    }
+  }
+</style>
+
+<script>
+  const backdrop = document.getElementById('contact-modal');
+  const closeBtn = document.getElementById('modal-close');
+
+  function openModal() {
+    backdrop?.classList.add('open');
+    backdrop?.removeAttribute('aria-hidden');
+    document.body.style.overflow = 'hidden';
+    closeBtn?.focus();
+  }
+
+  function closeModal() {
+    backdrop?.classList.remove('open');
+    backdrop?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-contact-open]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      openModal();
+    });
+  });
+
+  closeBtn?.addEventListener('click', closeModal);
+
+  backdrop?.addEventListener('click', e => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && backdrop?.classList.contains('open')) closeModal();
+  });
+</script>

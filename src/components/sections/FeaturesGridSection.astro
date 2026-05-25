@@ -1,45 +1,52 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
 const columns = [
   {
-    title: 'Frontend',
-    desc: 'Interfaces built with real craft.',
+    title: t('features.col1.title'),
+    desc: t('features.col1.desc'),
     plate: 'M2 3h16v11H2zM7 17h6M10 14v3',
+    featured: false,
     items: [
-      { title: 'Angular', desc: 'My default for serious, large-scale apps.' },
-      { title: 'React & React Native', desc: 'One mental model, web to native.' },
-      { title: 'Styling & design', desc: "Frontend design and pixel-level styling are where I'm strongest." },
+      { title: t('features.col1.item1.title'), desc: t('features.col1.item1.desc') },
+      { title: t('features.col1.item2.title'), desc: t('features.col1.item2.desc') },
+      { title: t('features.col1.item3.title'), desc: t('features.col1.item3.desc') },
     ],
   },
   {
-    title: 'Back & Infra',
-    desc: 'Built to scale, run on AWS.',
+    title: t('features.col2.title'),
+    desc: t('features.col2.desc'),
     plate: 'M10 2.5c3.9 0 7 1.1 7 2.5s-3.1 2.5-7 2.5S3 6.4 3 5s3.1-2.5 7-2.5zM3 5v10c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V5M3 10c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5',
+    featured: false,
     items: [
-      { title: 'AWS specialist', desc: 'Deep AWS experience, from Lambda to the full platform.' },
-      { title: 'Node.js & Lambda', desc: 'Serverless services that scale on demand.' },
-      { title: 'Scalability', desc: 'Systems architected for load, code that stays clean as it grows.' },
+      { title: t('features.col2.item1.title'), desc: t('features.col2.item1.desc') },
+      { title: t('features.col2.item2.title'), desc: t('features.col2.item2.desc') },
+      { title: t('features.col2.item3.title'), desc: t('features.col2.item3.desc') },
     ],
   },
   {
-    title: 'Workflow',
-    desc: 'AI, used the right way.',
+    title: t('features.col3.title'),
+    desc: t('features.col3.desc'),
     plate: 'M10 2l1.2 3.6H17l-2.9 2.1 1.2 3.6L10 12.9 6.5 14.3l1.2-3.6L4 8.7h5L10 2z',
     featured: true,
     items: [
-      { title: 'Spec-driven development', desc: 'Specs and architecture first, so the AI executes a plan, not a vibe.' },
-      { title: 'Agentic workflows', desc: 'Phased, automated and model-agnostic, built into the delivery loop.' },
-      { title: 'Anti-vibe-coding', desc: 'Tests, review and traceable decisions on every AI-written line.' },
+      { title: t('features.col3.item1.title'), desc: t('features.col3.item1.desc') },
+      { title: t('features.col3.item2.title'), desc: t('features.col3.item2.desc') },
+      { title: t('features.col3.item3.title'), desc: t('features.col3.item3.desc') },
     ],
   },
 ];
 ---
 
-<section class="features-grid-section">
+<section id="build" class="features-grid-section">
   <div class="inner">
     <div class="section-header">
-      <span class="section-label">What I build with</span>
-      <h2 class="section-heading">A stack chosen for longevity.</h2>
-      <p class="section-sub">Frontend, back and infra, and the AI workflow that ties it all together.</p>
+      <span class="section-label">{t('features.label')}</span>
+      <h2 class="section-heading">{t('features.heading')}</h2>
+      <p class="section-sub">{t('features.sub')}</p>
     </div>
 
     <div class="grid">
@@ -82,18 +89,15 @@ const columns = [
     border-top: 1px solid var(--color-hairline);
     border-bottom: 1px solid var(--color-hairline);
   }
-
   .inner {
     max-width: 1100px;
     margin: 0 auto;
     padding: var(--space-section, 96px) var(--space-xl, 32px);
   }
-
   .section-header {
     text-align: center;
     margin-bottom: var(--space-xxl, 48px);
   }
-
   .section-label {
     display: block;
     font-size: 11px;
@@ -103,7 +107,6 @@ const columns = [
     color: var(--color-muted);
     margin-bottom: var(--space-sm, 12px);
   }
-
   .section-heading {
     font-size: 36px;
     font-weight: 600;
@@ -112,129 +115,59 @@ const columns = [
     line-height: 1.15;
     margin: 0 0 var(--space-sm, 12px);
   }
-
   .section-sub {
     font-size: 16px;
     color: var(--color-body);
     line-height: 1.5;
     margin: 0;
   }
-
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-base, 16px);
   }
-
   .col-card {
     background: var(--color-surface-card);
     border: 1px solid var(--color-hairline-strong);
     border-radius: var(--radius-lg, 12px);
     padding: 28px;
   }
-
   .col-card--featured {
     background: var(--color-surface-dark);
     border-color: rgba(255, 255, 255, 0.08);
   }
-
-  .col-header {
-    margin-bottom: var(--space-lg, 24px);
-  }
-
+  .col-header { margin-bottom: var(--space-lg, 24px); }
   .col-icon-plate {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     background: var(--color-surface-strong);
     border-radius: var(--radius-md, 8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     color: var(--color-ink);
   }
-  .col-card--featured .col-icon-plate {
-    background: rgba(255, 255, 255, 0.08);
-    color: #47c2ff;
-  }
-
+  .col-card--featured .col-icon-plate { background: rgba(255,255,255,0.08); color: #47c2ff; }
   .col-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--color-ink);
-    margin: var(--space-base, 16px) 0 0;
-    line-height: 1.4;
+    font-size: 18px; font-weight: 600; color: var(--color-ink);
+    margin: var(--space-base, 16px) 0 0; line-height: 1.4;
   }
   .col-card--featured .col-title { color: var(--color-on-dark); }
-
-  .col-desc {
-    font-size: 14px;
-    color: var(--color-body);
-    margin: var(--space-xs, 8px) 0 0;
-    line-height: 1.5;
-  }
+  .col-desc { font-size: 14px; color: var(--color-body); margin: var(--space-xs, 8px) 0 0; line-height: 1.5; }
   .col-card--featured .col-desc { color: var(--color-on-dark-soft); }
-
-  .divider {
-    height: 1px;
-    background: var(--color-hairline);
-  }
-  .col-card--featured .divider { background: rgba(255, 255, 255, 0.08); }
-
-  .sub-items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .sub-item {
-    display: flex;
-    gap: var(--space-sm, 12px);
-    padding-top: var(--space-base, 16px);
-  }
-
+  .divider { height: 1px; background: var(--color-hairline); }
+  .col-card--featured .divider { background: rgba(255,255,255,0.08); }
+  .sub-items { list-style: none; margin: 0; padding: 0; }
+  .sub-item { display: flex; gap: var(--space-sm, 12px); padding-top: var(--space-base, 16px); }
   .sub-icon {
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    color: var(--color-muted);
-    display: flex;
-    align-items: flex-start;
-    padding-top: 2px;
+    flex-shrink: 0; width: 18px; height: 18px; color: var(--color-muted);
+    display: flex; align-items: flex-start; padding-top: 2px;
   }
   .col-card--featured .sub-icon { color: #28c840; }
-
-  .sub-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .sub-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-ink);
-    line-height: 1.4;
-  }
+  .sub-text { display: flex; flex-direction: column; gap: 4px; }
+  .sub-title { font-size: 14px; font-weight: 600; color: var(--color-ink); line-height: 1.4; }
   .col-card--featured .sub-title { color: var(--color-on-dark); }
-
-  .sub-desc {
-    font-size: 13px;
-    color: var(--color-body);
-    line-height: 1.5;
-  }
+  .sub-desc { font-size: 13px; color: var(--color-body); line-height: 1.5; }
   .col-card--featured .sub-desc { color: var(--color-on-dark-soft); }
-
   @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: 1fr;
-      max-width: 480px;
-      margin: 0 auto;
-    }
+    .grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   }
-
-  @media (max-width: 600px) {
-    .section-heading {
-      font-size: 28px;
-    }
-  }
+  @media (max-width: 600px) { .section-heading { font-size: 28px; } }
 </style>

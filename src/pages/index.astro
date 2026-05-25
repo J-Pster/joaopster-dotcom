@@ -12,15 +12,73 @@ import ProjectsSection from '../components/sections/ProjectsSection.astro';
 import EcosystemSection from '../components/sections/EcosystemSection.astro';
 import StatsBandSection from '../components/sections/StatsBandSection.astro';
 import CTASection from '../components/sections/CTASection.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
+
+// --- Wakatime (build-time fetch, API key never sent to browser) ---
+interface WakatimeLanguage {
+  name: string;
+  percent: number;
+  text: string;
+}
+
+interface WakatimeData {
+  totalText: string;
+  dailyAvgText: string;
+  languages: WakatimeLanguage[];
+}
+
+function fmtSeconds(secs: number): string {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+const wakatimeApiKey = import.meta.env.WAKATIME_API_KEY as string | undefined;
+let wakatimeData: WakatimeData | undefined;
+
+if (wakatimeApiKey) {
+  try {
+    const auth = `Basic ${Buffer.from(wakatimeApiKey).toString('base64')}`;
+    const headers = { Authorization: auth };
+    const [allTimeRes, statsRes] = await Promise.all([
+      fetch('https://wakatime.com/api/v1/users/current/all_time_since_today', { headers }),
+      fetch('https://wakatime.com/api/v1/users/current/stats/last_30_days', { headers }),
+    ]);
+    if (allTimeRes.ok && statsRes.ok) {
+      const allTime = (await allTimeRes.json()) as { data: { text: string; daily_average: number } };
+      const statsJson = (await statsRes.json()) as { data: { languages: WakatimeLanguage[] } };
+      wakatimeData = {
+        totalText: allTime.data.text,
+        dailyAvgText: fmtSeconds(allTime.data.daily_average),
+        languages: (() => {
+          const excluded = ['JSON', 'Markdown'];
+          const allLangs = statsJson.data.languages;
+          const excludedPct = allLangs
+            .filter(l => excluded.includes(l.name))
+            .reduce((sum, l) => sum + l.percent, 0);
+          return allLangs
+            .filter(l => !excluded.includes(l.name))
+            .map(l => l.name === 'TypeScript' ? { ...l, percent: l.percent + excludedPct } : l)
+            .slice(0, 4);
+        })(),
+      };
+    }
+  } catch {
+    // build continues without data - card renders placeholders
+  }
+}
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={t('site.title')} description={t('site.description')} />
   </head>
   <body>
-    <Header />
+    <Header codingTime={wakatimeData?.totalText} />
     <div class="page-sections">
       <HeroSection />
       <DarkAboutSection />
@@ -28,25 +86,27 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
       <FeaturesGridSection />
       <WorkflowSection
         variant="build"
-        label="How I ship"
-        heading="Ship products that work,\nand keep working."
-        body="Good software isn't about clever abstractions. It's about the boring discipline of clear boundaries, typed contracts, and tests that actually run. Every system I ship is meant to last longer than the enthusiasm that built it."
-        cta={{ text: "See what I've built", href: '#projects' }}
+        label={t('workflow.build.label')}
+        heading={t('workflow.build.heading')}
+        body={t('workflow.build.body')}
+        cta={{ text: t('workflow.build.cta'), href: '#projects' }}
       />
       <WorkflowSection
         variant="write"
-        label="The writing"
-        heading="Write to think.\nPublish to share."
-        body="Writing is how I understand what I actually know. I publish deep-dives on tooling, architecture decisions, and the kind of tradeoffs that don't fit in a tweet. If one post saves you an afternoon of debugging, that's enough."
-        cta={{ text: 'Read the blog', href: '/blog' }}
+        label={t('workflow.write.label')}
+        heading={t('workflow.write.heading')}
+        body={t('workflow.write.body')}
+        cta={{ text: t('workflow.write.cta'), href: `${prefix}/blog` }}
         flip={true}
       />
       <WorkflowSection
         variant="opensource"
-        label="Open source"
-        heading="Build in the open.\nShare what works."
-        body="The tools I reach for most started as personal scripts. When something solves a real problem cleanly, it goes on GitHub. Not for the stars, but because the next person hitting the same wall deserves a head start."
-        cta={{ text: 'View GitHub', href: 'https://github.com/J-Pster' }}
+        label={t('workflow.opensource.label')}
+        heading={t('workflow.opensource.heading')}
+        body={t('workflow.opensource.body')}
+        addendum={t('workflow.opensource.addendum')}
+        cta={{ text: t('workflow.opensource.cta'), href: 'https://wakatime.com/@JoaoPster' }}
+        wakatimeData={wakatimeData}
       />
       <StackSection />
       <ProjectsSection />
@@ -59,7 +119,5 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 </html>
 
 <style>
-  .page-sections {
-    width: 100%;
-  }
+  .page-sections { width: 100%; }
 </style>

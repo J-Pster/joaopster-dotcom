@@ -1,18 +1,20 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
 const projects = [
-  { title: 'Dynadok API', desc: 'A NestJS REST API using MongoDB, Redis and Kafka, fully Dockerized. A deep-dive on clean, event-driven service design.', dark: true, icon: 'M2 5h14v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zM5 5V4a2 2 0 014 0v1M6 10h6', url: 'https://github.com/J-Pster/Dynadok-Test' },
-  { title: 'arenabreakout-br', desc: 'Community platform for the Brazilian and Portuguese Arena Breakout Infinite scene, with ammo charts, a forum and Discord connections.', dark: true, url: 'https://github.com/J-Pster/arenabreakoutbr-site', icon: 'M3 4h12v10a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 4l2-2h8l2 2M7 8h4M7 11h2' },
-  { title: 'Pterodactyl-uMod-Valheim', desc: 'One-command Valheim dedicated server with uMod, packaged for Pterodactyl. Game-server tooling for the long tail.', dark: false, icon: 'M8 1L1 6v8h4V9h6v5h4V6L8 1z', url: 'https://github.com/J-Pster/Pterodactyl-Umod-Valheim' },
-  { title: 'react-crop-uploader', desc: 'A drop-in upload button with built-in image cropping, rotate and zoom. Small, focused, reusable.', dark: false, icon: 'M2 13l4-4 3 3 4-5 3 4M2 3h14v12H2z', url: 'https://github.com/J-Pster/react-crop-uploader' },
-  { title: 'Psters AI Workflow', desc: 'An anti-vibe-coding, agentic AI workflow that brings engineering rigor to any project, language or framework. Model-agnostic, with a native Cursor plugin.', dark: true, icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
-  { title: 'InventoryCleaner', desc: 'A C# Oxide plugin that lets players clear items from specific inventory sections. Small utility, real users.', dark: false, icon: 'M4 5h10l-1 9a1 1 0 01-1 1H6a1 1 0 01-1-1L4 5zM3 5h12M7 3h4', url: 'https://github.com/J-Pster/InventoryCleaner' },
+  { title: 'Psters AI Workflow', desc: t('projects.p5.desc'), dark: true, icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
+  { title: 'oh-my-claudecode', desc: t('projects.p7.desc'), dark: true, icon: 'M9 2a2 2 0 100 4 2 2 0 000-4zM3 13a2 2 0 100 4 2 2 0 000-4zM15 13a2 2 0 100 4 2 2 0 000-4zM9 6v4.5M9 10.5L4.5 13M9 10.5l4.5 2.5', url: 'https://github.com/Yeachan-Heo/oh-my-claudecode' },
+  { title: 'rtk', desc: t('projects.p8.desc'), dark: true, icon: 'M2 3h14v12H2V3zM2 7.5h14M5 11l2 2-2 2M10 15h3', url: 'https://github.com/rtk-ai/rtk' },
 ];
 ---
 <section class="projects-section" id="projects">
   <div class="projects-inner">
-    <p class="proj-label">Open source</p>
-    <h2 class="proj-heading">Things I've built.</h2>
-    <p class="proj-sub">Side projects, technical deep-dives, and tools that scratch a real itch. Each one shipped in the open.</p>
+    <p class="proj-label">{t('projects.label')}</p>
+    <h2 class="proj-heading">{t('projects.heading')}</h2>
+    <p class="proj-sub">{t('projects.sub')}</p>
     <div class="proj-grid">
       {projects.map(p => (
         <a href={p.url} target="_blank" rel="noopener noreferrer" class={`proj-card ${p.dark ? 'proj-card--dark' : 'proj-card--light'}`}>
@@ -23,12 +25,9 @@ const projects = [
           </div>
           <h3>{p.title}</h3>
           <p>{p.desc}</p>
-          <span class={p.dark ? 'proj-link' : 'proj-link-light'}>GitHub →</span>
+          <span class={p.dark ? 'proj-link' : 'proj-link-light'}>{t('projects.github')}</span>
         </a>
       ))}
-    </div>
-    <div class="proj-footer">
-      <a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="proj-all-btn">View all on GitHub →</a>
     </div>
   </div>
 </section>
@@ -39,8 +38,8 @@ const projects = [
   .proj-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
   .proj-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
   .proj-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
-  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
-  .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 320px; gap: var(--space-base); }
+  .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
   .proj-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-decoration: none; }
   .proj-card--dark { background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06); }
   .proj-card--dark h3 { color: var(--color-on-dark); font-size: 18px; font-weight: 600; margin: var(--space-md) 0 var(--space-sm); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.3px; }
@@ -52,7 +51,7 @@ const projects = [
   .proj-icon--light { background: var(--color-surface-strong); color: var(--color-ink); }
   .proj-link { font-size: 13px; font-weight: 500; color: #47c2ff; }
   .proj-link-light { font-size: 13px; font-weight: 500; color: var(--color-text-link); }
-  .proj-footer { margin-top: var(--space-xxl); text-align: center; }
+.proj-footer { margin-top: var(--space-xxl); text-align: center; }
   .proj-all-btn { display: inline-flex; align-items: center; border: 1px solid var(--color-hairline-strong); background: var(--color-canvas); color: var(--color-ink); font-size: 14px; font-weight: 500; padding: 10px 20px; height: 40px; border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s; }
   .proj-all-btn:hover { border-color: var(--color-muted); text-decoration: none; }
   @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr 1fr; } }

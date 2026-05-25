@@ -4,55 +4,109 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
+const blogBase = `${prefix}/blog`;
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter(p => p.id.startsWith(`${lang}/`))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const getSlug = (id: string) => id.slice(lang.length + 1);
 
 const readTime = (body: string | undefined) =>
   Math.max(1, Math.round((body?.trim().split(/\s+/).length ?? 0) / 200));
 
 const [featured, ...rest] = posts;
+
+type RedditPost = {
+  title: string;
+  url: string;
+  subreddit: string;
+  score: number;
+  numComments: number;
+  created: Date;
+};
+
+type RedditApiPost = {
+  title: string;
+  permalink: string;
+  subreddit: string;
+  score: number;
+  num_comments: number;
+  created_utc: number;
+};
+
+let redditPosts: RedditPost[] = [];
+try {
+  const res = await fetch(
+    'https://www.reddit.com/user/Joao-Pster/submitted.json?limit=8&raw_json=1',
+    { headers: { 'User-Agent': 'joaopster.com/1.0' } }
+  );
+  if (res.ok) {
+    const data = await res.json() as { data: { children: Array<{ data: RedditApiPost }> } };
+    redditPosts = data.data.children.map(c => ({
+      title: c.data.title,
+      url: `https://www.reddit.com${c.data.permalink}`,
+      subreddit: c.data.subreddit,
+      score: c.data.score,
+      numComments: c.data.num_comments,
+      created: new Date(c.data.created_utc * 1000),
+    }));
+  }
+} catch {
+  // Reddit API unavailable at build time
+}
+
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
+const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort((a, b) => b - a);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
-    <BaseHead
-      title="Blog · joaopster"
-      description="Technical deep-dives, tooling opinions, and the occasional thought worth writing down."
-    />
+    <BaseHead title={t('blog.title')} description={t('blog.description')} />
   </head>
   <body>
     <Header />
 
-    <section class="blog-hero">
-      <div class="blog-hero-inner">
-        <span class="badge">Writing</span>
-        <h1>Words on the web.</h1>
-        <p class="blog-hero-sub">Technical deep-dives, tooling opinions, and the occasional thought that survived scrutiny. No filler, no padding.</p>
-      </div>
-    </section>
-
     <section class="posts-section">
       <div class="posts-inner">
+
+        <!-- Latest post (always visible, above tabs) -->
         {featured && (
-          <article class="featured">
+          <article
+            class="featured"
+            data-tags={featured.data.tags.map(tag => tag.toLowerCase()).join(',')}
+            data-year={String(featured.data.pubDate.getFullYear())}
+            data-title={featured.data.title.toLowerCase()}
+          >
             <div class="featured-text">
-              <span class="pill">Latest post</span>
-              <h2 class="featured-title"><a href={`/blog/${featured.id}/`}>{featured.data.title}</a></h2>
+              <span class="pill">{t('blog.latestPost')}</span>
+              <h2 class="featured-title">
+                <a href={`${blogBase}/${getSlug(featured.id)}/`}>{featured.data.title}</a>
+              </h2>
               <p class="featured-desc">{featured.data.description}</p>
               <div class="featured-meta">
                 <FormattedDate date={featured.data.pubDate} />
                 <span class="dot-sep">·</span>
-                <span class="read-time">{readTime(featured.body)} min read</span>
+                <span class="read-time">{readTime(featured.body)} {t('blog.minRead')}</span>
               </div>
-              <a class="featured-read" href={`/blog/${featured.id}/`}>Read post →</a>
+              {featured.data.tags.length > 0 && (
+                <div class="tag-list">
+                  {featured.data.tags.map(tag => <span class="tag-chip">{tag}</span>)}
+                </div>
+              )}
+              <a class="featured-read" href={`${blogBase}/${getSlug(featured.id)}/`}>{t('blog.readPost')}</a>
             </div>
-            <a class="featured-panel" href={`/blog/${featured.id}/`} aria-hidden="true" tabindex="-1">
+            <a class="featured-panel" href={`${blogBase}/${getSlug(featured.id)}/`} aria-hidden="true" tabindex="-1">
               <div class="panel-bar">
                 <span class="panel-dot"></span>
-                <span class="panel-file">~/blog/{featured.id}.md</span>
+                <span class="panel-file">~/blog/{getSlug(featured.id)}.md</span>
               </div>
               <div class="panel-body">
                 <span class="panel-pill">Markdown</span>
@@ -63,31 +117,130 @@ const [featured, ...rest] = posts;
           </article>
         )}
 
-        {rest.length > 0 && (
-          <div class="more-head">
-            <span class="section-label">The archive</span>
-            <h2 class="more-heading">More writing.</h2>
-          </div>
-        )}
-
-        <div class="post-grid">
-          {rest.map((post) => (
-            <a href={`/blog/${post.id}/`} class="post-card">
-              <div class="post-card-body">
-                <h3 class="post-title">{post.data.title}</h3>
-                {post.data.description && <p class="post-desc">{post.data.description}</p>}
-              </div>
-              <div class="post-card-footer">
-                <div class="post-meta">
-                  <FormattedDate date={post.data.pubDate} />
-                  <span class="dot-sep">·</span>
-                  <span class="read-time">{readTime(post.body)} min</span>
-                </div>
-                <span class="post-arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
-          ))}
+        <!-- Tab switcher -->
+        <div class="tab-switcher">
+          <button class="tab-btn active" data-tab="blog">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+            Blog
+          </button>
+          <button class="tab-btn" data-tab="reddit">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="10" fill="#ff4500"/>
+              <path fill="white" d="M16.67 10a1.46 1.46 0 0 0-2.47-1 7.12 7.12 0 0 0-3.85-1.23l.65-3.08 2.13.45a1 1 0 1 0 .1-.61l-2.38-.5a.26.26 0 0 0-.31.2l-.73 3.44a7.14 7.14 0 0 0-3.89 1.23 1.46 1.46 0 1 0-1.61 2.39 2.87 2.87 0 0 0 0 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.82 5.83-4.06a2.87 2.87 0 0 0 0-.44 1.46 1.46 0 0 0 .61-1.29zM7.27 11a1 1 0 1 1 1 1 1 1 0 0 1-1-1zm5.58 2.65a3.56 3.56 0 0 1-2.85.86 3.56 3.56 0 0 1-2.85-.86.26.26 0 0 1 .37-.37 3.07 3.07 0 0 0 2.48.72 3.07 3.07 0 0 0 2.48-.72.26.26 0 0 1 .37.37zm-.17-1.65a1 1 0 1 1 1-1 1 1 0 0 1-1 1z"/>
+            </svg>
+            Reddit
+          </button>
         </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder={t('blog.searchPlaceholder')}
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="filter-row" id="blog-filters">
+            <div class="chip-group">
+              <button class="chip active" data-tag="all">{t('blog.all')}</button>
+              {allTags.map(tag => (
+                <button class="chip" data-tag={tag.toLowerCase()}>{tag}</button>
+              ))}
+            </div>
+            {allYears.length > 1 && (
+              <div class="chip-group chip-group--years">
+                {allYears.map(year => (
+                  <button class="chip year-chip" data-year={String(year)}>{year}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Blog tab -->
+        <div id="tab-blog">
+          <div id="no-results" class="no-results" style="display:none">
+            <p>{t('blog.noResults')}</p>
+            <button class="clear-btn" id="clear-filters">{t('blog.clearFilters')}</button>
+          </div>
+
+          <div class="post-grid">
+            {posts.map((post) => (
+              <a
+                href={`${blogBase}/${getSlug(post.id)}/`}
+                class="post-card"
+                data-tags={post.data.tags.map(tag => tag.toLowerCase()).join(',')}
+                data-year={String(post.data.pubDate.getFullYear())}
+                data-title={post.data.title.toLowerCase()}
+              >
+                <div class="post-card-body">
+                  <h3 class="post-title">{post.data.title}</h3>
+                  {post.data.description && <p class="post-desc">{post.data.description}</p>}
+                  {post.data.tags.length > 0 && (
+                    <div class="tag-list">
+                      {post.data.tags.map(tag => <span class="tag-chip">{tag}</span>)}
+                    </div>
+                  )}
+                </div>
+                <div class="post-card-footer">
+                  <div class="post-meta">
+                    <FormattedDate date={post.data.pubDate} />
+                    <span class="dot-sep">·</span>
+                    <span class="read-time">{readTime(post.body)} {t('blog.minRead')}</span>
+                  </div>
+                  <span class="post-arrow" aria-hidden="true">→</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Reddit tab -->
+        <div id="tab-reddit" style="display:none">
+          <div class="reddit-tab-header">
+            <span class="reddit-tab-count">{redditPosts.length} posts</span>
+            <a
+              class="reddit-profile-link"
+              href="https://www.reddit.com/user/Joao-Pster/submitted/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('reddit.viewProfile')}
+            </a>
+          </div>
+          <div id="no-results-reddit" class="no-results" style={redditPosts.length === 0 ? '' : 'display:none'}>
+            <p>{t('reddit.noResults')}</p>
+          </div>
+          <div class="reddit-list">
+            {redditPosts.map(post => (
+              <a href={post.url} class="reddit-item" target="_blank" rel="noopener noreferrer">
+                <div class="reddit-item-top">
+                  <div class="reddit-item-meta">
+                    <span class="reddit-sub">r/{post.subreddit}</span>
+                    <span class="reddit-sep">·</span>
+                    <FormattedDate date={post.created} />
+                  </div>
+                  <span class="reddit-arrow" aria-hidden="true">↗</span>
+                </div>
+                <p class="reddit-title">{post.title}</p>
+                <div class="reddit-stats">
+                  <span class="reddit-score">▲ {post.score}</span>
+                  <span class="reddit-sep">·</span>
+                  <span class="reddit-comments">{post.numComments} {t('reddit.comments')}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -95,37 +248,171 @@ const [featured, ...rest] = posts;
   </body>
 </html>
 
+<script>
+  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+  const tagChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-tag]');
+  const yearChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-year]');
+  const postCards = document.querySelectorAll<HTMLElement>('.post-card');
+  const noResultsEl = document.getElementById('no-results');
+  const clearFiltersBtn = document.getElementById('clear-filters');
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+  const tabBlogEl = document.getElementById('tab-blog');
+  const tabRedditEl = document.getElementById('tab-reddit');
+  const blogFiltersEl = document.getElementById('blog-filters');
+  const redditItemEls = document.querySelectorAll<HTMLElement>('.reddit-item');
+  const noResultsRedditEl = document.getElementById('no-results-reddit');
+
+  let activeTab = 'blog';
+  let activeTag = 'all';
+  let activeYear = 'all';
+  let searchQuery = '';
+
+  function matchesPost(el: HTMLElement): boolean {
+    const tagsRaw = el.dataset.tags ?? '';
+    const tags = tagsRaw ? tagsRaw.split(',') : [];
+    const year = el.dataset.year ?? '';
+    const title = el.dataset.title ?? '';
+    if (activeTag !== 'all' && !tags.includes(activeTag)) return false;
+    if (activeYear !== 'all' && year !== activeYear) return false;
+    if (searchQuery && !title.includes(searchQuery)) return false;
+    return true;
+  }
+
+  function applyBlogFilters(): void {
+    let gridVisible = 0;
+    postCards.forEach(card => {
+      const show = matchesPost(card);
+      card.style.display = show ? '' : 'none';
+      if (show) gridVisible++;
+    });
+    if (noResultsEl) noResultsEl.style.display = gridVisible === 0 ? '' : 'none';
+  }
+
+  function applyRedditSearch(): void {
+    let visible = 0;
+    redditItemEls.forEach(item => {
+      const title = item.querySelector('.reddit-title')?.textContent?.toLowerCase() ?? '';
+      const show = !searchQuery || title.includes(searchQuery);
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (noResultsRedditEl) noResultsRedditEl.style.display = visible === 0 ? '' : 'none';
+  }
+
+  function switchTab(tab: string): void {
+    activeTab = tab;
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    const onBlog = tab === 'blog';
+    if (tabBlogEl) tabBlogEl.style.display = onBlog ? '' : 'none';
+    if (tabRedditEl) tabRedditEl.style.display = onBlog ? 'none' : '';
+    if (blogFiltersEl) blogFiltersEl.style.display = onBlog ? '' : 'none';
+    if (searchInput) searchInput.value = '';
+    searchQuery = '';
+    if (onBlog) {
+      applyBlogFilters();
+    } else {
+      applyRedditSearch();
+    }
+  }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab ?? 'blog'));
+  });
+
+  tagChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      tagChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeTag = chip.dataset.tag ?? 'all';
+      applyBlogFilters();
+    });
+  });
+
+  yearChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (chip.classList.contains('active')) {
+        chip.classList.remove('active');
+        activeYear = 'all';
+      } else {
+        yearChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeYear = chip.dataset.year ?? 'all';
+      }
+      applyBlogFilters();
+    });
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchQuery = (searchInput.value ?? '').trim().toLowerCase();
+    if (activeTab === 'blog') applyBlogFilters();
+    else applyRedditSearch();
+  });
+
+  clearFiltersBtn?.addEventListener('click', () => {
+    activeTag = 'all';
+    activeYear = 'all';
+    searchQuery = '';
+    if (searchInput) searchInput.value = '';
+    tagChips.forEach(c => c.classList.remove('active'));
+    document.querySelector<HTMLButtonElement>('.chip[data-tag="all"]')?.classList.add('active');
+    yearChips.forEach(c => c.classList.remove('active'));
+    applyBlogFilters();
+  });
+</script>
+
 <style>
-  /* Hero */
-  .blog-hero {
-    background:
-      radial-gradient(ellipse 100% 70% at 50% -10%, #cfe7ff 0%, #e6f3ff 25%, transparent 60%),
-      var(--color-canvas);
-    padding: 80px var(--space-xl) 64px;
-    text-align: center;
-    border-bottom: 1px solid var(--color-hairline);
+  .posts-section {
+    padding: var(--space-xxl) var(--space-xl) var(--space-section);
   }
-  .blog-hero-inner { max-width: 600px; margin: 0 auto; }
-  .badge {
-    display: inline-block;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
-    color: var(--color-muted); background: var(--color-surface-strong);
-    padding: 4px 12px; border-radius: var(--radius-pill); margin-bottom: var(--space-lg);
+  .posts-inner {
+    max-width: 980px;
+    margin: 0 auto;
   }
-  .blog-hero h1 {
-    font-size: 48px; font-weight: 600; color: var(--color-ink);
-    letter-spacing: -1.44px; line-height: 1.1; margin-bottom: var(--space-md);
+
+  .tab-switcher {
+    display: flex;
+    width: 100%;
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-xl);
+    padding: 6px;
+    gap: 6px;
+    margin-bottom: var(--space-xxl);
+    box-sizing: border-box;
   }
-  .blog-hero-sub { font-size: 16px; color: var(--color-body); line-height: 1.65; margin: 0; }
+  .tab-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--color-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .tab-btn:hover { color: var(--color-ink); background: var(--color-surface-card); }
+  .tab-btn[data-tab="blog"].active {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+  .tab-btn[data-tab="reddit"].active {
+    background: #ff4500;
+    color: #ffffff;
+    box-shadow: 0 2px 12px rgba(255, 69, 0, 0.28);
+  }
 
-  /* Posts wrapper */
-  .posts-section { padding: var(--space-xxl) var(--space-xl) var(--space-section); }
-  .posts-inner { max-width: 980px; margin: 0 auto; }
-
-  .dot-sep { color: var(--color-muted-soft); }
-  .read-time { font-size: 13px; color: var(--color-muted); font-weight: 500; }
-
-  /* Featured */
   .featured {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -135,29 +422,61 @@ const [featured, ...rest] = posts;
     border: 1px solid var(--color-hairline-strong);
     border-radius: var(--radius-xl);
     padding: var(--space-xxl);
-    margin-bottom: var(--space-section);
+    margin-bottom: var(--space-xxl);
   }
   .pill {
     display: inline-block;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
-    color: var(--color-muted); background: var(--color-surface-strong);
-    padding: 4px 12px; border-radius: var(--radius-pill); margin-bottom: var(--space-base);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-base);
   }
   .featured-title {
-    font-size: 28px; font-weight: 600; color: var(--color-ink);
-    letter-spacing: -0.84px; line-height: 1.2; margin: 0 0 var(--space-sm);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.84px;
+    line-height: 1.2;
+    margin: 0 0 var(--space-sm);
   }
-  .featured-title a { color: inherit; text-decoration: none; transition: color 0.15s ease; }
+  .featured-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
   .featured-title a:hover { color: var(--color-text-link); }
-  .featured-desc { font-size: 16px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-base); }
-  .featured-meta { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); }
-  .featured-read { font-size: 14px; font-weight: 500; color: var(--color-text-link); text-decoration: none; }
+  .featured-desc {
+    font-size: 16px;
+    color: var(--color-body);
+    line-height: 1.65;
+    margin: 0 0 var(--space-base);
+  }
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xs);
+  }
+  .dot-sep { color: var(--color-muted-soft); }
+  .read-time { font-size: 13px; color: var(--color-muted); font-weight: 500; }
+  .featured-read {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-link);
+    text-decoration: none;
+    margin-top: var(--space-md);
+  }
   .featured-read:hover { text-decoration: underline; }
 
-  /* Featured editor-style panel */
   .featured-panel {
     background: var(--color-surface-dark);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--radius-lg);
     overflow: hidden;
     text-decoration: none;
@@ -169,43 +488,193 @@ const [featured, ...rest] = posts;
   .panel-bar {
     background: var(--color-surface-dark-elevated);
     padding: 10px 16px;
-    display: flex; align-items: center; gap: var(--space-xs);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
-  .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: #28c840; flex-shrink: 0; }
-  .panel-file { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #777; }
+  .panel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #28c840;
+    flex-shrink: 0;
+  }
+  .panel-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #777;
+  }
   .panel-body { position: relative; padding: var(--space-lg); flex: 1; }
   .panel-pill {
     display: inline-block;
-    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.88px;
-    color: var(--color-on-dark-soft); background: rgba(255,255,255,0.08);
-    border-radius: var(--radius-pill); padding: 3px 10px; margin-bottom: var(--space-md);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.88px;
+    color: var(--color-on-dark-soft);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    margin-bottom: var(--space-md);
   }
-  .panel-excerpt { font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.7; margin: 0; }
+  .panel-excerpt {
+    font-size: 14px;
+    color: var(--color-on-dark-soft);
+    line-height: 1.7;
+    margin: 0;
+  }
   .panel-fade {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
     background: linear-gradient(to bottom, transparent, var(--color-surface-dark));
     pointer-events: none;
   }
 
-  /* More head */
-  .more-head { margin-bottom: var(--space-xl); }
-  .section-label {
-    display: block;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
-    color: var(--color-muted); margin-bottom: var(--space-sm);
+  .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg) var(--space-lg);
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-xxl);
   }
-  .more-heading { font-size: 28px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.84px; line-height: 1.2; margin: 0; }
+  .search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .search-input::placeholder { color: var(--color-muted); }
+  .search-input:focus {
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  }
+  .search-input::-webkit-search-cancel-button { display: none; }
 
-  /* Grid */
-  .post-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-base); }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    flex-wrap: wrap;
+  }
+  .chip-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+  .chip-group--years {
+    margin-left: auto;
+    padding-left: var(--space-base);
+    border-left: 1px solid var(--color-hairline-strong);
+  }
+
+  .chip {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--space-sm);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    color: var(--color-body);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  }
+  .chip:hover {
+    background: var(--color-surface-strong);
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+  }
+  .chip.active {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border-color: var(--color-primary);
+  }
+
+  .tag-list {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    margin-top: var(--space-sm);
+  }
+  .tag-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: var(--space-section) 0;
+  }
+  .no-results p {
+    font-size: 16px;
+    color: var(--color-body);
+    margin-bottom: var(--space-lg);
+  }
+  .clear-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .clear-btn:hover { background: var(--color-primary-active); }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-base);
+  }
   .post-card {
-    display: flex; flex-direction: column; gap: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
     padding: var(--space-lg);
     background: var(--color-surface-card);
     border: 1px solid var(--color-hairline);
     border-radius: var(--radius-lg);
-    text-decoration: none; color: inherit;
+    text-decoration: none;
+    color: inherit;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
   }
   .post-card:hover {
@@ -216,29 +685,147 @@ const [featured, ...rest] = posts;
   }
   .post-card-body { flex: 1; }
   .post-title {
-    font-size: 18px; font-weight: 600; color: var(--color-ink);
-    letter-spacing: -0.3px; line-height: 1.3; margin: 0 0 var(--space-xs);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    margin: 0 0 var(--space-xs);
     transition: color 0.15s ease;
   }
   .post-card:hover .post-title { color: var(--color-text-link); }
   .post-desc {
-    font-size: 14px; color: var(--color-body); line-height: 1.6; margin: 0;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    font-size: 14px;
+    color: var(--color-body);
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .post-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-xs); }
+  .post-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-xs);
+  }
   .post-meta { display: flex; align-items: center; gap: var(--space-xs); }
-  .post-arrow { font-size: 14px; color: var(--color-muted); transition: transform 0.15s ease, color 0.15s ease; }
-  .post-card:hover .post-arrow { transform: translateX(3px); color: var(--color-text-link); }
+  .post-arrow {
+    font-size: 14px;
+    color: var(--color-muted);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .post-card:hover .post-arrow {
+    transform: translateX(3px);
+    color: var(--color-text-link);
+  }
+
+  .reddit-tab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-base);
+  }
+  .reddit-tab-count {
+    font-size: 13px;
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+  .reddit-profile-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-link);
+    text-decoration: none;
+  }
+  .reddit-profile-link:hover { text-decoration: underline; }
+  .reddit-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .reddit-item {
+    display: block;
+    padding: var(--space-base) var(--space-lg);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .reddit-item:hover {
+    border-color: var(--color-hairline-strong);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .reddit-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-xs);
+  }
+  .reddit-item-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  .reddit-sub {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ff4500;
+  }
+  .reddit-sep { color: var(--color-muted-soft); font-size: 12px; }
+  .reddit-arrow {
+    font-size: 14px;
+    color: var(--color-muted);
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+  .reddit-item:hover .reddit-arrow {
+    color: var(--color-text-link);
+    transform: translate(2px, -2px);
+  }
+  .reddit-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-ink);
+    line-height: 1.45;
+    margin: 0 0 var(--space-xs);
+    transition: color 0.15s ease;
+  }
+  .reddit-item:hover .reddit-title { color: var(--color-text-link); }
+  .reddit-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  .reddit-score {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+  .reddit-comments {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
 
   @media (max-width: 768px) {
-    .featured { grid-template-columns: 1fr; gap: var(--space-xl); padding: var(--space-xl); }
+    .featured {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+      padding: var(--space-xl);
+    }
     .featured-panel { min-height: 180px; }
     .post-grid { grid-template-columns: 1fr; }
+    .chip-group--years {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: none;
+    }
+    .filter-row { flex-direction: column; align-items: flex-start; }
   }
   @media (max-width: 640px) {
-    .blog-hero { padding: 56px var(--space-base) 48px; }
-    .blog-hero h1 { font-size: 32px; letter-spacing: -0.96px; }
     .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
     .featured-title { font-size: 22px; }
+    .filter-bar { padding: var(--space-sm) var(--space-sm); }
   }
 </style>

@@ -1,0 +1,219 @@
+---
+import { languages, defaultLang, type Lang } from '../i18n/ui';
+
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
+
+const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
+---
+
+<div class="lang-selector" id="lang-selector">
+  <button
+    class="lang-trigger"
+    id="lang-trigger"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={`Language: ${languages[currentLang]}`}
+  >
+    <span class="lang-flag" aria-hidden="true">
+      {currentLang === 'pt' && (
+        <svg viewBox="0 0 24 16" width="22" height="15">
+          <rect width="24" height="16" fill="#009c3b"/>
+          <polygon points="12,1.5 21.5,8 12,14.5 2.5,8" fill="#ffdf00"/>
+          <circle cx="12" cy="8" r="4.2" fill="#002776"/>
+          <path d="M8.2 6.8 Q12 5.5 15.8 6.8" stroke="white" stroke-width="0.8" fill="none"/>
+        </svg>
+      )}
+      {currentLang === 'en' && (
+        <svg viewBox="0 0 24 16" width="22" height="15">
+          <rect width="24" height="16" fill="#bf0a30"/>
+          <rect y="1.23" width="24" height="1.23" fill="white"/>
+          <rect y="3.69" width="24" height="1.23" fill="white"/>
+          <rect y="6.15" width="24" height="1.23" fill="white"/>
+          <rect y="8.62" width="24" height="1.23" fill="white"/>
+          <rect y="11.08" width="24" height="1.23" fill="white"/>
+          <rect y="13.54" width="24" height="1.23" fill="white"/>
+          <rect width="10" height="8.62" fill="#002868"/>
+        </svg>
+      )}
+      {currentLang === 'es' && (
+        <svg viewBox="0 0 24 16" width="22" height="15">
+          <rect width="24" height="16" fill="#c60b1e"/>
+          <rect y="4" width="24" height="8" fill="#ffc400"/>
+        </svg>
+      )}
+    </span>
+    <span class="lang-code">{codes[currentLang]}</span>
+    <svg class="lang-chevron" viewBox="0 0 10 6" width="10" height="6" fill="none" aria-hidden="true">
+      <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="lang-dropdown" id="lang-dropdown" role="listbox" aria-label="Select language">
+    {(Object.entries(languages) as [Lang, string][]).map(([lang, label]) => (
+      <button
+        class:list={['lang-option', lang === currentLang && 'lang-option--active']}
+        data-lang={lang}
+        role="option"
+        aria-selected={lang === currentLang}
+      >
+        <span class="lang-flag" aria-hidden="true">
+          {lang === 'pt' && (
+            <svg viewBox="0 0 24 16" width="20" height="13">
+              <rect width="24" height="16" fill="#009c3b"/>
+              <polygon points="12,1.5 21.5,8 12,14.5 2.5,8" fill="#ffdf00"/>
+              <circle cx="12" cy="8" r="4.2" fill="#002776"/>
+              <path d="M8.2 6.8 Q12 5.5 15.8 6.8" stroke="white" stroke-width="0.8" fill="none"/>
+            </svg>
+          )}
+          {lang === 'en' && (
+            <svg viewBox="0 0 24 16" width="20" height="13">
+              <rect width="24" height="16" fill="#bf0a30"/>
+              <rect y="1.23" width="24" height="1.23" fill="white"/>
+              <rect y="3.69" width="24" height="1.23" fill="white"/>
+              <rect y="6.15" width="24" height="1.23" fill="white"/>
+              <rect y="8.62" width="24" height="1.23" fill="white"/>
+              <rect y="11.08" width="24" height="1.23" fill="white"/>
+              <rect y="13.54" width="24" height="1.23" fill="white"/>
+              <rect width="10" height="8.62" fill="#002868"/>
+            </svg>
+          )}
+          {lang === 'es' && (
+            <svg viewBox="0 0 24 16" width="20" height="13">
+              <rect width="24" height="16" fill="#c60b1e"/>
+              <rect y="4" width="24" height="8" fill="#ffc400"/>
+            </svg>
+          )}
+        </span>
+        <span class="lang-label">{label}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .lang-selector { position: relative; }
+
+  .lang-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 8px;
+    background: transparent;
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .lang-trigger:hover {
+    background: var(--color-surface-strong);
+    border-color: var(--color-muted-soft);
+  }
+
+  .lang-flag {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+  }
+
+  .lang-code {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .lang-chevron {
+    color: var(--color-muted);
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .lang-selector.open .lang-chevron { transform: rotate(180deg); }
+
+  .lang-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 4px;
+    min-width: 140px;
+    z-index: 200;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .lang-selector.open .lang-dropdown { display: flex; }
+
+  .lang-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    text-align: left;
+    transition: background 0.12s;
+  }
+  .lang-option:hover { background: var(--color-surface-strong); }
+  .lang-option--active { background: var(--color-surface-strong); font-weight: 600; }
+  .lang-label { flex: 1; }
+
+  @media (max-width: 768px) {
+    .lang-selector { display: none; }
+  }
+</style>
+
+<script>
+  const selector = document.getElementById('lang-selector');
+  const trigger = document.getElementById('lang-trigger');
+  const dropdown = document.getElementById('lang-dropdown');
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = selector?.classList.contains('open');
+    selector?.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  document.addEventListener('click', () => {
+    selector?.classList.remove('open');
+    trigger?.setAttribute('aria-expanded', 'false');
+  });
+
+  dropdown?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-lang]');
+    if (!btn) return;
+    const newLang = btn.dataset.lang ?? 'pt';
+    const path = window.location.pathname;
+    const nonDefault = ['en', 'es'];
+    let stripped = path;
+    for (const locale of nonDefault) {
+      if (path.startsWith(`/${locale}/`)) {
+        stripped = path.slice(locale.length + 1);
+        break;
+      } else if (path === `/${locale}`) {
+        stripped = '/';
+        break;
+      }
+    }
+    const target = newLang === 'pt' ? stripped : `/${newLang}${stripped}`;
+    window.location.href = target;
+  });
+</script>

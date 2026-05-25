@@ -1,17 +1,22 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
+const homePath = lang === 'pt' ? '/' : `/${lang}`;
 const today = new Date();
 ---
 
 <footer>
   <div class="footer-inner">
     <div class="footer-grid">
-      <!-- Brand -->
       <div class="footer-brand">
-        <a href="/" class="footer-logo" aria-label="joaopster home">
+        <a href={homePath} class="footer-logo" aria-label="joaopster home">
           <span class="footer-mark" aria-hidden="true">›</span>
           <span class="footer-word">joaopster</span>
         </a>
-        <p class="footer-tagline">Senior software engineer and AI engineer. I build things that last, and write about how.</p>
+        <p class="footer-tagline">{t('footer.tagline')}</p>
         <a
           href="https://github.com/J-Pster"
           target="_blank"
@@ -25,29 +30,26 @@ const today = new Date();
         </a>
       </div>
 
-      <!-- Explore -->
       <div class="footer-col">
-        <h3 class="footer-col-heading">Explore</h3>
+        <h3 class="footer-col-heading">{t('footer.explore')}</h3>
         <ul class="footer-links">
-          <li><a href="/blog" class="footer-link">Blog</a></li>
-          <li><a href="/rss.xml" class="footer-link">RSS feed</a></li>
+          <li><a href={`${prefix}/blog`} class="footer-link">{t('nav.blog')}</a></li>
+          <li><a href="/rss.xml" class="footer-link">{t('footer.rss')}</a></li>
         </ul>
       </div>
 
-      <!-- Work -->
       <div class="footer-col">
-        <h3 class="footer-col-heading">Work</h3>
+        <h3 class="footer-col-heading">{t('footer.work')}</h3>
         <ul class="footer-links">
-          <li><a href="/#projects" class="footer-link">Projects</a></li>
-          <li><a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="footer-link">All on GitHub</a></li>
+          <li><a href={`${homePath}#projects`} class="footer-link">{t('footer.projects')}</a></li>
+          <li><a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="footer-link">{t('footer.allGithub')}</a></li>
         </ul>
       </div>
 
-      <!-- Connect -->
       <div class="footer-col">
-        <h3 class="footer-col-heading">Connect</h3>
+        <h3 class="footer-col-heading">{t('footer.connect')}</h3>
         <ul class="footer-links">
-          <li><a href="mailto:joaopster@proton.me" class="footer-link">Email</a></li>
+          <li><a href="mailto:joaopster@proton.me" class="footer-link">{t('footer.email')}</a></li>
           <li><a href="https://www.linkedin.com/in/ojoaopster/" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a></li>
           <li><a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a></li>
         </ul>
@@ -56,7 +58,7 @@ const today = new Date();
 
     <div class="footer-bottom">
       <p class="footer-copyright">&copy; {today.getFullYear()} João Pster</p>
-      <p class="footer-built">Built with Astro · No tracking, no nonsense.</p>
+      <p class="footer-built">{t('footer.built')}</p>
     </div>
   </div>
 </footer>
@@ -67,20 +69,17 @@ const today = new Date();
     border-top: 1px solid var(--color-hairline);
     width: 100%;
   }
-
   .footer-inner {
     max-width: 1100px;
     margin: 0 auto;
     padding: 64px var(--space-xl) 40px;
   }
-
   .footer-grid {
     display: grid;
     grid-template-columns: 2.2fr 1fr 1fr 1fr;
     gap: var(--space-xl);
     margin-bottom: var(--space-xxl);
   }
-
   .footer-brand {
     display: flex;
     flex-direction: column;
@@ -88,7 +87,6 @@ const today = new Date();
     gap: var(--space-base);
     max-width: 280px;
   }
-
   .footer-logo {
     display: inline-flex;
     align-items: center;
@@ -112,61 +110,18 @@ const today = new Date();
     line-height: 1;
     padding-bottom: 2px;
   }
-  .footer-word {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-  }
-
-  .footer-tagline {
-    font-size: 14px;
-    color: var(--color-body);
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .social-link {
-    color: var(--color-muted);
-    display: inline-flex;
-    align-items: center;
-    transition: color 0.15s ease;
-  }
+  .footer-word { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+  .footer-tagline { font-size: 14px; color: var(--color-body); line-height: 1.6; margin: 0; }
+  .social-link { color: var(--color-muted); display: inline-flex; align-items: center; transition: color 0.15s ease; }
   .social-link:hover { color: var(--color-ink); text-decoration: none; }
-
-  .footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
+  .footer-col { display: flex; flex-direction: column; gap: var(--space-sm); }
   .footer-col-heading {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.88px;
-    color: var(--color-muted);
-    margin: 0 0 var(--space-xs);
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.88px; color: var(--color-muted); margin: 0 0 var(--space-xs);
   }
-
-  .footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  .footer-link {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-body);
-    text-decoration: none;
-    transition: color 0.15s ease;
-    line-height: 1.4;
-  }
+  .footer-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
+  .footer-link { font-size: 14px; font-weight: 500; color: var(--color-body); text-decoration: none; transition: color 0.15s ease; line-height: 1.4; }
   .footer-link:hover { color: var(--color-ink); text-decoration: none; }
-
   .footer-bottom {
     border-top: 1px solid var(--color-hairline);
     padding-top: var(--space-lg);
@@ -176,36 +131,14 @@ const today = new Date();
     gap: var(--space-md);
     flex-wrap: wrap;
   }
-
-  .footer-copyright,
-  .footer-built {
-    font-size: 13px;
-    color: var(--color-muted);
-    margin: 0;
-  }
-
+  .footer-copyright, .footer-built { font-size: 13px; color: var(--color-muted); margin: 0; }
   @media (max-width: 768px) {
-    .footer-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-xl) var(--space-lg);
-    }
-    .footer-brand {
-      grid-column: 1 / -1;
-      max-width: none;
-    }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xl) var(--space-lg); }
+    .footer-brand { grid-column: 1 / -1; max-width: none; }
   }
-
   @media (max-width: 480px) {
-    .footer-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    .footer-inner {
-      padding: 48px var(--space-base) 32px;
-    }
-    .footer-bottom {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-xs);
-    }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-inner { padding: 48px var(--space-base) 32px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
   }
 </style>

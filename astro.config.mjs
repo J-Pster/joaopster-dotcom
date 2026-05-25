@@ -8,6 +8,13 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
 	site: 'https://joaopster.com',
 	integrations: [mdx(), sitemap()],
+	i18n: {
+		locales: ['pt', 'en', 'es'],
+		defaultLocale: 'pt',
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
 	fonts: [
 		{
 			provider: fontProviders.local(),

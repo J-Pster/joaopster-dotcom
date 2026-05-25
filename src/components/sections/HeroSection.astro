@@ -1,29 +1,38 @@
 ---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
 ---
 <section class="hero">
+  <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-3" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-4" aria-hidden="true"></div>
   <div class="hero-inner">
-    <p class="hero-badge">Senior Full-Stack Engineer · AI</p>
-    <h1>Build with rigor.<br/>Ship what lasts.</h1>
-    <p class="hero-sub">I'm João, a senior full-stack engineer with 6+ years writing the code behind real products. I work TypeScript end to end, develop with AI under real engineering discipline, and have a deep distaste for accidental complexity.</p>
+    <p class="hero-badge">{t('hero.badge')}</p>
+    <h1>{t('hero.h1Line1')}<br/>{t('hero.h1Line2')}</h1>
+    <p class="hero-sub">{t('hero.sub')}</p>
     <div class="hero-stats">
       <div class="stat">
         <span class="stat-n">6+</span>
-        <span class="stat-l">Years building</span>
+        <span class="stat-l">{t('hero.yearsBuilding')}</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat">
         <span class="stat-n">30</span>
-        <span class="stat-l">Open-source repos</span>
+        <span class="stat-l">{t('hero.openSourceRepos')}</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat">
         <span class="stat-n">290+</span>
-        <span class="stat-l">GitHub stars</span>
+        <span class="stat-l">{t('hero.githubStars')}</span>
       </div>
     </div>
     <div class="hero-ctas">
-      <a href="/blog" class="btn-primary">Read the blog</a>
-      <a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="btn-secondary">View GitHub →</a>
+      <a href={`${prefix}/blog`} class="btn-primary">{t('hero.readBlog')}</a>
+      <a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="btn-secondary">{t('hero.viewGithub')}</a>
     </div>
   </div>
   <div class="hero-mockup-wrap">
@@ -51,15 +60,147 @@
   </div>
 </section>
 
+<script>
+  import { animate, stagger } from "motion";
+
+  // Staggered entrance: badge → h1 → sub → stats → CTAs
+  animate(
+    ".hero-inner > *",
+    {
+      opacity: [0, 1],
+      transform: ["translateY(20px)", "translateY(0px)"],
+    },
+    {
+      delay: stagger(0.1, { start: 0.05 }),
+      duration: 0.55,
+      easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    }
+  );
+
+  // Terminal mockup slides up after content
+  animate(
+    ".hero-mockup-wrap",
+    {
+      opacity: [0, 1],
+      transform: ["translateY(32px)", "translateY(0px)"],
+    },
+    {
+      delay: 0.45,
+      duration: 0.65,
+      easing: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    }
+  );
+
+  // Terminal lines appear one-by-one (typewriter feel)
+  animate(
+    ".mockup-body .ml",
+    { opacity: [0, 1] },
+    {
+      delay: stagger(0.09, { start: 0.8 }),
+      duration: 0.22,
+      easing: "ease-out",
+    }
+  );
+
+  // Atmospheric blobs float via transform-only WAAPI (GPU compositor thread)
+  animate(
+    ".hero-blob-1",
+    { transform: ["translate(0, 0)", "translate(70px, -50px)", "translate(-35px, 28px)", "translate(0, 0)"] },
+    { duration: 14, repeat: Infinity, easing: "ease-in-out" }
+  );
+  animate(
+    ".hero-blob-2",
+    { transform: ["translate(0, 0)", "translate(-60px, 38px)", "translate(30px, -65px)", "translate(0, 0)"] },
+    { duration: 18, repeat: Infinity, easing: "ease-in-out" }
+  );
+  animate(
+    ".hero-blob-3",
+    { transform: ["translate(0, 0)", "translate(45px, -35px)", "translate(-55px, 50px)", "translate(0, 0)"] },
+    { duration: 22, repeat: Infinity, easing: "ease-in-out" }
+  );
+  animate(
+    ".hero-blob-4",
+    { transform: ["translate(0, 0)", "translate(40px, -20px)", "translate(-40px, -10px)", "translate(0, 0)"] },
+    { duration: 26, repeat: Infinity, easing: "ease-in-out" }
+  );
+</script>
+
 <style>
+  @property --sky-h {
+    syntax: '<percentage>';
+    initial-value: 70%;
+    inherits: false;
+  }
+  @property --sky-top {
+    syntax: '<percentage>';
+    initial-value: -15%;
+    inherits: false;
+  }
+  @keyframes sky-breathe {
+    from { --sky-h: 70%; --sky-top: -15%; }
+    to   { --sky-h: 95%; --sky-top: -4%; }
+  }
+  @keyframes blob-pulse-1 {
+    0%, 100% { opacity: 0.50; }
+    50%      { opacity: 0.25; }
+  }
+  @keyframes blob-pulse-2 {
+    0%, 100% { opacity: 0.42; }
+    50%      { opacity: 0.20; }
+  }
+  @keyframes blob-pulse-3 {
+    0%, 100% { opacity: 0.38; }
+    50%      { opacity: 0.18; }
+  }
+  @keyframes blob-pulse-4 {
+    0%, 100% { opacity: 0.22; }
+    50%      { opacity: 0.10; }
+  }
+  .hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(64px);
+    will-change: transform, opacity;
+    z-index: 0;
+  }
+  .hero-blob-1 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, #cfe7ff 0%, transparent 70%);
+    top: -100px; left: -120px;
+    animation: blob-pulse-1 7s ease-in-out infinite;
+  }
+  .hero-blob-2 {
+    width: 440px; height: 440px;
+    background: radial-gradient(circle, #a8c8e8 0%, transparent 70%);
+    top: -30px; right: -100px;
+    animation: blob-pulse-2 9s ease-in-out infinite;
+    animation-delay: -3s;
+  }
+  .hero-blob-3 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, #cfe7ff 0%, transparent 70%);
+    top: 60px; left: 36%;
+    animation: blob-pulse-3 11s ease-in-out infinite;
+    animation-delay: -5s;
+  }
+  .hero-blob-4 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #daeeff 0%, transparent 70%);
+    bottom: -120px; left: calc(50% - 300px);
+    animation: blob-pulse-4 13s ease-in-out infinite;
+    animation-delay: -7s;
+  }
   .hero {
     background:
-      radial-gradient(ellipse 110% 70% at 50% -15%, #cfe7ff 0%, #daeeff 20%, transparent 58%),
+      radial-gradient(ellipse 110% var(--sky-h) at 50% var(--sky-top), #cfe7ff 0%, #daeeff 20%, transparent 58%),
       #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+    position: relative;
+    animation: sky-breathe 9s ease-in-out infinite alternate;
   }
   .hero-inner {
     max-width: 760px;
@@ -67,6 +208,8 @@
     margin: 0 auto;
     padding: 96px var(--space-xl) 64px;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
   .hero-badge {
     display: inline-block;
@@ -126,6 +269,8 @@
     width: 100%;
     max-width: 880px;
     padding: 0 var(--space-xl);
+    position: relative;
+    z-index: 1;
   }
   .mockup-window {
     background: #0d0d0d;

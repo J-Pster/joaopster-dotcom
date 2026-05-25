@@ -1,0 +1,311 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import Header from '../../../components/Header.astro';
+import { useTranslations, defaultLang, type Lang } from '../../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const prefix = lang === 'pt' ? '' : `/${lang}`;
+const blogBase = `${prefix}/blog`;
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter(p => p.id.startsWith(`${lang}/`))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const getSlug = (id: string) => id.slice(lang.length + 1);
+
+const readTime = (body: string | undefined) =>
+  Math.max(1, Math.round((body?.trim().split(/\s+/).length ?? 0) / 200));
+
+const [featured, ...rest] = posts;
+
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
+const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort((a, b) => b - a);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={t('blog.title')} description={t('blog.description')} />
+  </head>
+  <body>
+    <Header />
+
+    <section class="posts-section">
+      <div class="posts-inner">
+
+        {featured && (
+          <article
+            class="featured"
+            data-tags={featured.data.tags.map(tag => tag.toLowerCase()).join(',')}
+            data-year={String(featured.data.pubDate.getFullYear())}
+            data-title={featured.data.title.toLowerCase()}
+          >
+            <div class="featured-text">
+              <span class="pill">{t('blog.latestPost')}</span>
+              <h2 class="featured-title">
+                <a href={`${blogBase}/${getSlug(featured.id)}/`}>{featured.data.title}</a>
+              </h2>
+              <p class="featured-desc">{featured.data.description}</p>
+              <div class="featured-meta">
+                <FormattedDate date={featured.data.pubDate} />
+                <span class="dot-sep">·</span>
+                <span class="read-time">{readTime(featured.body)} {t('blog.minRead')}</span>
+              </div>
+              {featured.data.tags.length > 0 && (
+                <div class="tag-list">
+                  {featured.data.tags.map(tag => <span class="tag-chip">{tag}</span>)}
+                </div>
+              )}
+              <a class="featured-read" href={`${blogBase}/${getSlug(featured.id)}/`}>{t('blog.readPost')}</a>
+            </div>
+            <a class="featured-panel" href={`${blogBase}/${getSlug(featured.id)}/`} aria-hidden="true" tabindex="-1">
+              <div class="panel-bar">
+                <span class="panel-dot"></span>
+                <span class="panel-file">~/blog/{getSlug(featured.id)}.md</span>
+              </div>
+              <div class="panel-body">
+                <span class="panel-pill">Markdown</span>
+                <p class="panel-excerpt">{featured.data.description}</p>
+                <div class="panel-fade"></div>
+              </div>
+            </a>
+          </article>
+        )}
+
+        <div class="filter-bar">
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder={t('blog.searchPlaceholder')}
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="filter-row">
+            <div class="chip-group">
+              <button class="chip active" data-tag="all">{t('blog.all')}</button>
+              {allTags.map(tag => (
+                <button class="chip" data-tag={tag.toLowerCase()}>{tag}</button>
+              ))}
+            </div>
+            {allYears.length > 1 && (
+              <div class="chip-group chip-group--years">
+                {allYears.map(year => (
+                  <button class="chip year-chip" data-year={String(year)}>{year}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+
+        <div id="no-results" class="no-results" style="display:none">
+          <p>{t('blog.noResults')}</p>
+          <button class="clear-btn" id="clear-filters">{t('blog.clearFilters')}</button>
+        </div>
+
+        <div class="post-grid">
+          {rest.map((post) => (
+            <a
+              href={`${blogBase}/${getSlug(post.id)}/`}
+              class="post-card"
+              data-tags={post.data.tags.map(tag => tag.toLowerCase()).join(',')}
+              data-year={String(post.data.pubDate.getFullYear())}
+              data-title={post.data.title.toLowerCase()}
+            >
+              <div class="post-card-body">
+                <h3 class="post-title">{post.data.title}</h3>
+                {post.data.description && <p class="post-desc">{post.data.description}</p>}
+                {post.data.tags.length > 0 && (
+                  <div class="tag-list">
+                    {post.data.tags.map(tag => <span class="tag-chip">{tag}</span>)}
+                  </div>
+                )}
+              </div>
+              <div class="post-card-footer">
+                <div class="post-meta">
+                  <FormattedDate date={post.data.pubDate} />
+                  <span class="dot-sep">·</span>
+                  <span class="read-time">{readTime(post.body)} {t('blog.minRead')}</span>
+                </div>
+                <span class="post-arrow" aria-hidden="true">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <Footer />
+  </body>
+</html>
+
+<script>
+  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+  const tagChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-tag]');
+  const yearChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-year]');
+  const featuredEl = document.querySelector<HTMLElement>('article.featured');
+  const postCards = document.querySelectorAll<HTMLElement>('.post-card');
+  const noResultsEl = document.getElementById('no-results');
+  const clearFiltersBtn = document.getElementById('clear-filters');
+
+  let activeTag = 'all';
+  let activeYear = 'all';
+  let searchQuery = '';
+
+  function matchesPost(el: HTMLElement): boolean {
+    const tagsRaw = el.dataset.tags ?? '';
+    const tags = tagsRaw ? tagsRaw.split(',') : [];
+    const year = el.dataset.year ?? '';
+    const title = el.dataset.title ?? '';
+    if (activeTag !== 'all' && !tags.includes(activeTag)) return false;
+    if (activeYear !== 'all' && year !== activeYear) return false;
+    if (searchQuery && !title.includes(searchQuery)) return false;
+    return true;
+  }
+
+  function isFilterActive(): boolean {
+    return activeTag !== 'all' || activeYear !== 'all' || searchQuery !== '';
+  }
+
+  function applyFilters(): void {
+    const filterActive = isFilterActive();
+    let featuredVisible = false;
+    if (featuredEl) {
+      featuredVisible = matchesPost(featuredEl);
+      featuredEl.style.display = featuredVisible ? '' : 'none';
+    }
+    let gridVisible = 0;
+    postCards.forEach(card => {
+      const show = matchesPost(card);
+      card.style.display = show ? '' : 'none';
+      if (show) gridVisible++;
+    });
+    const totalVisible = (featuredVisible ? 1 : 0) + gridVisible;
+    if (noResultsEl) {
+      noResultsEl.style.display = totalVisible === 0 ? '' : 'none';
+    }
+  }
+
+  tagChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      tagChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeTag = chip.dataset.tag ?? 'all';
+      applyFilters();
+    });
+  });
+
+  yearChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (chip.classList.contains('active')) {
+        chip.classList.remove('active');
+        activeYear = 'all';
+      } else {
+        yearChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeYear = chip.dataset.year ?? 'all';
+      }
+      applyFilters();
+    });
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchQuery = (searchInput.value ?? '').trim().toLowerCase();
+    applyFilters();
+  });
+
+  clearFiltersBtn?.addEventListener('click', () => {
+    activeTag = 'all';
+    activeYear = 'all';
+    searchQuery = '';
+    if (searchInput) searchInput.value = '';
+    tagChips.forEach(c => c.classList.remove('active'));
+    document.querySelector<HTMLButtonElement>('.chip[data-tag="all"]')?.classList.add('active');
+    yearChips.forEach(c => c.classList.remove('active'));
+    applyFilters();
+  });
+</script>
+
+<style>
+  .posts-section { padding: var(--space-xxl) var(--space-xl) var(--space-section); }
+  .posts-inner { max-width: 980px; margin: 0 auto; }
+  .featured {
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xxl);
+    align-items: center; background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-xl);
+    padding: var(--space-xxl); margin-bottom: var(--space-xxl);
+  }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.88px;
+    text-transform: uppercase; color: var(--color-muted); background: var(--color-surface-strong);
+    padding: 4px 12px; border-radius: var(--radius-pill); margin-bottom: var(--space-base);
+  }
+  .featured-title { font-size: 28px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.84px; line-height: 1.2; margin: 0 0 var(--space-sm); }
+  .featured-title a { color: inherit; text-decoration: none; transition: color 0.15s ease; }
+  .featured-title a:hover { color: var(--color-text-link); }
+  .featured-desc { font-size: 16px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-base); }
+  .featured-meta { display: flex; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-xs); }
+  .dot-sep { color: var(--color-muted-soft); }
+  .read-time { font-size: 13px; color: var(--color-muted); font-weight: 500; }
+  .featured-read { display: inline-block; font-size: 14px; font-weight: 500; color: var(--color-text-link); text-decoration: none; margin-top: var(--space-md); }
+  .featured-read:hover { text-decoration: underline; }
+  .featured-panel {
+    background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-lg); overflow: hidden; text-decoration: none;
+    align-self: stretch; display: flex; flex-direction: column; min-height: 220px;
+  }
+  .panel-bar { background: var(--color-surface-dark-elevated); padding: 10px 16px; display: flex; align-items: center; gap: var(--space-xs); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .panel-dot { width: 8px; height: 8px; border-radius: 50%; background: #28c840; flex-shrink: 0; }
+  .panel-file { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #777; }
+  .panel-body { position: relative; padding: var(--space-lg); flex: 1; }
+  .panel-pill { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.88px; color: var(--color-on-dark-soft); background: rgba(255,255,255,0.08); border-radius: var(--radius-pill); padding: 3px 10px; margin-bottom: var(--space-md); }
+  .panel-excerpt { font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.7; margin: 0; }
+  .panel-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to bottom, transparent, var(--color-surface-dark)); pointer-events: none; }
+  .filter-bar { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg); background: var(--color-canvas-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); margin-bottom: var(--space-xxl); }
+  .search-input { width: 100%; height: 40px; padding: 0 var(--space-base); font-family: inherit; font-size: 14px; color: var(--color-ink); background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-md); outline: none; box-sizing: border-box; transition: border-color 0.15s ease, box-shadow 0.15s ease; -webkit-appearance: none; appearance: none; }
+  .search-input::placeholder { color: var(--color-muted); }
+  .search-input:focus { border-color: var(--color-ink); box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+  .search-input::-webkit-search-cancel-button { display: none; }
+  .filter-row { display: flex; align-items: center; gap: var(--space-base); flex-wrap: wrap; }
+  .chip-group { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; }
+  .chip-group--years { margin-left: auto; padding-left: var(--space-base); border-left: 1px solid var(--color-hairline-strong); }
+  .chip { -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; height: 28px; padding: 0 var(--space-sm); font-family: inherit; font-size: 12px; font-weight: 600; letter-spacing: 0.2px; line-height: 1; color: var(--color-body); background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-pill); cursor: pointer; white-space: nowrap; transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease; }
+  .chip:hover { background: var(--color-surface-strong); color: var(--color-ink); border-color: var(--color-hairline-strong); }
+  .chip.active { background: var(--color-primary); color: var(--color-on-primary); border-color: var(--color-primary); }
+  .tag-list { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-sm); }
+  .tag-chip { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--color-muted); background: var(--color-surface-strong); padding: 2px 8px; border-radius: var(--radius-pill); }
+  .no-results { text-align: center; padding: var(--space-section) 0; }
+  .no-results p { font-size: 16px; color: var(--color-body); margin-bottom: var(--space-lg); }
+  .clear-btn { -webkit-appearance: none; appearance: none; display: inline-flex; align-items: center; height: 36px; padding: 0 var(--space-base); font-family: inherit; font-size: 13px; font-weight: 600; color: var(--color-on-primary); background: var(--color-primary); border: none; border-radius: var(--radius-md); cursor: pointer; transition: background 0.12s ease; }
+  .clear-btn:hover { background: var(--color-primary-active); }
+  .post-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-base); }
+  .post-card { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg); background: var(--color-surface-card); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); text-decoration: none; color: inherit; transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; }
+  .post-card:hover { border-color: var(--color-hairline-strong); box-shadow: 0 4px 12px rgba(0,0,0,0.04); transform: translateY(-2px); text-decoration: none; }
+  .post-card-body { flex: 1; }
+  .post-title { font-size: 18px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.3px; line-height: 1.3; margin: 0 0 var(--space-xs); transition: color 0.15s ease; }
+  .post-card:hover .post-title { color: var(--color-text-link); }
+  .post-desc { font-size: 14px; color: var(--color-body); line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .post-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-xs); }
+  .post-meta { display: flex; align-items: center; gap: var(--space-xs); }
+  .post-arrow { font-size: 14px; color: var(--color-muted); transition: transform 0.15s ease, color 0.15s ease; }
+  .post-card:hover .post-arrow { transform: translateX(3px); color: var(--color-text-link); }
+  @media (max-width: 768px) {
+    .featured { grid-template-columns: 1fr; gap: var(--space-xl); padding: var(--space-xl); }
+    .featured-panel { min-height: 180px; }
+    .post-grid { grid-template-columns: 1fr; }
+    .chip-group--years { margin-left: 0; padding-left: 0; border-left: none; }
+    .filter-row { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 640px) {
+    .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
+    .featured-title { font-size: 22px; }
+    .filter-bar { padding: var(--space-sm); }
+  }
+</style>
