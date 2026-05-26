@@ -12,6 +12,9 @@ const specialties = [
   { title: t('about.spec.g5.title'), items: t('about.spec.g5.items').split(' | ') },
   { title: t('about.spec.g6.title'), items: t('about.spec.g6.items').split(' | ') },
 ];
+
+const primarySpecialties = specialties.slice(0, 3);
+const extraSpecialties = specialties.slice(3);
 ---
 <section id="about" class="dark-about">
   <div class="dark-about-inner">
@@ -31,7 +34,7 @@ const specialties = [
         </div>
         <h3>{t('about.card1.title')}</h3>
         <p>{t('about.card1.desc')}</p>
-        <a href="#build" class="da-link">{t('about.card1.link')}</a>
+        <a href="#specialties" class="da-link">{t('about.card1.link')}</a>
       </div>
       <div class="da-card">
         <div class="da-icon">
@@ -47,10 +50,10 @@ const specialties = [
       </div>
     </div>
 
-    <div class="da-specialties">
+    <div id="specialties" class="da-specialties">
       <p class="da-spec-label">{t('about.specialties.label')}</p>
       <div class="da-spec-grid">
-        {specialties.map((g) => (
+        {primarySpecialties.map((g) => (
           <div class="da-spec-card">
             <h4>{g.title}</h4>
             <ul>
@@ -59,6 +62,19 @@ const specialties = [
           </div>
         ))}
       </div>
+      <details class="da-spec-more">
+        <summary class="da-spec-more-btn">{t('about.specialties.more')}</summary>
+        <div class="da-spec-grid da-spec-grid-extra">
+          {extraSpecialties.map((g) => (
+            <div class="da-spec-card">
+              <h4>{g.title}</h4>
+              <ul>
+                {g.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -90,6 +106,13 @@ const specialties = [
   .da-spec-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
   .da-spec-card li { position: relative; padding-left: 18px; font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.5; }
   .da-spec-card li::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.28); }
+  .da-spec-more { margin: 0; }
+  .da-spec-more-btn { display: block; width: fit-content; margin: var(--space-lg) auto 0; padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--color-on-dark); font-size: 14px; font-weight: 500; line-height: 1; cursor: pointer; user-select: none; list-style: none; transition: background 0.15s ease; }
+  .da-spec-more-btn::-webkit-details-marker { display: none; }
+  .da-spec-more-btn:hover { background: rgba(255,255,255,0.1); }
+  .da-spec-more-btn:focus-visible { outline: 2px solid var(--color-on-dark); outline-offset: 2px; }
+  .da-spec-more[open] .da-spec-more-btn { display: none; }
+  .da-spec-grid-extra { margin-top: var(--space-base); }
   @media (max-width: 900px) { .da-spec-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .da-spec-grid { grid-template-columns: 1fr; } }
   @media (max-width: 768px) { .da-heading { font-size: 36px; } .da-grid { grid-template-columns: 1fr; } }

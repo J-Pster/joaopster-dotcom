@@ -11,25 +11,38 @@ interface WakatimeData {
   languages: WakatimeLanguage[];
 }
 
+interface LatestPostCard {
+  pill: string;
+  title: string;
+  dateText: string;
+  excerpt: string;
+  href: string;
+  readMore: string;
+  readTimeText: string;
+}
+
 interface Props {
   label: string;
   heading: string;
+  citation?: string;
   body: string;
   addendum?: string;
   cta?: { text: string; href: string };
   variant: 'build' | 'write' | 'opensource';
   flip?: boolean;
   wakatimeData?: WakatimeData;
+  latestPost?: LatestPostCard;
 }
 
-const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData } = Astro.props;
+const { label, heading, citation, body, addendum, cta, variant, flip = false, wakatimeData, latestPost } = Astro.props;
 ---
 
-<section id={variant === 'opensource' ? 'opensource' : undefined} class:list={['workflow-section', flip && 'workflow-section--flip']}>
+<section id={variant === 'opensource' ? 'opensource' : variant === 'build' ? 'deliver' : undefined} class:list={['workflow-section', flip && 'workflow-section--flip']}>
   <div class="workflow-inner">
     <div class="workflow-text">
       <span class="workflow-label">{label}</span>
       <h2 class="workflow-heading">{heading}</h2>
+      {citation && <cite class="workflow-cite">{citation}</cite>}
       <p class="workflow-body">{body}</p>
       {addendum && <p class="workflow-addendum">{addendum}</p>}
       {cta && (
@@ -57,6 +70,11 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
             </div>
             <div class="build-row">
               <span class="build-icon">✓</span>
+              <span class="build-label">Documentation</span>
+              <span class="build-badge build-badge--metric">13 docs</span>
+            </div>
+            <div class="build-row">
+              <span class="build-icon">✓</span>
               <span class="build-label">Build complete</span>
               <span class="build-badge build-badge--metric">1.2s</span>
             </div>
@@ -70,23 +88,21 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
         </div>
       )}
 
-      {variant === 'write' && (
-        <div class="card-write">
-          <span class="write-pill">Latest post</span>
-          <h3 class="write-post-title">Anti-vibe-coding: engineering rigor for AI</h3>
-          <span class="write-post-date">May 2026</span>
+      {variant === 'write' && latestPost && (
+        <a class="card-write" href={latestPost.href}>
+          <span class="write-pill">{latestPost.pill}</span>
+          <h3 class="write-post-title">{latestPost.title}</h3>
+          <span class="write-post-date">{latestPost.dateText}</span>
           <div class="write-divider"></div>
           <div class="write-preview-wrap">
-            <p class="write-preview">
-              AI coding isn't about one-shot prompts and luck. It's the same discipline that makes any project succeed: clear decisions, explicit architecture, phased execution, and structured review. The developer controls the path; the AI executes the steps.
-            </p>
+            <p class="write-preview">{latestPost.excerpt}</p>
             <div class="write-fade"></div>
           </div>
           <div class="write-footer">
-            <a class="write-read-more" href="/blog/anti-vibe-coding/">Read more →</a>
-            <span class="write-read-time">4 min read</span>
+            <span class="write-read-more">{latestPost.readMore}</span>
+            <span class="write-read-time">{latestPost.readTimeText}</span>
           </div>
-        </div>
+        </a>
       )}
 
       {variant === 'opensource' && (
@@ -188,6 +204,14 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
     letter-spacing: -1.08px;
     line-height: 1.15;
     margin: 0 0 var(--space-base) 0;
+  }
+
+  .workflow-cite {
+    display: block;
+    font-size: 13px;
+    font-style: normal;
+    color: var(--color-muted-soft);
+    margin: -8px 0 18px 0;
   }
 
   .workflow-body {
@@ -321,6 +345,8 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
     display: flex;
     flex-direction: column;
     gap: 0;
+    text-decoration: none;
+    color: inherit;
   }
 
   .write-pill {
@@ -397,7 +423,7 @@ const { label, heading, body, addendum, cta, variant, flip = false, wakatimeData
     text-decoration: none;
   }
 
-  .write-read-more:hover {
+  .card-write:hover .write-read-more {
     text-decoration: underline;
   }
 

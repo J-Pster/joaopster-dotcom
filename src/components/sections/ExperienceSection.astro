@@ -4,10 +4,19 @@ import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
+const yearsBuilding = new Date().getFullYear() - 2020;
+const numberWords: Record<Lang, string[]> = {
+  pt: ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove', 'vinte'],
+  en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'],
+  es: ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte'],
+};
+const yearsWord = numberWords[lang][yearsBuilding] ?? String(yearsBuilding);
+const expHeading1 = t('exp.heading1').replace('{years}', yearsWord);
+
 const roles = [
   {
     roleKey: 'exp.role1.role' as const,
-    company: 'Stealth · PropTech',
+    company: 'Confidencial · PropTech',
     meta: 'United States · Remote',
     dates: '2025 - Present',
     current: true,
@@ -118,7 +127,7 @@ const roles = [
 <section id="experience" class="experience">
   <div class="exp-inner">
     <p class="exp-label">{t('exp.label')}</p>
-    <h2 class="exp-heading">{t('exp.heading1')}<br/>{t('exp.heading2')}</h2>
+    <h2 class="exp-heading">{expHeading1}<br/>{t('exp.heading2')}</h2>
     <p class="exp-sub">{t('exp.sub')}</p>
 
     <div class="exp-timeline">

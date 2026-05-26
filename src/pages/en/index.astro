@@ -7,16 +7,30 @@ import DarkAboutSection from '../../components/sections/DarkAboutSection.astro';
 import ExperienceSection from '../../components/sections/ExperienceSection.astro';
 import FeaturesGridSection from '../../components/sections/FeaturesGridSection.astro';
 import WorkflowSection from '../../components/sections/WorkflowSection.astro';
-import StackSection from '../../components/sections/StackSection.astro';
 import ProjectsSection from '../../components/sections/ProjectsSection.astro';
 import EcosystemSection from '../../components/sections/EcosystemSection.astro';
 import StatsBandSection from '../../components/sections/StatsBandSection.astro';
 import CTASection from '../../components/sections/CTASection.astro';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { getLatestPost } from '../../lib/getLatestPost';
+import { getWakatimeData, buildAddendum } from '../../lib/getWakatimeData';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
+
+const latestPost = await getLatestPost(lang);
+const writeCard = latestPost && {
+  pill: t('blog.latestPost'),
+  title: latestPost.title,
+  dateText: latestPost.pubDate.toLocaleDateString('en-us', { month: 'long', year: 'numeric' }),
+  excerpt: latestPost.description,
+  href: latestPost.href,
+  readMore: t('blog.readPost'),
+  readTimeText: `${latestPost.readTime} ${t('blog.minRead')}`,
+};
+const wakatimeData = await getWakatimeData();
+const addendum = buildAddendum(t('workflow.opensource.addendum'), wakatimeData, 'en-US');
 ---
 <!doctype html>
 <html lang={lang}>
@@ -44,16 +58,16 @@ const prefix = lang === 'pt' ? '' : `/${lang}`;
         body={t('workflow.write.body')}
         cta={{ text: t('workflow.write.cta'), href: `${prefix}/blog` }}
         flip={true}
+        latestPost={writeCard}
       />
       <WorkflowSection
         variant="opensource"
         label={t('workflow.opensource.label')}
         heading={t('workflow.opensource.heading')}
         body={t('workflow.opensource.body')}
-        addendum={t('workflow.opensource.addendum')}
+        addendum={addendum}
         cta={{ text: t('workflow.opensource.cta'), href: 'https://github.com/J-Pster' }}
       />
-      <StackSection />
       <ProjectsSection />
       <EcosystemSection />
       <StatsBandSection />

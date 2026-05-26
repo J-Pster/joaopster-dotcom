@@ -5,9 +5,9 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
 const projects = [
-  { title: 'Psters AI Workflow', desc: t('projects.p5.desc'), dark: true, icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
-  { title: 'oh-my-claudecode', desc: t('projects.p7.desc'), dark: true, icon: 'M9 2a2 2 0 100 4 2 2 0 000-4zM3 13a2 2 0 100 4 2 2 0 000-4zM15 13a2 2 0 100 4 2 2 0 000-4zM9 6v4.5M9 10.5L4.5 13M9 10.5l4.5 2.5', url: 'https://github.com/Yeachan-Heo/oh-my-claudecode' },
-  { title: 'rtk', desc: t('projects.p8.desc'), dark: true, icon: 'M2 3h14v12H2V3zM2 7.5h14M5 11l2 2-2 2M10 15h3', url: 'https://github.com/rtk-ai/rtk' },
+  { title: 'Psters AI Workflow', desc: t('projects.p5.desc'), dark: true, stars: '289', icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
+  { title: 'oh-my-claudecode', desc: t('projects.p7.desc'), dark: true, stars: '34k+', icon: 'M9 2a2 2 0 100 4 2 2 0 000-4zM3 13a2 2 0 100 4 2 2 0 000-4zM15 13a2 2 0 100 4 2 2 0 000-4zM9 6v4.5M9 10.5L4.5 13M9 10.5l4.5 2.5', url: 'https://github.com/Yeachan-Heo/oh-my-claudecode' },
+  { title: 'rtk', desc: t('projects.p8.desc'), dark: true, stars: '53k+', icon: 'M2 3h14v12H2V3zM2 7.5h14M5 11l2 2-2 2M10 15h3', url: 'https://github.com/rtk-ai/rtk' },
 ];
 ---
 <section class="projects-section" id="projects">
@@ -25,6 +25,13 @@ const projects = [
           </div>
           <h3>{p.title}</h3>
           <p>{p.desc}</p>
+          <div class="proj-stars">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
+              <path d="M9 1.5l2.06 4.18 4.61.67-3.34 3.25.79 4.6L9 12.2l-4.12 2.17.79-4.6L2.33 6.35l4.61-.67L9 1.5z"/>
+            </svg>
+            <span class="proj-stars-num">{p.stars}</span>
+            <span class="proj-stars-label">{t('projects.stars')}</span>
+          </div>
           <span class={p.dark ? 'proj-link' : 'proj-link-light'}>{t('projects.github')}</span>
         </a>
       ))}
@@ -49,6 +56,10 @@ const projects = [
   .proj-card--light p { color: var(--color-body); font-size: 14px; line-height: 1.6; flex: 1; margin-bottom: var(--space-md); }
   .proj-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); }
   .proj-icon--light { background: var(--color-surface-strong); color: var(--color-ink); }
+  .proj-stars { display: flex; align-items: center; gap: 6px; margin-bottom: var(--space-md); padding-top: var(--space-sm); border-top: 1px solid rgba(255,255,255,0.07); }
+  .proj-stars svg { color: #e3b341; flex-shrink: 0; }
+  .proj-stars-num { font-size: 22px; font-weight: 600; color: var(--color-on-dark); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px; line-height: 1; }
+  .proj-stars-label { font-size: 13px; color: var(--color-on-dark-soft); }
   .proj-link { font-size: 13px; font-weight: 500; color: #47c2ff; }
   .proj-link-light { font-size: 13px; font-weight: 500; color: var(--color-text-link); }
 .proj-footer { margin-top: var(--space-xxl); text-align: center; }
