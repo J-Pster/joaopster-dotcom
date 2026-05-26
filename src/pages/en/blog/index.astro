@@ -1,22 +1,19 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseHead from '../../../components/BaseHead.astro';
 import Footer from '../../../components/Footer.astro';
 import FormattedDate from '../../../components/FormattedDate.astro';
 import Header from '../../../components/Header.astro';
 import { useTranslations, defaultLang, type Lang } from '../../../i18n/ui';
+import { getPostsForLang } from '../../../lib/getLatestPost';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
 const blogBase = `${prefix}/blog`;
 
-const allPosts = await getCollection('blog');
-const posts = allPosts
-  .filter(p => p.id.startsWith(`${lang}/`))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = await getPostsForLang(lang);
 
-const getSlug = (id: string) => id.slice(lang.length + 1);
+const getSlug = (id: string) => id.slice(id.indexOf('/') + 1);
 
 const readTime = (body: string | undefined) =>
   Math.max(1, Math.round((body?.trim().split(/\s+/).length ?? 0) / 200));
