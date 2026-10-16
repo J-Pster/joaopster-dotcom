@@ -1,7 +1,6 @@
 export interface WakatimeLanguage {
   name: string;
   percent: number;
-  text: string;
 }
 
 export interface WakatimeData {
@@ -17,36 +16,48 @@ function fmtSeconds(secs: number): string {
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
+const API = 'https://wakatime.com/api/v1/users/current';
+const EXCLUDED_LANGS = ['JSON', 'Markdown'];
+
+// Runs both at build time (Node) and in the Cloudflare Pages Function (Workers),
+// so it only relies on web-standard globals (fetch, btoa).
+export async function fetchWakatimeData(apiKey: string): Promise<WakatimeData> {
+  const headers = { Authorization: `Basic ${btoa(apiKey)}` };
+  const [allTimeRes, statsRes] = await Promise.all([
+    fetch(`${API}/all_time_since_today`, { headers }),
+    fetch(`${API}/stats/last_30_days`, { headers }),
+  ]);
+  if (!allTimeRes.ok || !statsRes.ok) {
+    throw new Error(`WakaTime API error: all_time=${allTimeRes.status} stats=${statsRes.status}`);
+  }
+  const allTime = (await allTimeRes.json()) as {
+    data: { text: string; total_seconds: number; daily_average: number };
+  };
+  const statsJson = (await statsRes.json()) as { data: { languages: WakatimeLanguage[] } };
+  const allLangs = statsJson.data.languages;
+  const excludedPct = allLangs
+    .filter(l => EXCLUDED_LANGS.includes(l.name))
+    .reduce((sum, l) => sum + l.percent, 0);
+  return {
+    totalText: allTime.data.text,
+    totalSeconds: allTime.data.total_seconds,
+    dailyAvgText: fmtSeconds(allTime.data.daily_average),
+    languages: allLangs
+      .filter(l => !EXCLUDED_LANGS.includes(l.name))
+      .map(l => ({ name: l.name, percent: l.name === 'TypeScript' ? l.percent + excludedPct : l.percent }))
+      .slice(0, 4),
+  };
+}
+
+// Build-time snapshot baked into the static HTML; the page refreshes it live
+// from /api/wakatime (functions/api/wakatime.ts) once loaded.
 export async function getWakatimeData(): Promise<WakatimeData | undefined> {
   const apiKey = import.meta.env.WAKATIME_API_KEY as string | undefined;
   if (!apiKey) return undefined;
   try {
-    const auth = `Basic ${Buffer.from(apiKey).toString('base64')}`;
-    const headers = { Authorization: auth };
-    const [allTimeRes, statsRes] = await Promise.all([
-      fetch('https://wakatime.com/api/v1/users/current/all_time_since_today', { headers }),
-      fetch('https://wakatime.com/api/v1/users/current/stats/last_30_days', { headers }),
-    ]);
-    if (!allTimeRes.ok || !statsRes.ok) return undefined;
-    const allTime = (await allTimeRes.json()) as {
-      data: { text: string; total_seconds: number; daily_average: number };
-    };
-    const statsJson = (await statsRes.json()) as { data: { languages: WakatimeLanguage[] } };
-    const excluded = ['JSON', 'Markdown'];
-    const allLangs = statsJson.data.languages;
-    const excludedPct = allLangs
-      .filter(l => excluded.includes(l.name))
-      .reduce((sum, l) => sum + l.percent, 0);
-    return {
-      totalText: allTime.data.text,
-      totalSeconds: allTime.data.total_seconds,
-      dailyAvgText: fmtSeconds(allTime.data.daily_average),
-      languages: allLangs
-        .filter(l => !excluded.includes(l.name))
-        .map(l => (l.name === 'TypeScript' ? { ...l, percent: l.percent + excludedPct } : l))
-        .slice(0, 4),
-    };
-  } catch {
+    return await fetchWakatimeData(apiKey);
+  } catch (err) {
+    console.warn('[wakatime] build-time fetch failed, rendering placeholders:', err);
     return undefined;
   }
 }

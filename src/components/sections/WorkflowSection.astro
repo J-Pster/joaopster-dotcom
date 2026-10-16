@@ -1,15 +1,5 @@
 ---
-interface WakatimeLanguage {
-  name: string;
-  percent: number;
-  text: string;
-}
-
-interface WakatimeData {
-  totalText: string;
-  dailyAvgText: string;
-  languages: WakatimeLanguage[];
-}
+import type { WakatimeData } from '../../lib/getWakatimeData';
 
 interface LatestPostCard {
   pill: string;
@@ -23,6 +13,10 @@ interface LatestPostCard {
 
 interface Props {
   label: string;
+  /** Intl locale used to format the live-refreshed addendum hours. */
+  locale?: string;
+  /** Untranslated addendum base, so the client can rebuild it with fresh hours. */
+  addendumBase?: string;
   heading: string;
   citation?: string;
   body: string;
@@ -34,7 +28,7 @@ interface Props {
   latestPost?: LatestPostCard;
 }
 
-const { label, heading, citation, body, addendum, cta, variant, flip = false, wakatimeData, latestPost } = Astro.props;
+const { label, locale, addendumBase, heading, citation, body, addendum, cta, variant, flip = false, wakatimeData, latestPost } = Astro.props;
 ---
 
 <section id={variant === 'opensource' ? 'opensource' : variant === 'build' ? 'deliver' : undefined} class:list={['workflow-section', flip && 'workflow-section--flip']}>
@@ -44,7 +38,7 @@ const { label, heading, citation, body, addendum, cta, variant, flip = false, wa
       <h2 class="workflow-heading">{heading}</h2>
       {citation && <cite class="workflow-cite">{citation}</cite>}
       <p class="workflow-body">{body}</p>
-      {addendum && <p class="workflow-addendum">{addendum}</p>}
+      {addendum && <p class="workflow-addendum" data-waka-addendum={addendumBase} data-waka-locale={locale}>{addendum}</p>}
       {cta && (
         <a class="workflow-cta" href={cta.href}>{cta.text} →</a>
       )}
@@ -117,19 +111,31 @@ const { label, heading, citation, body, addendum, cta, variant, flip = false, wa
 
           <div class="waka-metrics">
             <div class="waka-metric">
-              <span class="waka-metric-value">{wakatimeData?.totalText ?? '---'}</span>
+              <span class="waka-metric-value" data-waka="total">{wakatimeData?.totalText ?? '---'}</span>
               <span class="waka-metric-label">Total coded</span>
             </div>
             <div class="waka-metric-sep"></div>
             <div class="waka-metric">
-              <span class="waka-metric-value">{wakatimeData?.dailyAvgText ?? '---'}</span>
+              <span class="waka-metric-value" data-waka="daily">{wakatimeData?.dailyAvgText ?? '---'}</span>
               <span class="waka-metric-label">Daily avg</span>
             </div>
           </div>
 
           <div class="waka-divider"></div>
 
-          <div class="waka-langs">
+          <template data-waka="lang-template">
+            <div class="waka-lang">
+              <div class="waka-lang-row">
+                <span class="waka-lang-name"></span>
+                <span class="waka-lang-pct"></span>
+              </div>
+              <div class="waka-bar-track">
+                <div class="waka-bar-fill"></div>
+              </div>
+            </div>
+          </template>
+
+          <div class="waka-langs" data-waka="langs">
             {(wakatimeData?.languages ?? []).map((lang) => (
               <div class="waka-lang">
                 <div class="waka-lang-row">
@@ -597,3 +603,36 @@ const { label, heading, citation, body, addendum, cta, variant, flip = false, wa
     }
   }
 </style>
+
+<script>
+  import { buildAddendum, type WakatimeData } from '../../lib/getWakatimeData';
+
+  // The HTML ships a build-time snapshot; replace it with live numbers.
+  async function refreshWakatime(): Promise<void> {
+    const res = await fetch('/api/wakatime');
+    if (!res.ok) throw new Error(`/api/wakatime responded ${res.status}`);
+    const data = (await res.json()) as WakatimeData;
+
+    document.querySelectorAll('[data-waka="total"]').forEach(el => { el.textContent = data.totalText; });
+    document.querySelectorAll('[data-waka="daily"]').forEach(el => { el.textContent = data.dailyAvgText; });
+
+    document.querySelectorAll<HTMLElement>('[data-waka-addendum]').forEach(el => {
+      el.textContent = buildAddendum(el.dataset.wakaAddendum!, data, el.dataset.wakaLocale!);
+    });
+
+    const template = document.querySelector<HTMLTemplateElement>('[data-waka="lang-template"]');
+    const list = document.querySelector('[data-waka="langs"]');
+    if (!template || !list) return;
+    list.replaceChildren(...data.languages.map(lang => {
+      const item = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      item.querySelector('.waka-lang-name')!.textContent = lang.name;
+      item.querySelector('.waka-lang-pct')!.textContent = `${lang.percent.toFixed(1)}%`;
+      item.querySelector<HTMLElement>('.waka-bar-fill')!.style.width = `${Math.min(lang.percent, 100)}%`;
+      return item;
+    }));
+  }
+
+  if (document.querySelector('[data-waka]')) {
+    refreshWakatime().catch(err => console.warn('[wakatime] live refresh failed, keeping build snapshot:', err));
+  }
+</script>
