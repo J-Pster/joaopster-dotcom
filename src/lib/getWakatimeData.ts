@@ -21,8 +21,9 @@ const EXCLUDED_LANGS = ['JSON', 'Markdown'];
 
 // Runs both at build time (Node) and in the Cloudflare Pages Function (Workers),
 // so it only relies on web-standard globals (fetch, btoa).
-export async function fetchWakatimeData(apiKey: string): Promise<WakatimeData> {
-  const headers = { Authorization: `Basic ${btoa(apiKey)}` };
+export async function fetchWakatimeData(accessToken: string): Promise<WakatimeData> {
+  // WakaTime API keys are write-only, so reads use an OAuth access token with the read_stats scope.
+  const headers = { Authorization: `Bearer ${accessToken}` };
   const [allTimeRes, statsRes] = await Promise.all([
     fetch(`${API}/all_time_since_today`, { headers }),
     fetch(`${API}/stats/last_30_days`, { headers }),
@@ -51,11 +52,19 @@ export async function fetchWakatimeData(apiKey: string): Promise<WakatimeData> {
 
 // Build-time snapshot baked into the static HTML; the page refreshes it live
 // from /api/wakatime (functions/api/wakatime.ts) once loaded.
-export async function getWakatimeData(): Promise<WakatimeData | undefined> {
-  const apiKey = import.meta.env.WAKATIME_API_KEY as string | undefined;
-  if (!apiKey) return undefined;
+export function getWakatimeData(): Promise<WakatimeData | undefined> {
+  // The three home pages render in parallel, so they share one API round trip per build.
+  buildTimeData ??= loadBuildTimeData();
+  return buildTimeData;
+}
+
+let buildTimeData: Promise<WakatimeData | undefined> | undefined;
+
+async function loadBuildTimeData(): Promise<WakatimeData | undefined> {
+  const accessToken = import.meta.env.WAKATIME_ACCESS_TOKEN as string | undefined;
+  if (!accessToken) return undefined;
   try {
-    return await fetchWakatimeData(apiKey);
+    return await fetchWakatimeData(accessToken);
   } catch (err) {
     console.warn('[wakatime] build-time fetch failed, rendering placeholders:', err);
     return undefined;

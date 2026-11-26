@@ -4,7 +4,7 @@
 import { fetchWakatimeData } from '../../src/lib/getWakatimeData';
 
 interface Env {
-  WAKATIME_API_KEY: string;
+  WAKATIME_ACCESS_TOKEN: string;
 }
 
 interface PagesContext {
@@ -24,7 +24,7 @@ export async function onRequestGet({ request, env, waitUntil }: PagesContext): P
 
   let data;
   try {
-    data = await fetchWakatimeData(env.WAKATIME_API_KEY);
+    data = await fetchWakatimeData(env.WAKATIME_ACCESS_TOKEN);
   } catch (err) {
     console.error('[wakatime]', err);
     return Response.json({ error: 'wakatime_unavailable' }, { status: 502 });
