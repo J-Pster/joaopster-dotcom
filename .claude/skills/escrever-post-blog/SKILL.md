@@ -127,6 +127,19 @@ Quando o João pedir as versões para outras plataformas, entregue arquivos `.md
 6. **`x-threads.md`, um post só para X e Threads.** É texto puro com o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Valem as mesmas regras do post curto do LinkedIn.
 7. **A capa do artigo do LinkedIn, em PNG.** Gere com `npm run cover -- <lang>/<slug>` (ex.: `npm run cover -- pt/anthropic-evil-corp`). O script `scripts/generate-linkedin-cover.mjs` lê o título e as tags do frontmatter e desenha uma capa de 1920x1080 (16:9, o tamanho que os guias de 2026 indicam para capa de artigo do LinkedIn) com o mesmo visual da imagem de preview do blog. Tudo fica numa área central com margem larga dos lados, porque o LinkedIn corta as laterais no celular. O arquivo sai em `linkedin-covers/` (fora do git). Abra a imagem antes de entregar para conferir que o título coube.
 
+**Link do blog nos três idiomas.** Toda versão que vai para fora do blog (Reddit, TabNews, artigo, anúncio e post curto do LinkedIn, X/Threads e Dev.to) termina avisando que o post está no blog traduzido em português, inglês e espanhol, com os três links. Escreva o aviso no idioma da plataforma e sem pergunta retórica. Nas versões em markdown, use uma linha `---`, uma frase curta e uma lista com os três links, cada um com o nome do idioma como texto do link. Exemplo em PT:
+
+```markdown
+---
+
+Esse post também tá no meu blog, traduzido em três línguas
+- [Português](https://joaopster.com/blog/<slug>/)
+- [English](https://joaopster.com/en/blog/<slug>/)
+- [Español](https://joaopster.com/es/blog/<slug>/)
+```
+
+Nas versões em texto puro (anúncio e post curto do LinkedIn), a mesma frase seguida de uma linha por idioma, com o nome do idioma e a URL separados por espaço, sem dois-pontos. No X/Threads, que tem 280 caracteres, só cabe um link: use o do idioma do post e, se couber, acrescente "(também em EN e ES)" ou o equivalente. No Dev.to, o aviso entra no rodapé, junto do "Originally published on joaopster.com". Quando a versão já termina com o link do post (TabNews, post curto do LinkedIn), o aviso dos três idiomas substitui esse link final, para não repetir.
+
 Na mesma mensagem, mande o título do post e o link do post no blog, cada um num bloco de código próprio, para o João copiar com um clique. Faça isso também sempre que ele pedir só o título ou só o link. Exemplo:
 
 ````markdown
