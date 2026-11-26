@@ -197,9 +197,10 @@ export const ui = {
 
     'modal.eyebrow': 'Fale comigo',
     'modal.title': 'Vamos conversar.',
-    'modal.desc': 'Escolha o canal que funciona melhor pra você. Respondo pelos dois.',
+    'modal.desc': 'Escolha o canal que funciona melhor pra você. Respondo por qualquer um.',
     'modal.close': 'Fechar modal',
     'modal.linkedin.value': 'Me mande uma mensagem',
+    'modal.phone.label': 'Telefone',
 
     'site.title': `João Pster · Sócio-fundador e desenvolvedor`,
     'site.description': `Sou desenvolvedor autodidata e sócio-fundador de uma startup confidencial. Faço o software inteiro em TypeScript, da arquitetura e da infra na AWS ao backend, à web e aos apps de celular, e escrevo aqui sobre o que eu construo e uso.`,
@@ -393,9 +394,10 @@ export const ui = {
 
     'modal.eyebrow': 'Get in touch',
     'modal.title': "Let's talk.",
-    'modal.desc': 'Pick the channel that works best for you. I respond to both.',
+    'modal.desc': 'Pick the channel that works best for you. I answer on all of them.',
     'modal.close': 'Close modal',
     'modal.linkedin.value': 'Message me directly',
+    'modal.phone.label': 'Phone',
 
     'site.title': `João Pster · Co-Founder and Developer`,
     'site.description': `Self-taught developer and co-founder of a confidential startup. I build the whole product in TypeScript, from the architecture and AWS infrastructure to the backend, web and mobile apps, and I write here about what I build and use.`,
@@ -589,9 +591,10 @@ export const ui = {
 
     'modal.eyebrow': 'Contáctame',
     'modal.title': 'Hablemos.',
-    'modal.desc': 'Elige el canal que mejor te funcione. Respondo por ambos.',
+    'modal.desc': 'Elige el canal que mejor te funcione. Respondo por cualquiera.',
     'modal.close': 'Cerrar modal',
     'modal.linkedin.value': 'Escríbeme directamente',
+    'modal.phone.label': 'Teléfono',
 
     'site.title': `João Pster · Socio fundador y desarrollador`,
     'site.description': `Desarrollador autodidacta y socio fundador de una startup confidencial. Hago el software entero en TypeScript, desde la arquitectura y la infraestructura en AWS hasta el backend, la web y las apps móviles, y aquí escribo sobre lo que construyo y uso.`,
