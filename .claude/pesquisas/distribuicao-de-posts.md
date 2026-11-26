@@ -1,0 +1,57 @@
+# Distribuição dos posts do blog em outras plataformas
+
+Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API oficial que a gente publica daqui com token, second class precisa de integração ou setup de app, third class é manual.
+
+## O que o João decidiu
+
+- Canais em uso: blog (joaopster.com), Dev.to (versão EN, pela API), TabNews (versão PT), LinkedIn (post curto no feed e artigo completo), Reddit (r/brdev), X e Threads.
+- Bluesky, Mastodon, Medium, Hashnode e Hacker News ficaram de fora por enquanto.
+- LinkedIn: o Typefully foi descartado por preço (cerca de US$ 100/ano, valor dito pelo João). Por enquanto é manual. Alternativa grátis com connector no Claude: Buffer (plano grátis com 3 canais e 10 posts agendados por canal, segundo fontes de terceiros).
+- Formato de entrega dos textos está na skill `escrever-post-blog` (seção "Versões para outras plataformas").
+
+## First class (API oficial)
+
+### Dev.to (configurado)
+
+- API Forem, docs em https://developers.forem.com/api/v1. Header `api-key`, mais `Accept: application/vnd.forem.api-v1+json`.
+- A chave está salva como network secret do ambiente "Pster Dotcom" para o host `dev.to`. O proxy injeta o header, ninguém vê o valor. Conta: @jpster.
+- Criar: `POST https://dev.to/api/articles` com `{"article": {"title", "body_markdown", "published", "description", "tags" (máx. 4), "canonical_url"}}`.
+- Editar: `PUT https://dev.to/api/articles/<id>`. Não mexe no slug da URL, que fica travado depois de publicar.
+- Sempre usar `canonical_url` apontando para o post no joaopster.com, converter links internos relativos para URL completa e acrescentar no fim "Originally published on joaopster.com".
+- Post publicado: "Claude Code's harness made my AI workflow obsolete", id 5120820, https://dev.to/jpster/claude-codes-harness-made-my-ai-workflow-obsolete-and-most-others-too-5g5d (o slug ainda tem o "and-most-others-too" do título antigo).
+
+### TabNews (pendente)
+
+- `POST https://www.tabnews.com.br/api/v1/contents` com `title`, `body` (markdown), `status: "published"` e `source_url` opcional.
+- Conferido no código-fonte (github.com/filipedeschamps/tabnews.com.br): a autenticação é só pelo cookie `session_id` (`models/authentication.js`), a sessão vale 30 dias (`models/session.js`, `SESSION_EXPIRATION_IN_SECONDS = 60*60*24*30`). Não existe API key. Requisições com cookie de outra origem são bloqueadas pelo header `sec-fetch-site`/`origin`, mas curl sem esses headers passa.
+- O formulário de credencial do ambiente só injeta header de autenticação, não cookie. Plano combinado: o João pega o `session_id` numa janela anônima (DevTools, Application, Cookies), fecha sem fazer logout e salva em Network secrets do ambiente com host `www.tabnews.com.br`, header `Cookie`, valor `session_id=<valor>`. Depois testar com `GET /api/v1/user`. Não se sabe se a tela de Network secrets aceita o header `Cookie`. Se não aceitar, TabNews fica manual.
+
+### Outras com API (não configuradas)
+
+- Bluesky: app password grátis, `createRecord` em `app.bsky.feed.post`, card de link precisa de embed `app.bsky.embed.external`, limite de 300 caracteres. https://docs.bsky.app/docs/tutorials/creating-a-post
+- Mastodon: `POST /api/v1/statuses` com token da instância (de memória, não conferido).
+- Threads: API oficial da Meta, para a própria conta não precisa de App Review, mas precisa criar app na Meta e fazer OAuth. Limite de 250 posts por dia. https://developers.facebook.com/documentation/threads/reference/publishing
+- Hashnode: GraphQL oficial, mas publicar pela API agora exige plano Pro, segundo a própria Hashnode.
+- X: API paga por uso, sem plano grátis para conta nova. Fontes de terceiros falam em cerca de US$ 0,20 por post com link. https://docs.x.com/x-api/getting-started/pricing
+
+## Second class
+
+- LinkedIn pela API própria: permissão `w_member_social` pelo produto "Share on LinkedIn", liberada sem aprovação para o próprio perfil, mas precisa criar app no portal de desenvolvedor e gerar token (o portal tem gerador de token). O token vence. Não confirmado se o app precisa de página de empresa. https://developer.linkedin.com/documents/share-api
+- Typefully, Buffer, Ordinal e Zapier têm connector no diretório do Claude. Typefully cobre X, LinkedIn, Threads, Bluesky, Mastodon e Substack (provavelmente Notes).
+- Postiz é open source e self-hosted, grátis, cobre LinkedIn, mas exige manter servidor.
+
+## Third class (manual)
+
+- Medium: API descontinuada, a Medium não emite tokens novos (https://help.medium.com/hc/en-us/articles/213480228). A ferramenta de importar story puxa o post pela URL e marca o original (de memória, não conferido).
+- Reddit: desde nov/2025 a API exige pedir acesso e esperar aprovação manual (Responsible Builder Policy). Subreddits costumam punir autopromoção automatizada. Manual com texto adaptado.
+- Hacker News: API oficial só de leitura. Manual.
+- Substack (artigo): sem API oficial de publicação.
+- daily.dev: API pública não publica post e exige plano Plus.
+- Lobsters: só por convite.
+
+## Limites de caracteres usados
+
+- X sem assinatura: 280 caracteres. Link conta 23 no X (encurtado), mas a skill conta o link inteiro para servir também no Threads.
+- Threads: 500 caracteres.
+- LinkedIn post curto: a skill usa 1.200 a 1.800 caracteres.
+- O editor de artigos do LinkedIn não interpreta markdown colado (de memória, não testado).
