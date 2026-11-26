@@ -1,0 +1,38 @@
+---
+aliases:
+  - saturação
+  - SpO2
+  - SaO2
+tags: [glossario, sinais]
+---
+# Saturação de oxigênio
+
+Porcentagem das moléculas de [[Hemoglobina|hemoglobina]] carregadas de O2 (SaO2 no [[Sangue Arterial|sangue arterial]], SpO2 quando medida por [[Oximetro de Pulso|oxímetro]]). Em [[Ar Ambiente|ar ambiente]] ao nível do mar, adulto saudável fica entre 95 e 100%; abaixo de 90% em geral é preocupante. Mede a **fração** da hemoglobina carregada, não quanta hemoglobina há nem se ela chega aos [[Tecido|tecidos]]. Um valor de 88 ou 85% não é 'quase normal': pela forma da [[Curva de Dissociacao da Oxi-hemoglobina|curva em S]], já é a beira do precipício.
+
+## Onde aparece
+- **Módulo 1:** [[01.01 - Por que o Corpo Morre|1.1]], [[01.03 - Respiracao e Saturacao|1.3]]
+- **Módulo 2:** [[02.04 - Seguranca da Cena|2.4]], [[02.07 - O Lado Humano e a Passagem do Cuidado|2.7]]
+- **Módulo 3:** [[03.06 - O Que Cabe ao Leigo e o Que e do Profissional|3.6]]
+- **Módulo 4:** [[04.01 - Por que Avaliar com Metodo|4.1]], [[04.02 - Avaliacao Primaria X A B|4.2]], [[04.05 - Sinais Vitais sem Aparelho|4.5]], [[04.07 - Reavaliacao Registro e Passagem de Caso|4.7]]
+- **Módulo 5:** [[05.09 - Hemorragia Interna|5.9]]
+- **Módulo 6:** [[06.01 - Por que a Via Aerea Fecha|6.1]], [[06.06 - Trauma Toracico|6.6]], [[06.07 - Asma DPOC e Hiperventilacao|6.7]], [[06.08 - Anafilaxia Fumaca e Monoxido|6.8]], [[06.09 - Oxigenio|6.9]], [[06.10 - Avaliar a Respiracao e Decidir|6.10]]
+- **Módulo 7:** [[07.07 - Situacoes Especiais|7.7]]
+- **Módulo 8:** [[08.02 - Traumatismo Cranioencefalico|8.2]]
+- **Módulo 9:** [[09.02 - Explosao e Choque Eletrico de Alta Tensao|9.2]], [[09.11 - Multiplas Lesoes e Multiplas Vitimas|9.11]]
+- **Módulo 11:** [[11.01 - Acido-Base e Por que Respirar Rapido|11.1]], [[11.02 - Ventilacao e Perfusao Espaco Morto e Shunt|11.2]], [[11.03 - Hemoglobina e Oximetria que Engana|11.3]], [[11.04 - Debito Cardiaco Pre-carga Pos-carga e Contratilidade|11.4]]
+- **Módulo 12:** [[12.01 - O Contrato do Exame Fisico por Leigo|12.1]], [[12.02 - O que o Exame Fisico Rende e como Comparar|12.2]], [[12.08 - Exame Geral I Estado Geral Facies Postura e Marcha|12.8]], [[12.09 - Exame Geral II Pele e Mucosas|12.9]], [[12.10 - Exame Geral III Edema Linfonodos Unhas e Perfusao|12.10]], [[12.11 - Ficha de Exame Geral e Casos de Treino|12.11]]
+- **Módulo 13:** [[13.05 - Pescoco|13.5]], [[13.06 - Neurologico 1 Estado Mental|13.6]], [[13.11 - Escalas de AVC AIT e Imitadores|13.11]], [[13.12 - Neurologico Seriado Ficha e Casos|13.12]]
+- **Módulo 14:** [[14.01 - Por que Medir e o que um Numero Significa|14.1]], [[14.06 - Oximetro de Pulso|14.6]], [[14.08 - Frequencia Cardiaca e Respiratoria e NEWS2|14.8]], [[14.09 - Rotina Completa Ficha e Cuidados|14.9]]
+- **Módulo 15:** [[15.03 - Pulmao Normal Mapa de Pontos e Sons|15.3]], [[15.04 - Pulmao Anormal Sons e Mecanismos|15.4]], [[15.11 - Mapa do Corpo e o que Nao se Ouve|15.11]], [[15.13 - Relato ao SAMU e Casos de Correlacao|15.13]]
+- **Módulo 16:** [[16.02 - Inspecao do Torax e Padroes Respiratorios|16.2]], [[16.03 - Palpacao do Torax|16.3]], [[16.05 - Sindromes Pleuropulmonares I|16.5]], [[16.06 - Sindromes Pleuropulmonares II|16.6]], [[16.11 - Edema Perfusao e Insuficiencia Cardiaca|16.11]], [[16.12 - TVP Embolia Isquemia Aguda e Ortostatica|16.12]], [[16.13 - Gravidade Relato ao SAMU Ficha e Casos|16.13]]
+- **Módulo 17:** [[17.07 - Padroes de Abdome Agudo e Decisao|17.7]], [[17.11 - Ficha IAPP Casos e Relato ao SAMU|17.11]]
+- **Módulo 18:** [[18.02 - Como o Glicosimetro Funciona|18.2]], [[18.07 - Hiperglicemia Cetoacidose e Hiperosmolar|18.7]]
+- **Módulo 19:** [[19.01 - Como o Clinico Pensa|19.1]], [[19.02 - Probabilidade em Linguagem Clara|19.2]], [[19.03 - Vieses Cognitivos e Defesas|19.3]], [[19.04 - Padroes Fisiopatologicos Choque e Respiracao|19.4]], [[19.05 - Padroes Fisiopatologicos Neurologico Metabolico e Desidratacao|19.5]], [[19.06 - Sepse na Pratica|19.6]], [[19.07 - Medicamentos e Comorbidades como Dado Clinico|19.7]], [[19.08 - Escores NEWS2 PEWS e BE-FAST|19.8]], [[19.09 - Regras Clinicas Wells HEART Ottawa e TCE|19.9]], [[19.10 - Monitoramento Seriado e Escalonamento|19.10]], [[19.11 - Comunicar a Incerteza ao SAMU e ao Medico|19.11]], [[19.12 - Casos Integrados 1 a 10|19.12]], [[19.13 - Casos Integrados 11 a 20|19.13]], [[19.14 - Casos Integrados 21 a 30|19.14]]
+- **Módulo 20:** [[20.01 - Pensar pelo Sintoma e as Tres Decisoes|20.1]], [[20.02 - Dor Toracica|20.2]], [[20.03 - Dispneia|20.3]], [[20.04 - Dor Abdominal Hemorragia Digestiva e Vomitos|20.4]], [[20.05 - Cefaleia Tontura e Vertigem|20.5]], [[20.06 - Alteracao Aguda de Consciencia e Confusao|20.6]], [[20.07 - Febre e Infeccoes no Adulto|20.7]], [[20.08 - Arboviroses Dengue Chikungunya e Zika|20.8]], [[20.09 - Leptospirose Febre Maculosa Malaria e Viajante|20.9]], [[20.13 - Alergias Urticaria Anafilaxia e Reacoes Cutaneas|20.13]], [[20.14 - Tabela Resumo por Queixa e Casos Integrados|20.14]]
+- **Módulo 21:** [[21.01 - AVC Tempo e Cerebro|21.1]], [[21.02 - Infarto Sindrome Coronariana Aguda|21.2]], [[21.03 - Sincope e Desmaio|21.3]], [[21.04 - Convulsao|21.4]], [[21.05 - Intoxicacoes e Envenenamentos|21.5]], [[21.06 - Animais Peconhentos do Brasil|21.6]], [[21.09 - Afogamento Eletricidade e Raio no Ambiente|21.9]]
+- **Módulo 22:** [[22.01 - Como Criancas Diferem do Adulto|22.1]], [[22.02 - Triangulo de Avaliacao Pediatrica e PEWS|22.2]], [[22.05 - Via Aerea e Respiracao Crupe Bronquiolite Asma e Febre|22.5]], [[22.06 - Desidratacao Planos A B e C|22.6]], [[22.09 - Gestante Fisiologia Sangramentos Pre-eclampsia e Trauma|22.9]], [[22.10 - Parto de Emergencia e Recem-nascido|22.10]], [[22.11 - Idoso Apresentacao Atipica Delirium e Polifarmacia|22.11]], [[22.12 - Quedas no Idoso|22.12]], [[22.13 - Deficiencia Comunicacao e Dispositivos em Casa|22.13]], [[22.14 - Casos por Populacao e Ficha de Decisao|22.14]]
+- **Módulo 23:** [[23.01 - Estresse Agudo Panico e Dissociacao|23.1]], [[23.02 - Acalmar Respiracao Ancoragem e Comunicacao|23.2]], [[23.04 - Panico ou Causa Organica|23.4]], [[23.07 - Agitacao Psicose Delirium e Abstinencia|23.7]], [[23.14 - Casos Integrados|23.14]]
+- **Módulo 24:** [[24.01 - Observacao Ativa em Casa|24.1]], [[24.03 - Febre Vomito e Diarreia em Casa|24.3]], [[24.04 - Garganta Gripe e Covid em Casa|24.4]], [[24.05 - Doencas Cronicas em Crise Leve|24.5]], [[24.09 - Acamado Higiene Alimentacao Eliminacoes Quedas e Trombose|24.9]], [[24.11 - Diario de Saude Ficha de Bolso Relatorio e Teleconsulta|24.11]], [[24.13 - Casos de Cuidado Domiciliar|24.13]]
+- **Módulo 25:** [[25.02 - Avaliacao Estilo WFR e Nota SOAP|25.2]], [[25.03 - Reavaliacao Seriada e Tendencia|25.3]], [[25.07 - Decisao de Evacuacao|25.7]], [[25.09 - Comunicacao e Localizacao|25.9]], [[25.11 - Trilha Mar e Altitude|25.11]], [[25.13 - Cenarios Longos I|25.13]], [[25.14 - Cenarios Longos II|25.14]]
+- **Módulo 26:** [[26.01 - Auditoria do Kit Item por Item|26.1]], [[26.04 - Plano de Emergencia da Casa e da Familia|26.4]], [[26.06 - Cenarios Respiratorios e Cardiacos|26.6]], [[26.07 - Cenarios Clinicos e Ambientais|26.7]], [[26.08 - Cenarios de Exame e Raciocinio|26.8]], [[26.09 - Cenarios de Populacoes Saude Mental e Cuidado Prolongado|26.9]], [[26.10 - Treino Continuo e Cursos|26.10]], [[26.11 - Cartao de Bolso e Fechamento|26.11]]
+- **Módulo 27:** [[27.02 - Prova Escrita I Fundamentos e Socorro Imediato|27.2]], [[27.03 - Prova Escrita II Examinar e Medir|27.3]], [[27.04 - Prova Escrita III Raciocinar Populacoes e Cuidado|27.4]], [[27.06 - Casos Integrados Cronometrados|27.6]], [[27.07 - Resultado Lacunas e Manutencao|27.7]]

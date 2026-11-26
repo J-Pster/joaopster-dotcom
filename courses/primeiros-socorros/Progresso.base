@@ -1,0 +1,60 @@
+filters:
+  and:
+    - file.hasTag("aula")
+properties:
+  note.modulo:
+    displayName: Módulo
+  note.aula:
+    displayName: Aula
+  note.lida:
+    displayName: Lida
+  note.parte:
+    displayName: Parte
+  file.name:
+    displayName: Nota
+views:
+  - type: table
+    name: Por módulo
+    groupBy:
+      property: modulo
+      direction: ASC
+    order:
+      - file.name
+      - lida
+    sort:
+      - property: modulo
+        direction: ASC
+      - property: aula
+        direction: ASC
+    summaries:
+      lida: Checked
+  - type: table
+    name: Próximas a ler
+    filters:
+      and:
+        - lida != true
+    order:
+      - file.name
+      - parte
+      - lida
+    sort:
+      - property: modulo
+        direction: ASC
+      - property: aula
+        direction: ASC
+    limit: 15
+  - type: table
+    name: Por parte
+    groupBy:
+      property: parte
+      direction: ASC
+    order:
+      - file.name
+      - lida
+    sort:
+      - property: modulo
+        direction: ASC
+      - property: aula
+        direction: ASC
+    summaries:
+      lida: Checked

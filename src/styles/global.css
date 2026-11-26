@@ -28,6 +28,10 @@
   --color-on-dark-soft: #b0b4ba;
   --color-gradient-sky-light: #cfe7ff;
   --color-gradient-sky-mid: #a8c8e8;
+  --color-accent-warning: #ab6400;
+  --color-accent-preview: #8145b5;
+  --color-semantic-success: #16a34a;
+  --color-semantic-error: #eb8e90;
 
   /* Spacing */
   --space-xxs: 4px;

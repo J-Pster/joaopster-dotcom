@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "cover": "node scripts/generate-linkedin-cover.mjs",
-    "newsletter:digest": "node --env-file-if-exists=.env scripts/newsletter-digest.mjs"
+    "newsletter:digest": "node --env-file-if-exists=.env scripts/newsletter-digest.mjs",
+    "courses:sync": "node scripts/sync-courses.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",
@@ -20,6 +21,7 @@
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "astro": "^6.3.7",
+    "fflate": "^0.7.3",
     "motion": "^12.40.0",
     "satori": "^0.63.2",
     "sharp": "^0.34.3"

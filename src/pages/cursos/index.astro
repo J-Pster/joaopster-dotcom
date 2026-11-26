@@ -1,0 +1,125 @@
+---
+// Courses landing: the published courses (with a search box) and a closing call to create your own.
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { COURSES, courseZipUrl } from '../../lib/courses/catalog';
+import { getVault } from '../../lib/courses/vault';
+import '../../styles/courses.css';
+
+const courses = COURSES.map((course) => {
+  const vault = getVault(course.slug);
+  return {
+    course,
+    url: vault.home.url,
+    firstLesson: vault.lessons[0].url,
+    modules: vault.modules.length,
+    lessons: vault.lessons.length,
+    terms: vault.glossary.length,
+    // What the search box matches: title, goal and every module title.
+    search: [course.title, course.goal, ...vault.modules.map((m) => m.title)].join(' '),
+  };
+});
+---
+
+<html lang="pt">
+  <head>
+    <BaseHead
+      title="Cursos gratuitos criados com IA | João Pster"
+      description="Cursos autodidatas em português que eu crio com IA para estudar e publico para qualquer pessoa: AWS SAA-C03, primeiros socorros, rádio e modelagem de casas."
+      alternateLocales="none"
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="courses-landing">
+      <section class="courses-hero">
+        <p class="courses-eyebrow">Cursos</p>
+        <h1>Cursos que eu crio com IA para estudar, abertos para você</h1>
+        <div class="courses-hero-actions">
+          <a class="course-btn" href="#cursos">Ver os cursos</a>
+          <a class="course-btn course-btn--secondary" href="/cursos/como-criar/">Como eu crio os cursos</a>
+        </div>
+      </section>
+
+      <section class="courses-grid-section" id="cursos" aria-labelledby="cursos-title">
+        <div class="courses-list-head">
+          <h2 class="courses-section-title" id="cursos-title">Cursos publicados</h2>
+          <label class="courses-search">
+            <span class="visually-hidden">Buscar curso</span>
+            <input type="search" placeholder="Buscar por tema ou assunto" autocomplete="off" data-course-search />
+          </label>
+        </div>
+        <p class="courses-empty" data-course-empty hidden>Nenhum curso sobre isso ainda.</p>
+        <ul class="courses-grid">
+          {courses.map(({ course, url, firstLesson, modules, lessons, terms, search }) => (
+            <li class="course-card" data-course-card={course.slug} data-lessons={lessons} data-first-lesson={firstLesson} data-search={search}>
+              <h3 class="course-card-title"><a href={url}>{course.title}</a></h3>
+              <p class="course-card-goal">{course.goal}</p>
+              <p class="course-card-stats">
+                {modules} módulos · {lessons} aulas{terms > 0 && ` · ${terms} termos no glossário`}
+              </p>
+              <div class="course-card-progress" data-card-progress hidden>
+                <span class="progress-bar"><span data-card-bar></span></span>
+                <span class="progress-count" data-card-count></span>
+              </div>
+              <div class="course-card-actions">
+                <a class="course-btn" href={url} data-card-start>Começar</a>
+                <a class="course-btn course-btn--secondary" href={courseZipUrl(course.slug)} download>Baixar para o Obsidian (.zip)</a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+    <section class="courses-cta-band" aria-labelledby="crie-title">
+      <div class="courses-cta">
+        <h2 id="crie-title">Crie o seu curso</h2>
+        <p>
+          Explico o método, deixo a skill que monta a estrutura toda para você usar com o Claude e um e-mail
+          para mandar o curso que você criou. Os bons podem entrar aqui.
+        </p>
+        <a class="course-btn course-btn--inverse" href="/cursos/como-criar/">Como eu crio os cursos</a>
+      </div>
+    </section>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  import { loadProgress } from '../../lib/courses/progress';
+
+  // Search: every word typed must appear in the course's title, goal or module titles (accents ignored).
+  const search = document.querySelector<HTMLInputElement>('[data-course-search]');
+  const empty = document.querySelector<HTMLElement>('[data-course-empty]');
+  if (!search || !empty) throw new Error('Course search markup is missing');
+  const fold = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-course-card]')].map((card) => ({
+    card,
+    text: fold(card.dataset.search ?? ''),
+  }));
+  search.addEventListener('input', () => {
+    const words = fold(search.value).split(/\s+/).filter(Boolean);
+    for (const { card, text } of cards) card.hidden = !words.every((w) => text.includes(w));
+    empty.hidden = cards.some(({ card }) => !card.hidden);
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-course-card]').forEach((card) => {
+    const slug = card.dataset.courseCard ?? '';
+    const total = Number(card.dataset.lessons);
+    const progress = loadProgress(slug);
+    if (progress.read.length === 0 && !progress.last) return;
+    const done = Math.min(progress.read.length, total);
+    const percent = Math.round((done / total) * 100);
+    const box = card.querySelector<HTMLElement>('[data-card-progress]');
+    const bar = card.querySelector<HTMLElement>('[data-card-bar]');
+    const count = card.querySelector<HTMLElement>('[data-card-count]');
+    const start = card.querySelector<HTMLAnchorElement>('[data-card-start]');
+    if (!box || !bar || !count || !start) throw new Error(`Course card ${slug} is missing its progress markup`);
+    box.hidden = false;
+    bar.style.width = `${percent}%`;
+    count.textContent = `${done}/${total} aulas`;
+    start.textContent = 'Continuar';
+    start.href = progress.last ?? card.dataset.firstLesson ?? start.href;
+  });
+</script>

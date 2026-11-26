@@ -1,0 +1,42 @@
+---
+aliases:
+  - diagnósticos
+  - diagnosticar
+tags:
+  - glossario
+  - direito
+---
+# Diagnóstico
+
+Identificação da doença ou da causa de um problema de saúde, feita por profissional habilitado. O leigo descreve o que vê e deixa o diagnóstico para o médico.
+
+> [!example] Exemplo
+> '[[Dor Toracica|Dor no peito]] e suando' é dado observado; 'é um [[Infarto|infarto]]' é diagnóstico e fica com o médico.
+
+## Onde aparece
+- **Módulo 1:** [[01.04 - Sangue e Coagulacao|1.4]], [[01.07 - Sistema Nervoso e Consciencia|1.7]]
+- **Módulo 2:** [[02.01 - O Que a Lei Exige e Protege|2.1]], [[02.03 - Acionar o Socorro Certo|2.3]], [[02.07 - O Lado Humano e a Passagem do Cuidado|2.7]]
+- **Módulo 3:** [[03.02 - ATLS e PHTLS Origem e Filosofia|3.2]]
+- **Módulo 4:** [[04.01 - Por que Avaliar com Metodo|4.1]], [[04.04 - Glasgow e AVPU|4.4]], [[04.05 - Sinais Vitais sem Aparelho|4.5]], [[04.06 - Avaliacao Secundaria|4.6]], [[04.07 - Reavaliacao Registro e Passagem de Caso|4.7]], [[04.08 - Multiplas Vitimas e Triagem START|4.8]]
+- **Módulo 5:** [[05.09 - Hemorragia Interna|5.9]]
+- **Módulo 6:** [[06.07 - Asma DPOC e Hiperventilacao|6.7]], [[06.08 - Anafilaxia Fumaca e Monoxido|6.8]], [[06.10 - Avaliar a Respiracao e Decidir|6.10]]
+- **Módulo 7:** [[07.01 - O que e Parada Cardiaca e Por que Cada Minuto Conta|7.1]]
+- **Módulo 9:** [[09.01 - Cinematica do Trauma Carro Moto Atropelamento e Queda|9.1]]
+- **Módulo 10:** [[10.03 - Limpeza da Ferida|10.3]], [[10.05 - Curativos na Pratica|10.5]], [[10.06 - Infeccao Tetano e Mordeduras|10.6]]
+- **Módulo 11:** [[11.01 - Acido-Base e Por que Respirar Rapido|11.1]], [[11.04 - Debito Cardiaco Pre-carga Pos-carga e Contratilidade|11.4]], [[11.06 - Indice de Choque e Classes de Hemorragia|11.6]], [[11.09 - Inflamacao Infeccao e Caminho para a Sepse|11.9]], [[11.10 - Dor Nocicepcao e Mapa de Dor Referida|11.10]], [[11.13 - Eletrofisiologia do Coracao e Ritmos|11.13]], [[11.14 - Farmacologia Conceitual|11.14]]
+- **Módulo 12:** [[12.01 - O Contrato do Exame Fisico por Leigo|12.1]], [[12.02 - O que o Exame Fisico Rende e como Comparar|12.2]], [[12.03 - Os Quatro Metodos Ambiente e Posicao|12.3]], [[12.04 - Inspecao e Palpacao Sistematicas|12.4]], [[12.07 - Vocabulario Semiologico e Linhas de Referencia|12.7]], [[12.08 - Exame Geral I Estado Geral Facies Postura e Marcha|12.8]], [[12.09 - Exame Geral II Pele e Mucosas|12.9]], [[12.10 - Exame Geral III Edema Linfonodos Unhas e Perfusao|12.10]], [[12.11 - Ficha de Exame Geral e Casos de Treino|12.11]]
+- **Módulo 13:** [[13.01 - Anatomia Funcional e Mapa dos Pares Cranianos|13.1]], [[13.02 - Olhos e Pupilas com a Penlight|13.2]], [[13.04 - Boca e Garganta|13.4]], [[13.05 - Pescoco|13.5]], [[13.06 - Neurologico 1 Estado Mental|13.6]], [[13.09 - Reflexos sem Martelo|13.9]], [[13.10 - Sinais Meningeos|13.10]], [[13.11 - Escalas de AVC AIT e Imitadores|13.11]]
+- **Módulo 14:** [[14.01 - Por que Medir e o que um Numero Significa|14.1]], [[14.03 - Preparacao Correta da Medida de Pressao|14.3]], [[14.05 - Medidor Digital Validacao e Urgencia|14.5]], [[14.07 - Temperatura|14.7]], [[14.09 - Rotina Completa Ficha e Cuidados|14.9]]
+- **Módulo 15:** [[15.01 - Como o Estetoscopio Funciona|15.1]], [[15.02 - Tecnica Geral e Artefatos|15.2]], [[15.03 - Pulmao Normal Mapa de Pontos e Sons|15.3]], [[15.04 - Pulmao Anormal Sons e Mecanismos|15.4]], [[15.05 - Ressonancia Vocal|15.5]], [[15.07 - Coracao Anormal Ritmo Bulhas Extras e Atrito|15.7]], [[15.08 - Sopros Graduacao e Manobras|15.8]], [[15.09 - Vasos e Tireoide|15.9]], [[15.10 - Abdome|15.10]], [[15.11 - Mapa do Corpo e o que Nao se Ouve|15.11]], [[15.13 - Relato ao SAMU e Casos de Correlacao|15.13]], [[15.14 - Plano de Treino Diario e Bancos de Sons|15.14]]
+- **Módulo 16:** [[16.01 - Anatomia de Superficie do Torax|16.1]], [[16.02 - Inspecao do Torax e Padroes Respiratorios|16.2]], [[16.03 - Palpacao do Torax|16.3]], [[16.05 - Sindromes Pleuropulmonares I|16.5]], [[16.06 - Sindromes Pleuropulmonares II|16.6]], [[16.09 - O Precordio|16.9]], [[16.10 - A Jugular|16.10]], [[16.12 - TVP Embolia Isquemia Aguda e Ortostatica|16.12]], [[16.13 - Gravidade Relato ao SAMU Ficha e Casos|16.13]]
+- **Módulo 17:** [[17.01 - Anatomia do Abdome e Onde Doi Cada Orgao|17.1]], [[17.03 - Percussao do Abdome|17.3]], [[17.04 - Palpacao Superficial e Profunda|17.4]], [[17.05 - O Peritonio e os Sinais Peritoneais|17.5]], [[17.06 - Manobras de Apendice e Vesicula|17.6]], [[17.07 - Padroes de Abdome Agudo e Decisao|17.7]], [[17.09 - Joelho Ombro e Tornozelo|17.9]], [[17.10 - Coluna Dor Mecanica Sinais de Alarme|17.10]], [[17.11 - Ficha IAPP Casos e Relato ao SAMU|17.11]]
+- **Módulo 18:** [[18.01 - Glicose Insulina e Diabetes|18.1]], [[18.05 - Valores e Interpretacao|18.5]], [[18.06 - Hipoglicemia|18.6]], [[18.07 - Hiperglicemia Cetoacidose e Hiperosmolar|18.7]], [[18.08 - Situacoes Especiais|18.8]], [[18.09 - Pratica Registro e Conservacao|18.9]]
+- **Módulo 19:** [[19.01 - Como o Clinico Pensa|19.1]], [[19.02 - Probabilidade em Linguagem Clara|19.2]], [[19.03 - Vieses Cognitivos e Defesas|19.3]], [[19.05 - Padroes Fisiopatologicos Neurologico Metabolico e Desidratacao|19.5]], [[19.08 - Escores NEWS2 PEWS e BE-FAST|19.8]], [[19.09 - Regras Clinicas Wells HEART Ottawa e TCE|19.9]], [[19.11 - Comunicar a Incerteza ao SAMU e ao Medico|19.11]], [[19.12 - Casos Integrados 1 a 10|19.12]], [[19.13 - Casos Integrados 11 a 20|19.13]], [[19.14 - Casos Integrados 21 a 30|19.14]]
+- **Módulo 20:** [[20.01 - Pensar pelo Sintoma e as Tres Decisoes|20.1]], [[20.02 - Dor Toracica|20.2]], [[20.03 - Dispneia|20.3]], [[20.05 - Cefaleia Tontura e Vertigem|20.5]], [[20.06 - Alteracao Aguda de Consciencia e Confusao|20.6]], [[20.08 - Arboviroses Dengue Chikungunya e Zika|20.8]], [[20.09 - Leptospirose Febre Maculosa Malaria e Viajante|20.9]], [[20.11 - Sincope Palpitacao e Pressao Alta ou Baixa|20.11]], [[20.12 - Queixas Escondidas Urologicas e Ginecologicas|20.12]], [[20.14 - Tabela Resumo por Queixa e Casos Integrados|20.14]]
+- **Módulo 21:** [[21.01 - AVC Tempo e Cerebro|21.1]], [[21.02 - Infarto Sindrome Coronariana Aguda|21.2]], [[21.03 - Sincope e Desmaio|21.3]], [[21.05 - Intoxicacoes e Envenenamentos|21.5]], [[21.07 - Calor Exaustao e Insolacao|21.7]], [[21.10 - Gestacao Parto e Urgencias Pediatricas|21.10]]
+- **Módulo 22:** [[22.01 - Como Criancas Diferem do Adulto|22.1]], [[22.02 - Triangulo de Avaliacao Pediatrica e PEWS|22.2]], [[22.03 - Exame do Bebe|22.3]], [[22.05 - Via Aerea e Respiracao Crupe Bronquiolite Asma e Febre|22.5]], [[22.06 - Desidratacao Planos A B e C|22.6]], [[22.08 - Sono Seguro e Maus-tratos|22.8]], [[22.11 - Idoso Apresentacao Atipica Delirium e Polifarmacia|22.11]], [[22.12 - Quedas no Idoso|22.12]], [[22.13 - Deficiencia Comunicacao e Dispositivos em Casa|22.13]]
+- **Módulo 23:** [[23.01 - Estresse Agudo Panico e Dissociacao|23.1]], [[23.03 - Primeiros Socorros Psicologicos e ALGEE|23.3]], [[23.04 - Panico ou Causa Organica|23.4]], [[23.05 - Risco de Suicidio Mitos Sinais e Perguntar|23.5]], [[23.07 - Agitacao Psicose Delirium e Abstinencia|23.7]], [[23.11 - Luto Agudo e Mas Noticias|23.11]], [[23.13 - Saude Mental do Socorrista|23.13]]
+- **Módulo 24:** [[24.01 - Observacao Ativa em Casa|24.1]], [[24.02 - Pancada na Cabeca Concussao e Queda|24.2]], [[24.03 - Febre Vomito e Diarreia em Casa|24.3]], [[24.05 - Doencas Cronicas em Crise Leve|24.5]], [[24.09 - Acamado Higiene Alimentacao Eliminacoes Quedas e Trombose|24.9]], [[24.10 - Feridas Cronicas Pe Diabetico e Curativos ao Longo dos Dias|24.10]], [[24.11 - Diario de Saude Ficha de Bolso Relatorio e Teleconsulta|24.11]], [[24.12 - Cuidar de Quem Cuida|24.12]]
+- **Módulo 25:** [[25.02 - Avaliacao Estilo WFR e Nota SOAP|25.2]], [[25.12 - Cuidar do Cuidador Delegacao e Familia|25.12]]
+- **Módulo 26:** [[26.01 - Auditoria do Kit Item por Item|26.1]], [[26.05 - Cenarios de Trauma e Hemorragia|26.5]], [[26.06 - Cenarios Respiratorios e Cardiacos|26.6]], [[26.07 - Cenarios Clinicos e Ambientais|26.7]], [[26.08 - Cenarios de Exame e Raciocinio|26.8]], [[26.09 - Cenarios de Populacoes Saude Mental e Cuidado Prolongado|26.9]], [[26.10 - Treino Continuo e Cursos|26.10]], [[26.11 - Cartao de Bolso e Fechamento|26.11]]
+- **Módulo 27:** [[27.01 - Como Funciona a Prova Final|27.1]], [[27.03 - Prova Escrita II Examinar e Medir|27.3]], [[27.04 - Prova Escrita III Raciocinar Populacoes e Cuidado|27.4]], [[27.05 - Estacoes Praticas Estilo OSCE|27.5]], [[27.06 - Casos Integrados Cronometrados|27.6]], [[27.07 - Resultado Lacunas e Manutencao|27.7]]

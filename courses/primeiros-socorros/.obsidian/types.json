@@ -1,0 +1,10 @@
+{
+  "types": {
+    "lida": "checkbox",
+    "modulo": "number",
+    "aula": "number",
+    "parte": "text",
+    "aliases": "aliases",
+    "tags": "tags"
+  }
+}

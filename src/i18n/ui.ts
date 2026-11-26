@@ -11,6 +11,7 @@ export const defaultLang: Lang = 'pt';
 export const ui = {
   pt: {
     'nav.blog': 'Blog',
+    'nav.courses': 'Cursos',
     'nav.about': 'Sobre mim',
     'nav.experience': 'Experiência',
     'nav.skills': `Skills`,
@@ -206,6 +207,7 @@ export const ui = {
 
   en: {
     'nav.blog': 'Blog',
+    'nav.courses': 'Courses',
     'nav.about': 'About me',
     'nav.experience': 'Experience',
     'nav.skills': `Skills`,
@@ -401,6 +403,7 @@ export const ui = {
 
   es: {
     'nav.blog': 'Blog',
+    'nav.courses': 'Cursos',
     'nav.about': 'Sobre mí',
     'nav.experience': 'Experiencia',
     'nav.skills': `Skills`,

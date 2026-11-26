@@ -8,6 +8,8 @@ import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 interface Props {
   headings: readonly MarkdownHeading[];
   variant: 'rail' | 'inline';
+  /** Heading of the list; defaults to the blog's "In this post". */
+  title?: string;
 }
 
 // Short posts read fine without a table of contents.
@@ -15,14 +17,15 @@ const MIN_SECTIONS = 3;
 
 const { headings, variant } = Astro.props;
 const t = useTranslations((Astro.currentLocale ?? defaultLang) as Lang);
+const title = Astro.props.title ?? t('post.toc');
 const entries = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const visible = entries.filter((h) => h.depth === 2).length >= MIN_SECTIONS;
 const Wrapper = variant === 'rail' ? 'nav' : 'details';
 ---
 
 {visible && (
-  <Wrapper class={`toc toc--${variant}`} aria-label={t('post.toc')}>
-    {variant === 'inline' ? <summary class="toc-title">{t('post.toc')}</summary> : <p class="toc-title">{t('post.toc')}</p>}
+  <Wrapper class={`toc toc--${variant}`} aria-label={title}>
+    {variant === 'inline' ? <summary class="toc-title">{title}</summary> : <p class="toc-title">{title}</p>}
     <ol class="toc-list">
       {entries.map((h) => (
         <li class={`toc-item toc-item--h${h.depth}`}>

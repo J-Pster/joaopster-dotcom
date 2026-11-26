@@ -1,0 +1,70 @@
+---
+// Course navigation: the course home, the glossary and every module with its lessons.
+// The current module starts open. Lesson links carry data-lesson so the reader script can tick
+// the ones already read and count them per module.
+// Glossary pages list the modules only: the course has thousands of terms and those pages
+// would otherwise carry the whole lesson tree each.
+import type { Note, Vault } from '../../lib/courses/vault';
+
+interface Props {
+  vault: Vault;
+  note: Note;
+}
+
+const { vault, note } = Astro.props;
+const withLessons = note.kind !== 'glossary';
+const glossaryUrl = `${vault.home.url}glossario/`;
+---
+
+<details class="course-nav" data-course-nav>
+  <summary class="course-nav-toggle">Módulos do curso</summary>
+  <nav class="course-nav-inner" aria-label="Módulos do curso">
+    <a class="course-nav-home" href={vault.home.url} aria-current={note.kind === 'home' ? 'page' : undefined}>
+      {vault.course.title}
+    </a>
+    <p class="course-nav-progress" data-course-total={vault.lessons.length}>
+      <span data-course-read>0</span> de {vault.lessons.length} aulas lidas
+    </p>
+    {vault.glossary.length > 0 && (
+      <a class="course-nav-glossary" href={glossaryUrl} aria-current={note.kind === 'glossary' ? 'page' : undefined}>
+        Glossário <span>{vault.glossary.length} termos</span>
+      </a>
+    )}
+    <ol class="course-nav-modules">
+      {vault.modules.map((module) => {
+        const current = module.id === note.moduleId;
+        return (
+          <li class="course-nav-module">
+            {withLessons ? (
+              <details open={current}>
+                <summary>
+                  <a href={module.note.url} aria-current={note.id === module.note.id ? 'page' : undefined}>
+                    <span class="course-nav-number">{module.number}</span>
+                    <span class="course-nav-title">{module.title}</span>
+                  </a>
+                  <span class="course-nav-count" data-module-count>0/{module.lessons.length}</span>
+                </summary>
+                <ol class="course-nav-lessons">
+                  {module.lessons.map((lesson) => (
+                    <li>
+                      <a href={lesson.url} data-lesson={lesson.url} aria-current={lesson.id === note.id ? 'page' : undefined}>
+                        {lesson.title.replace(/^Aula [\d.]+:\s*/, '')}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            ) : (
+              <div class="course-nav-row">
+                <a href={module.note.url}>
+                  <span class="course-nav-number">{module.number}</span>
+                  <span class="course-nav-title">{module.title}</span>
+                </a>
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+</details>

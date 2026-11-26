@@ -10,9 +10,11 @@ interface Props {
 	description: string;
 	image?: ImageMetadata | string;
 	type?: 'website' | 'article';
+	/** "none" for pages that exist only in Portuguese (the courses): no hreflang alternates. */
+	alternateLocales?: 'all' | 'none';
 }
 
-const { title, description, image = '/og-image.png', type = 'website' } = Astro.props;
+const { title, description, image = '/og-image.png', type = 'website', alternateLocales = 'all' } = Astro.props;
 
 const site = Astro.site ?? new URL('https://joaopster.com');
 const canonicalURL = new URL(Astro.url.pathname, site);
@@ -81,10 +83,14 @@ const siteLd = {
 
 <!-- Canonical + language alternates -->
 <link rel="canonical" href={canonicalURL} />
-<link rel="alternate" hreflang="pt-BR" href={localizedURL('pt')} />
-<link rel="alternate" hreflang="en" href={localizedURL('en')} />
-<link rel="alternate" hreflang="es" href={localizedURL('es')} />
-<link rel="alternate" hreflang="x-default" href={localizedURL('pt')} />
+{alternateLocales === 'all' && (
+	<>
+		<link rel="alternate" hreflang="pt-BR" href={localizedURL('pt')} />
+		<link rel="alternate" hreflang="en" href={localizedURL('en')} />
+		<link rel="alternate" hreflang="es" href={localizedURL('es')} />
+		<link rel="alternate" hreflang="x-default" href={localizedURL('pt')} />
+	</>
+)}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
