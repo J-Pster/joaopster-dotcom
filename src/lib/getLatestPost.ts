@@ -40,16 +40,13 @@ export interface LatestPost {
   href: string;
 }
 
-export async function getLatestPost(lang: Lang): Promise<LatestPost | undefined> {
-  const [latest] = await getPostsForLang(lang);
-  if (!latest) return undefined;
-
+export async function getRecentPosts(lang: Lang, count: number): Promise<LatestPost[]> {
   const prefix = lang === 'pt' ? '' : `/${lang}`;
-  return {
-    title: latest.data.title,
-    description: latest.data.description,
-    pubDate: latest.data.pubDate,
-    readTime: readTime(latest.body),
-    href: `${prefix}/blog/${slugOf(latest)}/`,
-  };
+  return (await getPostsForLang(lang)).slice(0, count).map((post) => ({
+    title: post.data.title,
+    description: post.data.description,
+    pubDate: post.data.pubDate,
+    readTime: readTime(post.body),
+    href: `${prefix}/blog/${slugOf(post)}/`,
+  }));
 }

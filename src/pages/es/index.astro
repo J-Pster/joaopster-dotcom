@@ -7,19 +7,21 @@ import DarkAboutSection from '../../components/sections/DarkAboutSection.astro';
 import ExperienceSection from '../../components/sections/ExperienceSection.astro';
 import FeaturesGridSection from '../../components/sections/FeaturesGridSection.astro';
 import WorkflowSection from '../../components/sections/WorkflowSection.astro';
+import RecentPosts from '../../components/RecentPosts.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import ProjectsSection from '../../components/sections/ProjectsSection.astro';
 import SkillsSection from '../../components/sections/SkillsSection.astro';
 import StatsBandSection from '../../components/sections/StatsBandSection.astro';
 import CTASection from '../../components/sections/CTASection.astro';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
-import { getLatestPost } from '../../lib/getLatestPost';
+import { getRecentPosts } from '../../lib/getLatestPost';
 import { getWakatimeData, buildAddendum } from '../../lib/getWakatimeData';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
 
-const latestPost = await getLatestPost(lang);
+const [latestPost, ...morePosts] = await getRecentPosts(lang, 4);
 const wakatimeData = await getWakatimeData();
 const writeCard = latestPost && {
   pill: t('blog.latestPost'),
@@ -44,13 +46,6 @@ const writeCard = latestPost && {
       <ExperienceSection />
       <FeaturesGridSection />
       <WorkflowSection
-        variant="build"
-        label={t('workflow.build.label')}
-        heading={t('workflow.build.heading')}
-        body={t('workflow.build.body')}
-        cta={{ text: t('workflow.build.cta'), href: '#projects' }}
-      />
-      <WorkflowSection
         variant="write"
         label={t('workflow.write.label')}
         heading={t('workflow.write.heading')}
@@ -58,7 +53,10 @@ const writeCard = latestPost && {
         cta={{ text: t('workflow.write.cta'), href: `${prefix}/blog` }}
         flip={true}
         latestPost={writeCard}
-      />
+      >
+        <RecentPosts posts={morePosts} />
+        <NewsletterSignup />
+      </WorkflowSection>
       <WorkflowSection
         variant="opensource"
         label={t('workflow.opensource.label')}
