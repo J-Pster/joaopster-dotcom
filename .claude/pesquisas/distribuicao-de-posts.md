@@ -101,3 +101,16 @@ Achado principal: quase todo sub geral de dev em inglês proíbe pelo menos uma 
 - Threads: 500 caracteres.
 - LinkedIn post curto: a skill usa 1.200 a 1.800 caracteres.
 - O editor de artigos do LinkedIn não interpreta markdown colado (de memória, não testado).
+
+## Discord: comunidades brasileiras de dev (conferido em 26/11/2026)
+
+Convites conferidos na API pública de convites do Discord (`/api/v10/invites/<código>?with_counts=true`), com o número de membros do momento.
+
+- Rocketseat: https://discord.gg/rocketseat (252.614 membros). Maior comunidade, mais iniciante.
+- Programadores BR: https://discord.gg/programacao (39.631). Tem canal de divulgação de projetos, segundo a página do servidor.
+- He4rt Developers: https://discord.gg/he4rt (26.147). Sem fins lucrativos, link vem do site oficial heartdevs.com.
+- Ballerini: sem convite curto conhecido. Página de descoberta do Discord: https://discord.com/servers/ballerini-789888698673922078 (~37,5 mil segundo a página).
+- Chorume (Mano Deyvin): `discord.gg/chorume` não funciona mais e não achei convite válido.
+- Código Fonte TV: o servidor tem só 183 membros, não vale.
+
+Ler as regras de cada servidor antes de postar link. Não conferido quais têm canal próprio para divulgar conteúdo.
