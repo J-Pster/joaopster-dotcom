@@ -9,10 +9,11 @@ O blog é pessoal e técnico. O João escreve sobre IA aplicada, backend, infrae
 
 Um post bom aqui consegue as duas coisas: quem não sabe nada sai entendendo, e quem já sabe não sente que perdeu tempo. Também é o tipo de página que o Google e os buscadores com IA querem mostrar: escrita para gente, com experiência real de quem usou a coisa. O João tem essa experiência, e ela é o maior trunfo de SEO do blog. Use-a.
 
-Esta skill tem duas referências. Leia as duas antes do primeiro rascunho:
+Esta skill tem três referências. Leia as três antes do primeiro rascunho:
 
-- `references/estrutura.md`: como montar título, abertura, seções e fechamento, com os frameworks e o checklist de diagnóstico.
-- `references/seo.md`: o que otimizar e o que não fazer, com base na documentação do Google, e o que o site já faz sozinho.
+- `references/estrutura.md` tem como montar título, abertura, seções e fechamento, com os frameworks e o checklist de diagnóstico.
+- `references/seo.md` tem o que otimizar e o que não fazer, com base na documentação do Google, e o que o site já faz sozinho.
+- `references/padroes-ia.md` tem os vícios de texto de IA para evitar, incluindo as regras do João (dois-pontos só antes de lista).
 
 ## Processo
 
@@ -52,11 +53,17 @@ Siga `estrutura.md`. O resumo:
 
 Não use a skill `escrever-como-joao` em post. Ela foi calibrada com mensagens curtas de WhatsApp e corta demais um texto longo.
 
-### 5. Revise em três passadas
+### 5. Revise (obrigatório, nesta ordem)
+
+Nenhum post vai para o João sem passar por todas estas etapas. Não pule nenhuma, nem com pressa, nem num post curto, nem numa edição pequena.
 
 1. **Estrutura:** rode o checklist de diagnóstico de `estrutura.md` (abertura lenta, seções iguais, frase que não acrescenta, conclusão forçada, título que não bate com a abertura).
 2. **SEO:** rode o checklist de `seo.md`.
-3. **Humanizer:** passe a skill `humanizer:humanizer` no texto inteiro, sem mudar fatos nem estrutura.
+3. **Humanizer, primeira passada:** chame a skill `humanizer:humanizer` com o post inteiro e aplique o que ela apontar, sem mudar fatos nem estrutura.
+4. **Padrões de IA:** rode a lista e a checagem rápida de `references/padroes-ia.md`. A regra dos dois-pontos é do João e vale sempre, ou seja, dois-pontos só antes de lista, tabela ou bloco de código, e no resto vírgula.
+5. **Humanizer, segunda passada:** chame o `humanizer:humanizer` de novo no texto já corrigido. A primeira passada e as correções costumam criar padrões novos ao trocar um vício por outro, e a segunda pega esses.
+
+Faça o mesmo nas traduções e em qualquer texto para outras plataformas (LinkedIn, TabNews, Dev.to, Reddit) antes de mostrar ou publicar.
 
 ### 6. Mostre ao João e itere
 

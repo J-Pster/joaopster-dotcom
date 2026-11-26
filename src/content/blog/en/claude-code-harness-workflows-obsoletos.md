@@ -9,15 +9,15 @@ In March I shipped version 1.0 of [Pster's AI Workflow](https://github.com/J-Pst
 
 Today I use neither.
 
-Both still work. What changed is Claude Code itself: its harness has improved so much that it now does almost everything those workflows did, and in some cases does it better. In my opinion this applies to most of the workflows we used to install on top of it. Mine is just the example I know best.
+Both still work. What changed is Claude Code itself, its harness has improved so much that it now does almost everything those workflows did, and in some cases does it better. In my opinion this applies to most of the workflows we used to install on top of it. Mine is just the example I know best.
 
 In this post I explain what the harness is, what my workflow did, what Claude Code already does with no plugin at all, and the two things I still add on top.
 
 ## What is the Claude Code harness?
 
-The harness is everything that runs around the model. The model (Opus, Sonnet) does the thinking. The harness gives it the tools to act: read and edit files, run commands, launch other agents, manage context, remember things between one conversation and the next.
+The harness is everything that runs around the model. The model (Opus, Sonnet) does the thinking. The harness gives it the tools to act, like reading and editing files, running commands, launching other agents, managing context and remembering things between one conversation and the next.
 
-A useful analogy: the model is the engine, and the harness is the rest of the car. A good engine in a bad car doesn't get you far.
+A useful way to think about it is that the model is the engine and the harness is the rest of the car. A good engine in a bad car doesn't get you far.
 
 For a long time the engine was ahead of the car. The model could already do a lot, but the harness didn't give it the structure to organize itself on large tasks. That gap is what workflows were built to fill.
 
@@ -34,9 +34,9 @@ Pster's AI Workflow was built for Cursor and had a fixed flow:
 /pwf-commit-changes  → structured commits
 ```
 
-It rested on two ideas. The first was **predictability**: the README said the commands don't pick the path on their own, and the developer chooses the next step. The second was **documentation as memory**: the commands read the project docs before implementing and updated them at the end, because the AI forgot everything from one session to the next.
+It rested on two ideas. The first was **predictability**, the README itself said the commands don't pick the path on their own and the developer chooses the next step. The second was **documentation as memory**, the commands read the project docs before implementing and updated them at the end, because the AI forgot everything from one session to the next.
 
-When I moved to Claude Code, another piece was missing: running several agents at once. For that I installed OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), which added commands like `/team`, `/ralph` and `/ultrawork` to orchestrate agents in parallel.
+When I moved to Claude Code, another piece was missing, which was running several agents at once. For that I installed OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), which added commands like `/team`, `/ralph` and `/ultrawork` to orchestrate agents in parallel.
 
 Back then all of this made sense. The model didn't organize itself well on long tasks, so I gave it rails.
 
@@ -65,7 +65,7 @@ With `/workflow`, Claude Code builds a flow that launches several subagents and 
 
 `/btw` lets you ask a side question without disrupting the task that's running. You can also open a subchat from the session you're in.
 
-And the part I find the coolest: one chat can now talk to another. One session sends a task to another, the other one answers, and you don't have to copy and paste between them.
+And the part I find the coolest is that one chat can now talk to another. One session sends a task to another, the other one answers, and you don't have to copy and paste between them.
 
 ### Claude manages itself
 
@@ -75,7 +75,7 @@ That took away the core idea of my workflow. I chose every step because the mode
 
 ### Projects replaced my workspace
 
-My workflow had a whole command just to create a workspace with all of a project's repositories and keep the plan and docs together. Claude Code's projects do this natively: one central session that orchestrates subsessions, called topics. It's what I used to build by hand.
+My workflow had a whole command just to create a workspace with all of a project's repositories and keep the plan and docs together. Claude Code's projects do this natively, with one central session that orchestrates subsessions, called topics. It's what I used to build by hand.
 
 ## What the harness still lacks
 
@@ -83,9 +83,9 @@ There are two things I still add on top.
 
 ### Serena, for searching and editing code
 
-Claude Code still works with basic file tools: read, edit and search text, the way the operating system does. It works, but it's crude. To change a function, it has to read the file, find the snippet and edit the text.
+Claude Code still works with basic file tools that only read, edit and search text, the way the operating system does. It works, but it's crude. To change a function, it has to read the file, find the snippet and edit the text.
 
-[Serena](https://github.com/oraios/serena) gives Claude tools that understand code: `find_symbol` to find a function or class, `find_referencing_symbols` to see who uses it, and `replace_symbol_body` to replace its body without reading the whole file. That uses less context and makes fewer mistakes. I think something like this will make it into the harness eventually, but it hasn't yet.
+[Serena](https://github.com/oraios/serena) gives Claude tools that understand code, like `find_symbol` to find a function or class, `find_referencing_symbols` to see who uses it and `replace_symbol_body` to replace its body without reading the whole file. That uses less context and makes fewer mistakes. I think something like this will make it into the harness eventually, but it hasn't yet.
 
 ### ai-memory, for remembering things
 
@@ -106,12 +106,12 @@ I uninstalled or stopped using everything else.
 
 ## Explained it twice? Make it a skill
 
-If there's one tip I'd give anyone using Claude Code today, it's this: anything you have to explain twice should become a skill.
+If there's one tip I'd give anyone using Claude Code today, it's that anything you have to explain twice should become a skill.
 
 A **skill** is a bundle of instructions Claude loads when a task calls for it. You write down once how to do something, and it follows that whenever the topic comes up. I have skills for deploying, for my commit convention and for writing in my voice.
 
 This post is an example. On the first draft, Claude used a skill I had made for chat messages, and the text came out too short for a blog. Instead of explaining again how I wanted the post, I asked it to create a skill just for blog posts, with structure, SEO and my site's rules. This post was written with it.
 
-And skills keep growing. They're now merging with connectors, which are integrations with external services, into a single thing: **plugins**. A skill used to be one `.md` file. Today a plugin can have several skills, several `.md` files, scripts, commands, connectors and other support files. It's exactly what I tried to build by hand in Pster's AI Workflow, except now it's a native format.
+And skills keep growing. They're now merging with connectors, which are integrations with external services, into a single thing, **plugins**. A skill used to be one `.md` file. Today a plugin can have several skills, several `.md` files, scripts, commands, connectors and other support files. It's exactly what I tried to build by hand in Pster's AI Workflow, except now it's a native format.
 
 If you have a workflow installed on top of Claude Code, my advice is to try a few weeks without it. See what you actually miss, and add only that back, ideally as a skill. Tell me in the comments what's left in your setup.

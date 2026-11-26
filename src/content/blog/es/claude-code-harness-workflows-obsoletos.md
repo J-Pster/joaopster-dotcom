@@ -9,15 +9,15 @@ En marzo publiqué la versión 1.0 de [Pster's AI Workflow](https://github.com/J
 
 Hoy no uso ninguno de los dos.
 
-Los dos siguen funcionando. Lo que cambió fue el propio Claude Code: su harness evolucionó tanto que pasó a hacer solo casi todo lo que hacían esos workflows, y en algunos casos lo hace mejor. En mi opinión, esto vale para la mayoría de los workflows que instalábamos encima de él. El mío es solo el ejemplo que mejor conozco.
+Los dos siguen funcionando. Lo que cambió fue el propio Claude Code, su harness evolucionó tanto que pasó a hacer solo casi todo lo que hacían esos workflows, y en algunos casos lo hace mejor. En mi opinión, esto vale para la mayoría de los workflows que instalábamos encima de él. El mío es solo el ejemplo que mejor conozco.
 
 En este post explico qué es ese harness, qué hacía mi workflow, qué hace Claude Code hoy sin ningún plugin y las dos cosas que sigo usando por fuera.
 
 ## ¿Qué es el harness de Claude Code?
 
-El harness es todo lo que corre alrededor del modelo. El modelo (Opus, Sonnet) es el que piensa. El harness le da las herramientas para actuar: leer y editar archivos, ejecutar comandos, lanzar otros agentes, manejar el contexto, recordar cosas entre una conversación y otra.
+El harness es todo lo que corre alrededor del modelo. El modelo (Opus, Sonnet) es el que piensa. El harness le da las herramientas para actuar, como leer y editar archivos, ejecutar comandos, lanzar otros agentes, manejar el contexto y recordar cosas entre una conversación y otra.
 
-Una analogía que ayuda: el modelo es el motor y el harness es el resto del auto. Un buen motor en un mal auto no llega lejos.
+Una analogía que ayuda es pensar que el modelo es el motor y el harness es el resto del auto. Un buen motor en un mal auto no llega lejos.
 
 Durante mucho tiempo el motor iba por delante del auto. El modelo ya podía hacer mucho, pero el harness no le daba estructura para organizarse en tareas grandes. Ese hueco es el que vinieron a tapar los workflows.
 
@@ -34,9 +34,9 @@ Pster's AI Workflow nació para Cursor y tenía un flujo fijo:
 /pwf-commit-changes  → commits estructurados
 ```
 
-Se apoyaba en dos ideas. La primera era la **previsibilidad**: el README decía que los comandos no eligen el camino solos, y que el que elige el siguiente paso es el desarrollador. La segunda era la **documentación como memoria**: los comandos leían la documentación del proyecto antes de implementar y la actualizaban al final, porque la IA se olvidaba de todo de una sesión a otra.
+Se apoyaba en dos ideas. La primera era la **previsibilidad**, el propio README decía que los comandos no eligen el camino solos y que el que elige el siguiente paso es el desarrollador. La segunda era la **documentación como memoria**, los comandos leían la documentación del proyecto antes de implementar y la actualizaban al final, porque la IA se olvidaba de todo de una sesión a otra.
 
-Cuando pasé a Claude Code faltaba otra pieza: correr varios agentes al mismo tiempo. Para eso instalé OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), que traía comandos como `/team`, `/ralph` y `/ultrawork` para orquestar agentes en paralelo.
+Cuando pasé a Claude Code faltaba otra pieza, que era correr varios agentes al mismo tiempo. Para eso instalé OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), que traía comandos como `/team`, `/ralph` y `/ultrawork` para orquestar agentes en paralelo.
 
 En ese momento todo esto tenía sentido. El modelo no se organizaba bien solo en tareas largas, así que yo le ponía los rieles.
 
@@ -65,7 +65,7 @@ Con `/workflow`, Claude Code arma un flujo que lanza varios subagentes y junta l
 
 `/btw` te deja hacer una pregunta paralela sin interrumpir la tarea que está corriendo. También se puede abrir un subchat desde la sesión en la que estás.
 
-Y lo que me parece lo mejor: ahora un chat puede hablar con otro. Una sesión le manda una tarea a otra, la otra responde, y no hace falta copiar y pegar entre ellas.
+Y lo que me parece lo mejor es que ahora un chat puede hablar con otro. Una sesión le manda una tarea a otra, la otra responde, y no hace falta copiar y pegar entre ellas.
 
 ### Claude se gestiona solo
 
@@ -75,7 +75,7 @@ Con eso, la idea central de mi workflow perdió sentido. Yo elegía cada paso po
 
 ### Los projects reemplazaron mi workspace
 
-Mi workflow tenía un comando solo para crear un workspace con todos los repositorios del proyecto y mantener juntos el plan y la documentación. Los projects de Claude Code lo hacen de forma nativa: una sesión central que orquesta subsesiones, llamadas tópicos. Es lo que yo armaba a mano.
+Mi workflow tenía un comando solo para crear un workspace con todos los repositorios del proyecto y mantener juntos el plan y la documentación. Los projects de Claude Code lo hacen de forma nativa, con una sesión central que orquesta subsesiones, llamadas tópicos. Es lo que yo armaba a mano.
 
 ## Lo que todavía le falta al harness
 
@@ -83,9 +83,9 @@ Hay dos cosas que sigo usando por fuera.
 
 ### Serena, para buscar y editar código
 
-Claude Code todavía trabaja con herramientas básicas de archivos: leer, editar y buscar texto, como lo hace el sistema operativo. Funciona, pero es tosco. Para cambiar una función, tiene que leer el archivo, encontrar el fragmento y editar el texto.
+Claude Code todavía trabaja con herramientas básicas de archivos, que solo leen, editan y buscan texto, como lo hace el sistema operativo. Funciona, pero es tosco. Para cambiar una función, tiene que leer el archivo, encontrar el fragmento y editar el texto.
 
-[Serena](https://github.com/oraios/serena) le da a Claude herramientas que entienden el código: `find_symbol` para encontrar una función o clase, `find_referencing_symbols` para ver quién la usa y `replace_symbol_body` para cambiar su cuerpo sin leer el archivo entero. Así gasta menos contexto y se equivoca menos. Creo que algo así va a terminar entrando en el harness, pero todavía no entró.
+[Serena](https://github.com/oraios/serena) le da a Claude herramientas que entienden el código, como `find_symbol` para encontrar una función o clase, `find_referencing_symbols` para ver quién la usa y `replace_symbol_body` para cambiar su cuerpo sin leer el archivo entero. Así gasta menos contexto y se equivoca menos. Creo que algo así va a terminar entrando en el harness, pero todavía no entró.
 
 ### ai-memory, para recordar las cosas
 
@@ -106,12 +106,12 @@ Todo lo demás lo desinstalé o lo dejé de usar.
 
 ## ¿Lo explicaste dos veces? Conviértelo en una skill
 
-Si tengo que dar un solo consejo a quien usa Claude Code hoy, es este: todo lo que tienes que explicar dos veces debería convertirse en una skill.
+Si tengo que dar un solo consejo a quien usa Claude Code hoy, es que todo lo que tienes que explicar dos veces debería convertirse en una skill.
 
 Una **skill** es un paquete de instrucciones que Claude carga cuando la tarea lo pide. Escribes una vez cómo hacer algo y él lo sigue cada vez que aparece el tema. Yo tengo skills para hacer deploy, para mi convención de commits y para escribir a mi manera.
 
 Este post es un ejemplo. En la primera versión, Claude usó una skill que yo había hecho para mensajes de chat, y el texto salió demasiado corto para un blog. En lugar de explicarle de nuevo cómo quería el post, le pedí que creara una skill solo para posts, con estructura, SEO y las reglas de mi sitio. Este texto se escribió con ella.
 
-Y las skills siguen creciendo. Ahora se están juntando con los connectors, que son las integraciones con servicios externos, en una sola cosa: los **plugins**. Antes una skill era un archivo `.md`. Hoy un plugin puede tener varias skills, varios `.md`, scripts, comandos, connectors y otros archivos de apoyo. Es justo lo que intenté armar a mano en Pster's AI Workflow, solo que ahora es un formato nativo.
+Y las skills siguen creciendo. Ahora se están juntando con los connectors, que son las integraciones con servicios externos, en una sola cosa, los **plugins**. Antes una skill era un archivo `.md`. Hoy un plugin puede tener varias skills, varios `.md`, scripts, comandos, connectors y otros archivos de apoyo. Es justo lo que intenté armar a mano en Pster's AI Workflow, solo que ahora es un formato nativo.
 
 Si tienes un workflow instalado encima de Claude Code, mi consejo es probar unas semanas sin él. Fíjate qué te hace falta de verdad y vuelve a agregar solo eso, mejor como skill. Cuéntame en los comentarios qué quedó en tu setup.
