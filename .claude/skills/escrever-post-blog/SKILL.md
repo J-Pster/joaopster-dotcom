@@ -35,11 +35,27 @@ Antes de escrever uma frase do post, responda para você:
 - **Leitor.** Quem é e o que ele já sabe. Por padrão: dev que usa IA no dia a dia, mas não acompanha cada novidade.
 - **Busca.** O que alguém digitaria no Google ou perguntaria a uma IA para cair neste post, em cada idioma. Isso guia título, slug, primeiro parágrafo e títulos de seção (ver `seo.md`).
 
-### 3. Esqueleto primeiro
+### 3. Entreviste o João antes de escrever (obrigatório)
+
+Depois que o João explicar o assunto e pedir o post, não escreva o rascunho ainda. Primeiro faça uma entrevista curta para pegar o que só ele sabe, porque é isso que faz um post parecer escrito por uma pessoa e não por IA, e nenhuma regra de estilo compensa a falta disso.
+
+Mande de 4 a 7 perguntas numa mensagem só, específicas para o post, que ele consiga responder em poucos minutos, inclusive por áudio. Cubra o que faltar no material dele:
+
+- **O momento.** Quando aconteceu, qual foi a primeira vez que ele viu aquilo funcionar ou dar errado, que tarefa ele estava fazendo.
+- **Números dele.** Quanto tempo levou, quanto custou, quantos agentes, quanta RAM, quantos meses usando, e se não tem número, por quê.
+- **Decisões.** Quando ele trocou de ferramenta ou desinstalou algo, e o que fez ele decidir.
+- **O que deu errado ou o que incomoda.** O custo, o limite, o problema que ninguém fala.
+- **Opinião e dúvida.** O que ele acha e o que ele não sabe explicar.
+- **Prova para as afirmações gerais.** Se o post diz "a maioria", "todo mundo" ou "sempre", de onde ele tira isso, e se tem um caso concreto (inclusive de posts anteriores do blog).
+- **Imagem.** Se ele tem um print ou diagrama real para o post.
+
+Use as respostas com as palavras dele sempre que der, sem polir. O que ele disser que não sabe entra como dúvida no texto, não some. Só pule a entrevista se o João pedir explicitamente para escrever sem ela, e mesmo assim diga no fim quais detalhes ficaram faltando.
+
+### 4. Esqueleto primeiro
 
 Liste as seções e o ponto de cada uma antes de escrever. Isso mostra quantos pontos o post tem, quanto cada um precisa crescer e o que está sobrando. Ideia que não serve à tese vai para uma lista de "ideias de fora", e não para o post. Ela pode virar outro post depois.
 
-### 4. Escreva
+### 5. Escreva
 
 Siga `estrutura.md`. O resumo:
 
@@ -58,13 +74,15 @@ Siga `estrutura.md`. O resumo:
 - **Dois-pontos só antes de lista, tabela ou bloco de código.** Sem ponto e vírgula e sem travessão.
 - **Título limpo.** Sem penduricalho entre parênteses ("(e a maioria dos outros)"), sem "Tema: subtítulo" e sem verbo de efeito ("Desvendando", "Dominando").
 - **Conteúdo que só o João tem.** Data, quanto tempo levou, número dele, o que deu errado, a ferramenta e a versão. Todo parágrafo precisa de pelo menos uma coisa assim. Sem isso, nenhuma regra de estilo salva o texto.
+- **Sem analogia genérica.** O João detesta. Motor e carro, canivete suíço, receita de bolo, "é como se" saem. Analogia só entra se for dele, tirada de uma experiência dele. Na dúvida, explique literal.
+- **Tabela só com dados.** Nome de comando, número, sim e não, uma ou duas palavras por célula. Explicação, porquê e opinião ficam no texto, nunca dentro da tabela.
 - Termos técnicos em inglês sem tradução (deploy, harness, workflow). O João tem opinião e fala dela, e também diz quando não sabe ou quando mudou de ideia.
 
 Antes de escrever, leia os posts que já existem em `src/content/blog/pt/` para pegar o ritmo, e leia `references/padroes-ia.md` inteiro (seções de regras do João, pontuação e ritmo, frases, vocabulário e voz).
 
 Não use a skill `escrever-como-joao` em post. Ela foi calibrada com mensagens curtas de WhatsApp e corta demais um texto longo.
 
-### 5. Revise (obrigatório, nesta ordem)
+### 6. Revise (obrigatório, nesta ordem)
 
 Nenhum post vai para o João sem passar por todas estas etapas. Não pule nenhuma, nem com pressa, nem num post curto, nem numa edição pequena.
 
@@ -78,7 +96,7 @@ Faça o mesmo nas traduções e em qualquer texto para outras plataformas (Linke
 
 Cuidado para a revisão não "polir" o texto. Revisar com LLM tende a cortar primeira pessoa e marcas de fala e a alongar palavras, mesmo quando o pedido é preservar a voz (van Nuenen, 2026). Depois de cada passada, rode `scripts/medir_voz.py` de novo e compare com a versão anterior. Se a primeira pessoa caiu, se os pontos passaram as vírgulas ou se o desvio do tamanho das frases encolheu, a passada piorou o texto, e o que ela tirou volta.
 
-### 6. Mostre ao João e itere
+### 7. Mostre ao João e itere
 
 Mostre na própria mensagem do chat, com o post em markdown normal para que ele já apareça formatado. Nunca coloque o post dentro de um bloco de código com três crases: isso quebra a visualização, e o João quer ver títulos, tabelas e negrito renderizados.
 
@@ -90,7 +108,7 @@ Mostre na própria mensagem do chat, com o post em markdown normal para que ele 
 
 Espere ele revisar. Ele itera várias vezes, e cada pedido dele vale para esta e para as próximas versões.
 
-### 7. Publique só depois da aprovação
+### 8. Publique só depois da aprovação
 
 1. Traduza para EN e ES. Mantenha estrutura, links e código, e adapte título, `description` e termos de busca ao jeito que se procura naquele idioma (ver `seo.md`). Não faça tradução literal.
 2. Crie os 3 arquivos com o mesmo slug (ver "Arquivos").

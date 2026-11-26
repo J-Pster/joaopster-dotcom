@@ -9,13 +9,13 @@ En marzo cerré la versión 1.0 de [Pster's AI Workflow](https://github.com/J-Ps
 
 Hoy no uso ninguno de los dos.
 
-Y los dos siguen funcionando, lo que cambió fue el propio Claude Code. Su harness mejoró tanto en estos meses que pasó a hacer solo casi todo lo que yo había armado, y en algunos casos lo hace mejor que mi workflow. Creo que eso vale para la mayoría de los workflows que instalábamos encima de él, el mío es solo el que conozco por dentro.
+Y los dos siguen funcionando, lo que cambió fue el propio Claude Code. Su harness mejoró tanto en estos meses que pasó a hacer solo casi todo lo que yo había armado, y en algunos casos lo hace mejor que mi workflow. Creo que eso vale para la mayoría de los workflows que instalábamos encima de él, y lo digo porque yo mismo revisé varios. El mío es solo el que conozco por dentro, y hay casos peores, como Ruflo, que en ese mismo post de mayo descubrí que era casi todo teatro.
 
 ## ¿Qué es el harness de Claude Code?
 
-El harness es todo lo que corre alrededor del modelo. El modelo, que es Opus o Sonnet, es el que piensa, y el harness es lo que le da las herramientas para actuar, como leer y editar archivos, ejecutar comandos, lanzar otros agentes, manejar el contexto y recordar cosas de una conversación a otra. A mí me gusta pensar que el modelo es el motor y el harness es el resto del auto, y un buen motor en un mal auto no llega a ningún lado.
+El harness es todo lo que corre alrededor del modelo. El modelo, que es Opus o Sonnet, es el que piensa, y el harness es lo que le da las herramientas para actuar, como leer y editar archivos, ejecutar comandos, lanzar otros agentes, manejar el contexto y recordar cosas de una conversación a otra.
 
-Durante mucho tiempo el motor fue mejor que el auto. El modelo ya podía con mucho, pero el harness no le daba estructura para organizarse en una tarea grande, y ese hueco es el que vinieron a tapar los workflows, incluido el mío.
+Durante mucho tiempo el modelo evolucionó más rápido que el harness. Ya podía con mucho, pero no tenía estructura para organizarse en una tarea grande, y ese hueco es el que vinieron a tapar los workflows, incluido el mío.
 
 ## Qué hacía mi workflow
 
@@ -36,18 +36,18 @@ Cuando me pasé a Claude Code todavía faltaba una pieza, que era correr varios 
 
 ## Qué hace Claude Code solo hoy
 
-Para ver la diferencia yo mismo, armé esta tabla con lo que necesitaba, cómo lo resolvía y cómo está hoy:
+Para ver la diferencia yo mismo, armé esta tabla:
 
-| Lo que necesitaba | Cómo lo resolvía antes | Cómo está hoy |
+| Lo que necesitaba | En mi workflow | En Claude Code hoy |
 |---|---|---|
-| Planificar antes de implementar | `/pwf-brainstorm` + `/pwf-plan` | Claude planifica solo cuando la tarea lo pide |
-| Ejecutar por partes | `/pwf-work-plan`, una fase a la vez | Divide el trabajo y lanza subagentes |
+| Planificar antes de implementar | `/pwf-brainstorm` + `/pwf-plan` | nativo |
+| Ejecutar por fases | `/pwf-work-plan` | nativo, con subagentes |
 | Varios agentes en paralelo | OMC (`/team`, `/ultrawork`) | `/workflow` |
 | Revisión con varios agentes | `/pwf-review` | `/code-review` |
-| Instrucciones que repito | Rules y skills del plugin | Skills y plugins nativos |
-| Memoria del proyecto | Docs mantenidos por el workflow | Memoria de Claude (todavía débil) + ai-memory |
+| Instrucciones que repito | rules y skills del plugin | skills y plugins |
+| Memoria del proyecto | docs mantenidos por el workflow | memoria de Claude + ai-memory |
 
-Lo que más me sorprendió fue la orquestación de agentes. Un subagente es un agente que Claude lanza para hacer una parte del trabajo, corre con su propio contexto y devuelve solo el resultado, sin llenar la conversación principal. Con `/workflow` Claude Code arma un flujo que lanza varios de esos y junta lo que producen, algo que antes yo solo lograba con OMC, y las orquestaciones que arma hoy ya van más allá de lo que hacía el OMC de antes.
+La primera vez que `/workflow` me impresionó fue en una investigación. Quería que la IA investigara a fondo varios temas para descubrir la mejor forma de hacer algo, y hasta entonces lo hacía pidiéndole que lanzara workers a mano, que es como yo llamaba a los subagentes, agentes que Claude lanza para hacer una parte del trabajo con su propio contexto y que devuelven solo el resultado. `/workflow` es eso pero estructurado, lanza los subagentes con un objetivo claro, cada uno en su parte, y junta todo al final. ¡Me pareció genial! Antes solo podía orquestar agentes así con OMC, y hoy Claude Code lo hace solo y va más allá de lo que hacía el OMC de antes.
 
 La sesión también se volvió mucho más flexible. Puedo hacer una pregunta paralela con `/btw` sin interrumpir la tarea que está corriendo, puedo abrir un subchat desde la sesión, y lo que me parece lo mejor es que ahora un chat puede hablar con otro. Una sesión le manda una tarea a otra, la otra responde, y ya no tengo que copiar y pegar entre ellas.
 
@@ -55,15 +55,21 @@ Y Claude empezó a gestionarse solo. Esa secuencia de brainstorm, plan y ejecuci
 
 Hasta el comando que tenía para armar un workspace con todos los repositorios del proyecto perdió sentido, porque los projects de Claude Code lo hacen de forma nativa, con una sesión central que orquesta subsesiones que ellos llaman tópicos.
 
+OMC lo desinstalé hace unos dos meses, cuando me di cuenta de que Claude Desktop ya era mejor que el CLI. En el post de mayo yo defendía el CLI porque la interfaz se trababa con muchos agentes corriendo, pero hoy el harness de Desktop está mucho mejor implementado, así que me pasé a Desktop y OMC dejó de tener sentido.
+
+Algo que no puedo decirte es cuánto ahorré con todo esto. No noté diferencia en el consumo, y el consumo de Claude varía mucho por su cuenta, hay semanas en que hago la misma cantidad de trabajo y el uso de tokens se dispara, y otras en que casi no se mueve. ¿Será algo interno de los modelos de Anthropic? Mi apuesta es que sí, pero no lo sé.
+
 ## Lo que sigo usando por fuera
 
-Lo primero es [Serena](https://github.com/oraios/serena). Claude Code todavía trabaja con el código usando herramientas básicas de archivos, que solo leen, editan y buscan texto, como lo hace el sistema operativo. Funciona, pero es tosco, para cambiar una función tiene que leer el archivo, encontrar el fragmento y reemplazar el texto. Serena le da a Claude herramientas que entienden el código, como `find_symbol` para encontrar una función o clase, `find_referencing_symbols` para ver quién la usa y `replace_symbol_body` para cambiar su cuerpo sin leer el archivo entero. Gasta menos contexto y se equivoca menos. Creo que algo así va a terminar entrando en el harness, pero todavía no entró.
+Lo primero es [Serena](https://github.com/oraios/serena). Claude Code todavía trabaja con el código usando herramientas básicas de archivos, que solo leen, editan y buscan texto, como lo hace el sistema operativo. Funciona, pero es tosco, para cambiar una función tiene que leer el archivo, encontrar el fragmento y reemplazar el texto. Serena le da a Claude herramientas que entienden el código, como `find_symbol` para encontrar una función o clase, `find_referencing_symbols` para ver quién la usa y `replace_symbol_body` para cambiar su cuerpo sin leer el archivo entero. En la práctica Claude termina el trabajo mucho más rápido, porque modifica los archivos mucho más rápido.
+
+Eso sí, te aviso que come RAM. Tengo 96 GB de memoria y corro unas 6 o 7 instancias de Serena al mismo tiempo, cada una se lleva entre 6 y 18 GB, y al final se chupa casi toda la memoria de la máquina. Igual no lo suelto, me salva mucho desde que lo instalé. Creo que algo así va a terminar entrando en el harness, pero todavía no entró.
 
 Lo otro es la memoria. La de Claude está empezando a mejorar pero todavía no es buena, así que uso [ai-memory](https://github.com/akitaonrails/ai-memory) de Akita, que guarda la memoria como archivos markdown versionados en git en un servidor que ejecutas tú mismo, y funciona entre agentes y entre máquinas. Puedo salir de Claude Code en medio de una tarea, abrir otro agente en la misma carpeta y seguir sin explicar la arquitectura de nuevo.
 
 Al final mi setup quedó mucho más pequeño que el del post de mayo:
 
-- Claude Code, con su harness
+- Claude Code, ahora en Claude Desktop
 - Serena
 - ai-memory
 - mis skills
@@ -78,4 +84,4 @@ Este post es un ejemplo. En la primera versión Claude usó una skill que yo hab
 
 Y las skills siguen creciendo. Se están juntando con los connectors, que son las integraciones con servicios externos, en una sola cosa, los plugins. Antes una skill era un archivo `.md`, hoy un plugin puede tener varias skills, varios `.md`, scripts, comandos, connectors y otros archivos de apoyo, que es más o menos lo que intenté armar a mano en Pster's AI Workflow, solo que ahora es nativo.
 
-Si tienes un workflow instalado encima de Claude Code, prueba unas semanas sin él, fíjate qué te hace falta y vuelve a agregar solo eso, mejor como skill. Y cuéntame en los comentarios qué quedó en tu setup.
+Si tienes un workflow instalado encima de Claude Code, prueba unas semanas sin él, fíjate qué te hace falta y vuelve a agregar solo eso, mejor como skill. Y cuéntame en los comentarios qué quedó en tu setup, tengo curiosidad por saber si alguien todavía usa OMC.

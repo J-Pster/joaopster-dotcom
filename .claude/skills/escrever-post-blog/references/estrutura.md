@@ -7,7 +7,7 @@ Adaptado do plugin [Online Writing](https://github.com/DonHeidi/online-writing-s
 - **Ritmo de revelação.** Toda frase precisa levar o leitor para a frente. Frase que repete a anterior, com outras palavras, sai ou se junta à de cima. Isso vale mais do que qualquer outra regra daqui.
 - **O leitor é o protagonista.** A experiência do João é a prova e o contexto, e o post é sobre o que o leitor aprende com ela. Teste: o espaço que fala do João nunca pode passar do espaço que fala do que serve ao leitor. "Eu usei X por 6 meses e aprendi Y" é bom. Uma seção inteira de "olha o que eu fiz", sem lição, não é.
 - **Específico ganha de genérico.** "20 comandos, 45 agentes" ganha de "um monte de comandos". O exemplo real do João ganha de um exemplo hipotético. Não generalize o que ele contou de forma concreta.
-- **Explicar sem enrolar.** Termo novo ganha uma ou duas frases de explicação, com analogia se ajudar, e o texto segue.
+- **Explicar sem enrolar.** Termo novo ganha uma ou duas frases de explicação literal, e o texto segue. Nada de analogia genérica (o João detesta), só analogia dele, tirada de uma experiência real.
 
 ## Tipos de post
 
@@ -63,7 +63,7 @@ Não abra com definição de dicionário, com "Neste post vamos ver..." nem com 
 
 ### Recursos visuais
 
-- **Tabela** para comparar: antes e depois, ferramenta A e B, o que um plugin fazia e o que o Claude Code faz hoje.
+- **Tabela** para comparar dados: antes e depois, ferramenta A e B, comando antigo e comando novo. Cada célula tem só dado (nome, número, sim ou não, uma ou duas palavras). O porquê e a opinião ficam no texto em volta.
 - **Lista** só quando os itens são paralelos de verdade. Explicação flui melhor em prosa.
 - **Bloco de código** para comandos, configs e estruturas de pasta. Código inline para nome de comando, arquivo e ferramenta.
 - **Citação (`>`)** para uma frase de outra pessoa ou uma saída real.
