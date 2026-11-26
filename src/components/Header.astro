@@ -3,12 +3,10 @@ import HeaderLink from './HeaderLink.astro';
 import ContactModal from './ContactModal.astro';
 import LanguageSelector from './LanguageSelector.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { getWakatimeData } from '../lib/getWakatimeData';
 
-interface Props {
-  codingTime?: string;
-}
-
-const { codingTime } = Astro.props;
+// Every page gets the counter; the fetch is memoized, so the whole build shares one API call.
+const codingTime = (await getWakatimeData())?.totalText;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
