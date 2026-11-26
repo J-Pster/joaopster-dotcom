@@ -124,6 +124,8 @@ Quando o João pedir as versões para Reddit ou LinkedIn, entregue arquivos `.md
   - **Post curto**, para o feed do perfil, no padrão do LinkedIn. É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
   - **Artigo**, para a função de artigos do LinkedIn. É o post completo, igual ao do blog, com os links internos como URLs completas.
 
+- **X/Threads.** Um arquivo só, que serve para os dois, com um post curto em texto puro e o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Mesmas regras do post curto do LinkedIn (primeira pessoa, a tese com um dado do João, sem hashtag, sem emoji, sem dois-pontos no meio da frase).
+
 Antes de entregar, rode nos textos novos (principalmente no post curto do LinkedIn, que é escrito do zero) a mesma revisão do passo 6.
 
 ## Arquivos
