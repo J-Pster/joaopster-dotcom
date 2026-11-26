@@ -13,7 +13,8 @@ Esta skill tem três referências. Leia as três antes do primeiro rascunho:
 
 - `references/estrutura.md` tem como montar título, abertura, seções e fechamento, com os frameworks e o checklist de diagnóstico.
 - `references/seo.md` tem o que otimizar e o que não fazer, com base na documentação do Google, e o que o site já faz sozinho.
-- `references/padroes-ia.md` tem os vícios de texto de IA para evitar, incluindo as regras do João (dois-pontos só antes de lista).
+- `references/padroes-ia.md` tem os vícios de texto de IA para evitar, com evidência e fonte, as regras do João e a checagem antes de publicar. É longo, então leia as regras do João e as seções de voz e ritmo antes de escrever, e use o resto na revisão.
+- `scripts/medir_voz.py` mede primeira pessoa, ritmo e pontuação de um post.
 
 ## Processo
 
@@ -49,7 +50,17 @@ Siga `estrutura.md`. O resumo:
 - **Limites.** Quando couber, o que ainda não funciona ou o que o João ainda usa por fora. Honestidade dá credibilidade.
 - **Fechamento prático:** o que o leitor faz com isso.
 
-**Voz:** primeira pessoa, português do Brasil, informal e técnico, como dev conversando com dev. Termos técnicos em inglês sem tradução (deploy, harness, workflow). O João tem opinião e fala dela, e também diz quando não sabe ou quando mudou de ideia. Antes de escrever, leia os posts que já existem em `src/content/blog/pt/` para pegar o ritmo.
+**Voz.** O objetivo é que ninguém perceba que o texto passou por IA. Quem lê Dev.to, TabNews e LinkedIn usa LLM todo dia, e esse leitor reconhece o conjunto de sinais (num estudo da ACL 2025, cinco leitores assim erraram 1 de 300 artigos). Escreva já com estas regras, não deixe para a revisão consertar:
+
+- **Primeira pessoa o tempo todo.** "Eu fiz", "eu acho", "meu setup", "me deu trabalho", inclusive nas opiniões e nas afirmações, e não só nas histórias. É a maior diferença medida entre humano e IA, e o "nós" genérico ou o impessoal ("pode-se", "é possível") são o oposto disso.
+- **Português falado, sem erro de ortografia.** Use pra, tá, tô, a gente, "tem" no lugar de "há", próclise ("me deu", "se eu"), "atualizar ele" no lugar de "atualizá-lo", frase começando com "E" ou "Mas", frases emendadas com vírgula, um "né" ou "tipo" de vez em quando. Nunca invente erro de digitação nem tire acento, e nunca erre nome de ferramenta, comando ou código. A pesquisa e o motivo estão em "Erros de português de propósito?" de `references/padroes-ia.md`.
+- **Menos ponto, mais vírgula.** Ponto só onde a pessoa pararia de verdade. Três frases curtas seguidas com ponto, principalmente na description e na abertura, viram uma frase corrida. Varie o tamanho, com algumas frases bem curtas e algumas bem longas.
+- **Dois-pontos só antes de lista, tabela ou bloco de código.** Sem ponto e vírgula e sem travessão.
+- **Título limpo.** Sem penduricalho entre parênteses ("(e a maioria dos outros)"), sem "Tema: subtítulo" e sem verbo de efeito ("Desvendando", "Dominando").
+- **Conteúdo que só o João tem.** Data, quanto tempo levou, número dele, o que deu errado, a ferramenta e a versão. Todo parágrafo precisa de pelo menos uma coisa assim. Sem isso, nenhuma regra de estilo salva o texto.
+- Termos técnicos em inglês sem tradução (deploy, harness, workflow). O João tem opinião e fala dela, e também diz quando não sabe ou quando mudou de ideia.
+
+Antes de escrever, leia os posts que já existem em `src/content/blog/pt/` para pegar o ritmo, e leia `references/padroes-ia.md` inteiro (seções de regras do João, pontuação e ritmo, frases, vocabulário e voz).
 
 Não use a skill `escrever-como-joao` em post. Ela foi calibrada com mensagens curtas de WhatsApp e corta demais um texto longo.
 
@@ -60,10 +71,12 @@ Nenhum post vai para o João sem passar por todas estas etapas. Não pule nenhum
 1. **Estrutura:** rode o checklist de diagnóstico de `estrutura.md` (abertura lenta, seções iguais, frase que não acrescenta, conclusão forçada, título que não bate com a abertura).
 2. **SEO:** rode o checklist de `seo.md`.
 3. **Humanizer, primeira passada:** chame a skill `humanizer:humanizer` com o post inteiro e aplique o que ela apontar, sem mudar fatos nem estrutura.
-4. **Padrões de IA:** rode a lista e a checagem rápida de `references/padroes-ia.md`. A regra dos dois-pontos é do João e vale sempre, ou seja, dois-pontos só antes de lista, tabela ou bloco de código, e no resto vírgula.
+4. **Padrões de IA:** rode a "Checagem antes de publicar" de `references/padroes-ia.md`, item por item, incluindo as buscas por regex e o script `scripts/medir_voz.py`. Leia cada ocorrência no contexto antes de mudar. As regras do João valem sempre: dois-pontos só antes de lista, tabela ou bloco de código, sem ponto e vírgula, título sem parênteses, menos ponto e mais vírgula, primeira pessoa e português falado.
 5. **Humanizer, segunda passada:** chame o `humanizer:humanizer` de novo no texto já corrigido. A primeira passada e as correções costumam criar padrões novos ao trocar um vício por outro, e a segunda pega esses.
 
 Faça o mesmo nas traduções e em qualquer texto para outras plataformas (LinkedIn, TabNews, Dev.to, Reddit) antes de mostrar ou publicar.
+
+Cuidado para a revisão não "polir" o texto. Revisar com LLM tende a cortar primeira pessoa e marcas de fala e a alongar palavras, mesmo quando o pedido é preservar a voz (van Nuenen, 2026). Depois de cada passada, rode `scripts/medir_voz.py` de novo e compare com a versão anterior. Se a primeira pessoa caiu, se os pontos passaram as vírgulas ou se o desvio do tamanho das frases encolheu, a passada piorou o texto, e o que ela tirou volta.
 
 ### 6. Mostre ao João e itere
 
