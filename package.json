@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "cover": "node scripts/generate-linkedin-cover.mjs",
-    "newsletter:draft": "node --env-file-if-exists=.env scripts/newsletter-draft.mjs"
+    "newsletter:digest": "node --env-file-if-exists=.env scripts/newsletter-digest.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",

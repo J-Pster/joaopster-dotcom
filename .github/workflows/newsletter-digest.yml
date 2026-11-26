@@ -1,0 +1,24 @@
+name: Newsletter digest
+
+on:
+  schedule:
+    # Sundays 22:00 UTC (19:00 in Brasília). Schedules the Monday 07:30 sends in each
+    # audience's time zone, leaving the evening to review or cancel them in Buttondown.
+    - cron: '0 22 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/newsletter-digest.mjs
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
