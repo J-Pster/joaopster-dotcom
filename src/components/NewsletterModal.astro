@@ -1,0 +1,68 @@
+---
+// Newsletter signup in a dialog, opened by any element with [data-newsletter-open].
+// Used by the post's side column, where a full form would crowd the table of contents.
+import NewsletterSignup from './NewsletterSignup.astro';
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+const t = useTranslations((Astro.currentLocale ?? defaultLang) as Lang);
+---
+
+<dialog class="newsletter-modal" id="newsletter-modal" aria-labelledby="newsletter-title-modal">
+  <button type="button" class="newsletter-modal-close" data-newsletter-close aria-label={t('modal.close')}>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </button>
+  <NewsletterSignup variant="modal" />
+</dialog>
+
+<style>
+  .newsletter-modal {
+    width: calc(100% - 2 * var(--space-base));
+    max-width: 440px;
+    padding: 36px 32px 28px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .newsletter-modal::backdrop {
+    background: rgba(23, 23, 23, 0.48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  :global(html:has(.newsletter-modal[open])) { overflow: hidden; }
+  .newsletter-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-strong);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .newsletter-modal-close:hover { background: var(--color-hairline-strong); color: var(--color-ink); }
+  @media (max-width: 480px) {
+    .newsletter-modal { padding: 28px 20px 20px; }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#newsletter-modal');
+  if (!dialog) throw new Error('Newsletter modal is missing');
+  document.querySelectorAll('[data-newsletter-open]').forEach((trigger) => {
+    trigger.addEventListener('click', () => dialog.showModal());
+  });
+  dialog.querySelector('[data-newsletter-close]')?.addEventListener('click', () => dialog.close());
+  // A click that lands on the dialog element itself (not its content) is a click on the backdrop.
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>

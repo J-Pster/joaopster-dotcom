@@ -4,12 +4,12 @@
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 
 interface Props {
-  /** "card": full-width card. "rail": compact, stacked form for the post's side column. */
-  variant?: 'card' | 'rail';
+  /** "card": bordered card in the page flow. "modal": unframed, inside NewsletterModal's dialog. */
+  variant?: 'card' | 'modal';
 }
 
 const { variant = 'card' } = Astro.props;
-// Ids are per variant because a post page renders both (rail on wide screens, card on small ones).
+// Ids are per variant because a post page renders both (the modal and the card at the end).
 const titleId = `newsletter-title-${variant}`;
 const emailId = `newsletter-email-${variant}`;
 
@@ -24,6 +24,7 @@ const messages = {
 ---
 
 <section class={`newsletter newsletter--${variant}`} aria-labelledby={titleId}>
+  {variant === 'modal' && <p class="newsletter-eyebrow">Newsletter</p>}
   <h2 class="newsletter-title" id={titleId}>{t('newsletter.title')}</h2>
   <p class="newsletter-desc">{t('newsletter.description')}</p>
   <form class="newsletter-form" data-lang={lang} data-messages={JSON.stringify(messages)} data-sending={t('newsletter.sending')}>
@@ -36,6 +37,7 @@ const messages = {
       required
       autocomplete="email"
       placeholder={t('newsletter.placeholder')}
+      autofocus={variant === 'modal'}
     />
     <input class="newsletter-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <button class="newsletter-button" type="submit">{t('newsletter.submit')}</button>
@@ -119,13 +121,23 @@ const messages = {
   @media (max-width: 640px) {
     .newsletter-form { flex-direction: column; }
   }
-  .newsletter--rail { margin: 0; padding: var(--space-base); }
-  .newsletter--rail .newsletter-title { font-size: 14px; letter-spacing: 0; }
-  .newsletter--rail .newsletter-desc { font-size: 13px; margin-bottom: var(--space-sm); }
-  .newsletter--rail .newsletter-form { flex-direction: column; }
-  .newsletter--rail .newsletter-input,
-  .newsletter--rail .newsletter-button { height: 40px; }
-  .newsletter--rail .newsletter-status { font-size: 13px; }
+  .newsletter--modal { margin: 0; padding: 0; background: none; border: none; border-radius: 0; }
+  .newsletter-eyebrow {
+    margin: 0 0 var(--space-sm);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .newsletter--modal .newsletter-title {
+    margin-bottom: var(--space-sm);
+    padding-right: 40px;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+  }
+  .newsletter--modal .newsletter-desc { font-size: 15px; line-height: 1.6; margin-bottom: var(--space-lg); }
 </style>
 
 <script>

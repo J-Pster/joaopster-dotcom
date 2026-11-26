@@ -7,6 +7,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import NewsletterModal from '../components/NewsletterModal.astro';
 import AuthorBio from '../components/post/AuthorBio.astro';
 import RelatedPosts from '../components/post/RelatedPosts.astro';
 import ShareLinks from '../components/post/ShareLinks.astro';
@@ -52,11 +53,20 @@ const blogLd = {
     <Header />
     <main class="post-main">
       <div class="post-layout">
-      <aside class="post-rail">
+      <aside class="post-rail post-rail--toc">
         <div class="post-rail-inner">
           <TableOfContents headings={headings} variant="rail" />
-          <ShareLinks title={title} url={postUrl} />
-          <NewsletterSignup variant="rail" />
+        </div>
+      </aside>
+      <aside class="post-rail post-rail--actions">
+        <div class="post-rail-inner">
+          <ShareLinks title={title} url={postUrl} variant="icons" />
+          <button type="button" class="rail-newsletter" data-newsletter-open>
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="14" height="11" rx="2" /><path d="M2 7l7 4.5L16 7" />
+            </svg>
+            {t('newsletter.open')}
+          </button>
         </div>
       </aside>
       <div class="post-container">
@@ -88,7 +98,7 @@ const blogLd = {
         </div>
 
         <div class="post-share">
-          <ShareLinks title={title} url={postUrl} />
+          <ShareLinks title={title} url={postUrl} variant="buttons" />
         </div>
 
         <AuthorBio />
@@ -115,6 +125,7 @@ const blogLd = {
       </div>
       </div>
     </main>
+    <NewsletterModal />
     <Footer />
   </body>
 </html>
@@ -132,7 +143,7 @@ const blogLd = {
   }
   .post-main { padding: var(--space-xxl) var(--space-base) var(--space-section); }
   .post-container { max-width: 680px; margin: 0 auto; }
-  /* Wide screens: table of contents and share links in a sticky rail left of the text. */
+  /* Wide screens: the table of contents gets the whole left rail; share and newsletter sit, compact, on the right. */
   .post-rail { display: none; }
   @media (min-width: 1200px) {
     .post-layout {
@@ -140,22 +151,44 @@ const blogLd = {
       grid-template-columns: minmax(0, 1fr) minmax(0, 680px) minmax(0, 1fr);
       column-gap: var(--space-xxl);
     }
-    .post-rail { display: block; grid-column: 1; justify-self: end; width: 100%; max-width: 240px; }
+    .post-rail { display: block; grid-row: 1; width: 100%; max-width: 240px; }
+    .post-rail--toc { grid-column: 1; justify-self: end; }
+    .post-rail--actions { grid-column: 3; justify-self: start; max-width: 220px; }
     .post-rail-inner {
       position: sticky;
       top: 96px;
       display: flex;
       flex-direction: column;
-      gap: var(--space-xl);
+      gap: var(--space-lg);
       max-height: calc(100vh - 112px);
     }
-    /* The table of contents shrinks (and scrolls) so share and newsletter always fit. */
-    .post-rail-inner > :global(.toc--rail) { flex: 1 1 auto; min-height: 120px; }
-    .post-rail-inner > :global(:not(.toc--rail)) { flex: none; }
+    /* Taller than the viewport, the table of contents scrolls inside its rail. */
+    .post-rail-inner > :global(.toc--rail) { flex: 1 1 auto; min-height: 0; }
     .post-newsletter { display: none; }
-    .post-container { grid-column: 2; width: 100%; }
+    .post-container { grid-column: 2; grid-row: 1; width: 100%; }
     .post-container :global(.toc--inline) { display: none; }
   }
+  .rail-newsletter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    width: 100%;
+    min-height: 40px;
+    padding: var(--space-xs) var(--space-sm);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: left;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .rail-newsletter:hover { border-color: var(--color-ink); }
+  .rail-newsletter svg { flex: none; }
   .post-share { margin-top: var(--space-xxl); padding-top: var(--space-xl); border-top: 1px solid var(--color-hairline); }
   .post-breadcrumb { margin-bottom: var(--space-xl); }
   .breadcrumb-link {
