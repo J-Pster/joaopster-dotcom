@@ -116,6 +116,14 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
             LinkedIn
             <span class="channel-ext" aria-hidden="true">↗</span>
           </a>
+          <a class="channel" href="https://www.reddit.com/user/JoaoPster/" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="10" fill="#ff4500"/>
+              <path fill="white" d="M16.67 10a1.46 1.46 0 0 0-2.47-1 7.12 7.12 0 0 0-3.85-1.23l.65-3.08 2.13.45a1 1 0 1 0 .1-.61l-2.38-.5a.26.26 0 0 0-.31.2l-.73 3.44a7.14 7.14 0 0 0-3.89 1.23 1.46 1.46 0 1 0-1.61 2.39 2.87 2.87 0 0 0 0 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.82 5.83-4.06a2.87 2.87 0 0 0 0-.44 1.46 1.46 0 0 0 .61-1.29zM7.27 11a1 1 0 1 1 1 1 1 1 0 0 1-1-1zm5.58 2.65a3.56 3.56 0 0 1-2.85.86 3.56 3.56 0 0 1-2.85-.86.26.26 0 0 1 .37-.37 3.07 3.07 0 0 0 2.48.72 3.07 3.07 0 0 0 2.48-.72.26.26 0 0 1 .37.37zm-.17-1.65a1 1 0 1 1 1-1 1 1 0 0 1-1 1z"/>
+            </svg>
+            Reddit
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
         </nav>
 
         <!-- Filter bar -->
@@ -274,7 +282,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
 
   .channels {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 6px;
     padding: 6px;
     background: var(--color-canvas-soft);
@@ -638,6 +646,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
   }
   @media (max-width: 640px) {
     .channels { grid-template-columns: repeat(2, 1fr); }
+    .channel--current { grid-column: 1 / -1; }
     .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
     .featured-title { font-size: 22px; }
     .filter-bar { padding: var(--space-sm) var(--space-sm); }
