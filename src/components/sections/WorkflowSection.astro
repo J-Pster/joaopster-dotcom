@@ -440,7 +440,8 @@ const activityGrid = wakatimeData && locale ? buildActivityGrid(wakatimeData.act
     column-gap: 2px;
   }
 
-  .waka-activity-months span {
+  /* Months and cells are redrawn by the client script, which can't add Astro's scope attribute, hence :global(). */
+  .waka-activity-months :global(span) {
     font-size: 10px;
     color: var(--color-on-dark-soft);
     font-family: 'JetBrains Mono', monospace;
@@ -453,21 +454,21 @@ const activityGrid = wakatimeData && locale ? buildActivityGrid(wakatimeData.act
     row-gap: 2px;
   }
 
-  .waka-cell {
+  .waka-activity :global(.waka-cell) {
     display: block;
     aspect-ratio: 1;
     border-radius: 2px;
     background: rgba(255, 255, 255, 0.06);
   }
 
-  .waka-cell--blank {
+  .waka-activity :global(.waka-cell--blank) {
     background: transparent;
   }
 
-  .waka-cell[data-level='1'] { background: rgba(71, 194, 255, 0.25); }
-  .waka-cell[data-level='2'] { background: rgba(71, 194, 255, 0.45); }
-  .waka-cell[data-level='3'] { background: rgba(71, 194, 255, 0.7); }
-  .waka-cell[data-level='4'] { background: #47c2ff; }
+  .waka-activity :global(.waka-cell[data-level='1']) { background: rgba(71, 194, 255, 0.25); }
+  .waka-activity :global(.waka-cell[data-level='2']) { background: rgba(71, 194, 255, 0.45); }
+  .waka-activity :global(.waka-cell[data-level='3']) { background: rgba(71, 194, 255, 0.7); }
+  .waka-activity :global(.waka-cell[data-level='4']) { background: #47c2ff; }
 
   .waka-activity-legend {
     display: flex;
