@@ -131,3 +131,27 @@ O artigo mistura fatos reais com conclusões que as fontes não sustentam.
 - que a NYU Stern acusou a Anthropic de invadir empresas.
 
 **O risco que vale levar a sério:** depender de um único fornecedor de modelo que também compete na camada de aplicação. Isso é verdade para Anthropic, OpenAI e Google, e a Brookings explica bem por quê. A defesa prática é manter o produto capaz de trocar de modelo e não depender do preço fixo de assinatura para uso automatizado.
+
+## O artigo inteiro: as partes que não estão nos 5 mecanismos
+
+O João mandou depois o artigo completo (autor e link não informados). Além dos 5 mecanismos, o texto tem uma introdução, uma seção de "matemática" e uma "arquitetura de sobrevivência". O texto original não foi copiado para cá porque o repositório é público e o texto é de outra pessoa. Resumo das afirmações e avaliação.
+
+| Afirmação do artigo | Avaliação |
+|---|---|
+| Cada vez que você roda o Claude Code, entrega arquitetura e regras de negócio, e a Anthropic "absorve, empacota e lança um produto para te substituir" | Mistura um fato com uma tese. Fato: o código que o Claude lê vai para a Anthropic, e em plano pessoal com a chave de treino ligada pode entrar no treino e ficar até 5 anos (ver `o-que-a-anthropic-pega-planos-pessoais.md`). Sem evidência: que isso vire um produto que copia o teu. Em plano comercial a Anthropic diz que não treina |
+| O Claude Code "varre o repositório inteiro para a nuvem" | Falso para o Claude Code local, que só envia o que lê ou roda. Verdadeiro para sessão na nuvem, onde o repositório é clonado numa VM da Anthropic |
+| Vender token é corrida para o fundo do poço, então a Anthropic precisa da margem do software e da consultoria | É o argumento mais sólido do texto e bate com a Brookings, a Menlo Ventures e a própria expansão da Anthropic para Cowork e plugins de jurídico e finanças. Mas competir com clientes não é o mesmo que roubar dados deles. A avaliação de "US$ 1 trilhão" não foi conferida |
+| "Promessa comercial educa, mas não obriga" | Parcialmente justo. A Anthropic mudou regra de consumidor (treino em ago/2025, uso de assinatura com terceiros em 2026). Os termos comerciais são contrato e obrigam, mas podem mudar com aviso |
+| Use harness próprio e trate o modelo como operário sem estado via API | Bom conselho para portabilidade e contra lock-in. Não reduz o que a Anthropic vê: se o harness chama a API do Claude, o código vai do mesmo jeito. O que muda é poder trocar de modelo |
+| Memória local injetada só no trecho necessário | Boa prática de contexto. Mas o Claude Code local já funciona assim (só manda o que lê), e a memória dele fica em arquivos locais |
+| Nada de escrita livre, validação determinística sua | Boa prática. Dá para fazer no próprio Claude Code com permissões, regras `deny` e hooks |
+| Grave e versione as sessões localmente | O Claude Code já guarda transcrições localmente. "Trabalhar de graça para o IPO" só vale com a chave de treino ligada em plano pessoal |
+| "Se possível, nem use o Claude" | Opinião. OpenAI e Google têm a mesma cláusula de produto concorrente (Brookings), e o plano grátis do Gemini é mais permissivo com dados que o da Anthropic |
+
+## Opinião (Claude, 26/11/2026, com conflito de interesse declarado)
+
+O artigo acerta o risco de negócio e erra o mecanismo. O risco real é depender de um fornecedor de modelo que também compete na camada de aplicação, e isso está documentado (S-1, Brookings, caso Windsurf). O mecanismo que o artigo vende, "a Anthropic lê teu código e copia teu produto", não tem evidência nas fontes. Os episódios mais graves de fato (detecção de harness por palavra-chave com cobrança errada e negativa de reembolso, corte da Windsurf com menos de 5 dias) mostram uma empresa agressiva com preço e acesso, não roubo de código.
+
+O que eu levaria do artigo: separar código de empresa em plano comercial, desligar a chave de treino no plano pessoal, manter produtos que chamam LLM capazes de trocar de modelo, não depender de assinatura de preço fixo para automação, e controlar escrita com permissões e hooks. O resto é retórica.
+
+Observação de estilo: o texto tem vários padrões que a skill `escrever-post-blog` marca como de IA ("Não é teoria da conspiração, nem exagero retórico", "Não foi limitação técnica. Foi sabotagem tarifária", "Sem torcida e sem filtro", fechos de efeito em cada seção).
