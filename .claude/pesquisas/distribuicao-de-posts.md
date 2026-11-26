@@ -20,7 +20,14 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 - Sempre usar `canonical_url` apontando para o post no joaopster.com, converter links internos relativos para URL completa e acrescentar no fim "Originally published on joaopster.com".
 - Post publicado: "Claude Code's harness made my AI workflow obsolete", id 5120820, https://dev.to/jpster/claude-codes-harness-made-my-ai-workflow-obsolete-and-most-others-too-5g5d (o slug ainda tem o "and-most-others-too" do título antigo).
 
-### TabNews (pendente)
+### TabNews (configurado por variável de ambiente)
+
+- Atualização de 26/11/2026: a tela de Network secrets só oferece Bearer e Basic (header `Authorization`), e o TabNews ignora esse header, então o cookie não dá para ir por lá. O João salvou o token como variável de ambiente `TABNEWS_SESSION_ID` no ambiente "Pster Dotcom" (só o valor, sem `session_id=`). A variável só aparece em sessões iniciadas ou retomadas depois de 26/11/2026 às ~15h UTC.
+- Uso, sem nunca imprimir o valor: `curl -s -H "Cookie: session_id=$TABNEWS_SESSION_ID" https://www.tabnews.com.br/api/v1/user` para testar, e `curl -s -X POST https://www.tabnews.com.br/api/v1/contents -H "Content-Type: application/json" -H "Cookie: session_id=$TABNEWS_SESSION_ID" --data @post.json` com `{"title","body","status":"published","source_url"}` para publicar. Usar a versão PT do post, com links internos como URL completa e `source_url` apontando para o post no joaopster.com.
+- A sessão vence em 30 dias. Se der 401, pedir ao João um token novo.
+- Pendente: publicar "A Anthropic é ou não é a Evil Corp?" no TabNews.
+
+### TabNews (histórico da investigação)
 
 - `POST https://www.tabnews.com.br/api/v1/contents` com `title`, `body` (markdown), `status: "published"` e `source_url` opcional.
 - Conferido no código-fonte (github.com/filipedeschamps/tabnews.com.br): a autenticação é só pelo cookie `session_id` (`models/authentication.js`), a sessão vale 30 dias (`models/session.js`, `SESSION_EXPIRATION_IN_SECONDS = 60*60*24*30`). Não existe API key. Requisições com cookie de outra origem são bloqueadas pelo header `sec-fetch-site`/`origin`, mas curl sem esses headers passa.
