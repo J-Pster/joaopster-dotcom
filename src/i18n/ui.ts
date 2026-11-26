@@ -14,7 +14,6 @@ export const ui = {
     'nav.about': 'Sobre mim',
     'nav.experience': 'Experiência',
     'nav.skills': `Skills`,
-    'nav.more': 'Mais',
     'nav.getInTouch': 'Fale comigo',
 
     'hero.role': `Sócio-fundador e desenvolvedor`,
@@ -210,7 +209,6 @@ export const ui = {
     'nav.about': 'About me',
     'nav.experience': 'Experience',
     'nav.skills': `Skills`,
-    'nav.more': 'More',
     'nav.getInTouch': 'Get in touch',
 
     'hero.role': `Co-Founder and Developer`,
@@ -406,7 +404,6 @@ export const ui = {
     'nav.about': 'Sobre mí',
     'nav.experience': 'Experiencia',
     'nav.skills': `Skills`,
-    'nav.more': 'Más',
     'nav.getInTouch': 'Contáctame',
 
     'hero.role': `Socio fundador y desarrollador`,
