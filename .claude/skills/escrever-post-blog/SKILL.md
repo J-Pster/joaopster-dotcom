@@ -60,11 +60,11 @@ Não use a skill `escrever-como-joao` em post. Ela foi calibrada com mensagens c
 
 ### 6. Mostre ao João e itere
 
-Mostre no chat:
+Mostre na própria mensagem do chat, com o post em markdown normal para que ele já apareça formatado. Nunca coloque o post dentro de um bloco de código com três crases: isso quebra a visualização, e o João quer ver títulos, tabelas e negrito renderizados.
 
 1. 3 a 5 opções de título, com a recomendada marcada e o porquê.
-2. A `description` proposta.
-3. O post completo em PT, já com frontmatter.
+2. A `description` proposta e as tags.
+3. O post completo em PT, renderizado. O frontmatter não precisa aparecer como YAML: título, description e tags já estão nos itens acima.
 4. As "ideias de fora", se houver.
 5. Uma linha com o que você não conseguiu confirmar.
 
