@@ -208,6 +208,7 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     text-decoration: none;
     padding: 6px var(--space-xs);
     border-radius: var(--radius-md);
+    white-space: nowrap;
     transition: color 0.15s ease;
   }
   .nav-text-link:hover { color: var(--color-text-link); text-decoration: none; }
@@ -393,6 +394,13 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     transition: background 0.12s, color 0.12s;
   }
   .lang-mobile-btn:hover { background: var(--color-surface-strong); color: var(--color-ink); text-decoration: none; }
+
+  /* Full desktop nav needs ~885px; between the mobile breakpoint and 1024px
+     drop the social icons (they stay in the footer) and tighten spacing. */
+  @media (max-width: 1024px) {
+    nav { padding: 0 var(--space-lg); gap: var(--space-lg); }
+    .nav-icon-link { display: none; }
+  }
 
   @media (max-width: 768px) {
     .nav-center { display: none; }
