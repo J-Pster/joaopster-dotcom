@@ -7,9 +7,9 @@ import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 
-type Props = CollectionEntry<'blog'>['data'] & { readingTime: number };
+type Props = CollectionEntry<'blog'>['data'] & { readingTime: number; ogImage: string };
 
-const { title, description, pubDate, updatedDate, readingTime } = Astro.props;
+const { title, description, pubDate, updatedDate, readingTime, ogImage } = Astro.props;
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -32,7 +32,7 @@ const blogLd = {
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} type="article" />
+    <BaseHead title={title} description={description} image={ogImage} type="article" />
     <script type="application/ld+json" set:html={JSON.stringify(blogLd)} />
   </head>
   <body>
