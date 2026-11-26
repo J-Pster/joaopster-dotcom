@@ -4,6 +4,8 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 ## O que o João decidiu
 
+- Idiomas (26/11/2026): LinkedIn sempre em inglês (artigo, anúncio, post curto, capa), Dev.to em inglês, TabNews em português, blog nos três idiomas. Reddit e X/Threads em português por padrão.
+
 - Canais em uso: blog (joaopster.com), Dev.to (versão EN, pela API), TabNews (versão PT), LinkedIn (post curto no feed e artigo completo), Reddit (r/brdev), X e Threads.
 - Bluesky, Mastodon, Medium, Hashnode e Hacker News ficaram de fora por enquanto.
 - LinkedIn: o Typefully foi descartado por preço (cerca de US$ 100/ano, valor dito pelo João). Por enquanto é manual. Alternativa grátis com connector no Claude: Buffer (plano grátis com 3 canais e 10 posts agendados por canal, segundo fontes de terceiros).
