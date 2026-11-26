@@ -4,7 +4,7 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 ## O que o João decidiu
 
-- Idiomas (26/11/2026): LinkedIn sempre em inglês (artigo, anúncio, post curto, capa), Dev.to em inglês, TabNews em português, blog nos três idiomas. Reddit e X/Threads em português por padrão.
+- Idiomas (26/11/2026): LinkedIn sempre em inglês (artigo, anúncio, post curto, capa), Dev.to em inglês, TabNews em português, blog nos três idiomas. Reddit em português e inglês (decidido em 26/11/2026). X/Threads em português por padrão.
 
 - Canais em uso: blog (joaopster.com), Dev.to (versão EN, pela API), TabNews (versão PT), LinkedIn (post curto no feed e artigo completo), Reddit (r/brdev), X e Threads.
 - Bluesky, Mastodon, Medium, Hashnode e Hacker News ficaram de fora por enquanto.
@@ -55,6 +55,30 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 - Medium: API descontinuada, a Medium não emite tokens novos (https://help.medium.com/hc/en-us/articles/213480228). A ferramenta de importar story puxa o post pela URL e marca o original (de memória, não conferido).
 - Reddit: desde nov/2025 a API exige pedir acesso e esperar aprovação manual (Responsible Builder Policy). Subreddits costumam punir autopromoção automatizada. Manual com texto adaptado.
+
+## Reddit: onde postar (pesquisa de 26/11/2026)
+
+O Reddit bloqueia leitura automatizada daqui, então as regras abaixo vêm de sites que copiam as páginas de regras (rankhog.com, prowlo.com, agentagency.si, subredditmarketing.com, threadotter.com), lidas entre set/2026 e nov/2026. Conferir a barra lateral do sub antes de postar.
+
+Regra geral do Reddit: não existe mais proporção oficial, mas a regra 2 pede participação autêntica e a página de spam pede cuidado com a frequência quando a maior parte das contribuições é link para coisa sua. O 90/10 é orientação antiga da wiki e alguns subs adotam. Não postar o mesmo texto em vários subs no mesmo dia.
+
+### Em português
+
+- r/brdev (~330 mil membros): onde o João já posta. Regras não falam de texto de IA. Autopromoção só para discussão técnica, e a moderação pediu para não usar o sub para lançar produto. Notícia com link direto e título sem opinião.
+- r/programacao (~30 mil, número de 2026 de fonte secundária): regras sem posição clara sobre link próprio. Em português, aceita flair. Melhor post de texto completo.
+
+### Em inglês
+
+- r/ClaudeAI (~1,2 a 1,3 milhão): regra 2 exige que o post seja sobre Claude/Claude Code (IA em geral é removido). Flair obrigatória. Posts no feed exigem mais de 100 de karma de post (a fonte mais antiga falava em 50). Sem regra sobre texto de IA. Serve para os dois posts (harness e Evil Corp).
+- r/ClaudeCode (~500 mil): só sobre Claude Code. Flair obrigatória. Post solo de "fiz com Claude Code" tem que ser detalhado (o que fez, como usou, o que aprendeu), senão vai para a thread semanal de showcase. Sem referral nem promoção repetida. Serve para o post do harness, não para o da Evil Corp.
+- r/ChatGPTCoding (~410 mil): sobre usar IA para programar. Post cujo objetivo principal é divulgar site pessoal ou blog vai para a thread semanal de Self-Promotion ("Delete the link: if nothing is left, it's an ad"). Texto completo no post, com link só no fim, pode passar. Sem "AI slop" (IA só para gramática).
+- r/ExperiencedDevs (~400 mil): fontes classificam autopromoção como caso a caso. Regras completas não conferidas.
+
+### Não usar
+
+- r/programming (~6,9 milhões): regra 1 proíbe conteúdo escrito por LLM, incluindo tradução e resumo por LLM, e a política de IA considera off-topic tudo de IA que não seja profundamente técnico (review de ferramenta, debate sobre o fim da programação).
+- r/LocalLLaMA (~870 mil): proíbe texto "completely/primarily LLM generated". Exceção para não nativo que usa LLM para traduzir, desde que avise. Os posts do João são escritos com o Claude, então não cabe.
+- r/webdev, r/learnprogramming: sem autopromoção ou só em dia fixo.
 - Hacker News: API oficial só de leitura. Manual.
 - Substack (artigo): sem API oficial de publicação.
 - daily.dev: API pública não publica post e exige plano Plus.
