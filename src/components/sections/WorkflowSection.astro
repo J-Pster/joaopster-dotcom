@@ -1,5 +1,6 @@
 ---
 import type { WakatimeData } from '../../lib/getWakatimeData';
+import { ACTIVITY_LEVELS, activityCellTitle, buildActivityGrid } from '../../lib/wakatimeActivity';
 
 interface LatestPostCard {
   pill: string;
@@ -29,6 +30,7 @@ interface Props {
 }
 
 const { label, locale, addendumBase, heading, citation, body, addendum, cta, variant, flip = false, wakatimeData, latestPost } = Astro.props;
+const activityGrid = wakatimeData && locale ? buildActivityGrid(wakatimeData.activity, locale) : undefined;
 ---
 
 <section id={variant === 'opensource' ? 'opensource' : 'writing'} class:list={['workflow-section', flip && 'workflow-section--flip', Astro.slots.has('default') && 'workflow-section--extended']}>
@@ -86,30 +88,29 @@ const { label, locale, addendumBase, heading, citation, body, addendum, cta, var
 
           <div class="waka-divider"></div>
 
-          <template data-waka="lang-template">
-            <div class="waka-lang">
-              <div class="waka-lang-row">
-                <span class="waka-lang-name"></span>
-                <span class="waka-lang-pct"></span>
+          <div class="waka-activity" data-waka-locale={locale}>
+            <span class="waka-metric-label">Activity last year</span>
+            <div class="waka-activity-body" data-waka="activity" style={`--weeks:${activityGrid?.weeks.length ?? 53}`}>
+              <div class="waka-activity-months">
+                {activityGrid?.months.map((month) => (
+                  <span style={`grid-column:${month.week + 1}`}>{month.label}</span>
+                ))}
               </div>
-              <div class="waka-bar-track">
-                <div class="waka-bar-fill"></div>
+              <div class="waka-activity-grid">
+                {activityGrid?.weeks.flat().map((cell) =>
+                  cell ? (
+                    <span class="waka-cell" data-level={cell.level} title={activityCellTitle(cell, locale!)}></span>
+                  ) : (
+                    <span class="waka-cell waka-cell--blank"></span>
+                  ),
+                )}
               </div>
             </div>
-          </template>
-
-          <div class="waka-langs" data-waka="langs">
-            {(wakatimeData?.languages ?? []).map((lang) => (
-              <div class="waka-lang">
-                <div class="waka-lang-row">
-                  <span class="waka-lang-name">{lang.name}</span>
-                  <span class="waka-lang-pct">{lang.percent.toFixed(1)}%</span>
-                </div>
-                <div class="waka-bar-track">
-                  <div class="waka-bar-fill" style={`width:${Math.min(lang.percent, 100)}%`}></div>
-                </div>
-              </div>
-            ))}
+            <div class="waka-activity-legend" aria-hidden="true">
+              <span>Less</span>
+              {ACTIVITY_LEVELS.map((level) => <span class="waka-cell" data-level={level}></span>)}
+              <span>More</span>
+            </div>
           </div>
         </div>
       )}
@@ -417,47 +418,77 @@ const { label, locale, addendumBase, heading, citation, body, addendum, cta, var
     background: rgba(255, 255, 255, 0.08);
   }
 
-  .waka-langs {
+  /* Activity heatmap: one column per week, Sunday on top. */
+  .waka-activity {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .waka-lang {
+  /* Columns are fractions of the card width, so the grid shrinks instead of scrolling. */
+  .waka-activity-body {
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
   }
 
-  .waka-lang-row {
+  .waka-activity-months,
+  .waka-activity-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--weeks), minmax(0, 1fr));
+    column-gap: 2px;
+  }
+
+  .waka-activity-months span {
+    font-size: 10px;
+    color: var(--color-on-dark-soft);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .waka-activity-grid {
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column;
+    row-gap: 2px;
+  }
+
+  .waka-cell {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .waka-cell--blank {
+    background: transparent;
+  }
+
+  .waka-cell[data-level='1'] { background: rgba(71, 194, 255, 0.25); }
+  .waka-cell[data-level='2'] { background: rgba(71, 194, 255, 0.45); }
+  .waka-cell[data-level='3'] { background: rgba(71, 194, 255, 0.7); }
+  .waka-cell[data-level='4'] { background: #47c2ff; }
+
+  .waka-activity-legend {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  }
-
-  .waka-lang-name {
-    font-size: 12px;
+    justify-content: flex-end;
+    gap: 3px;
+    font-size: 10px;
     color: var(--color-on-dark-soft);
     font-family: 'JetBrains Mono', monospace;
   }
 
-  .waka-lang-pct {
-    font-size: 11px;
-    color: #47c2ff;
-    font-family: 'JetBrains Mono', monospace;
+  .waka-activity-legend .waka-cell {
+    width: 9px;
   }
 
-  .waka-bar-track {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 9999px;
-    overflow: hidden;
+  .waka-activity-legend span:first-child {
+    margin-right: 3px;
   }
 
-  .waka-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #47c2ff, #3b9fe0);
-    border-radius: 9999px;
+  .waka-activity-legend span:last-child {
+    margin-left: 3px;
   }
 
   /* === Responsive === */
@@ -490,8 +521,6 @@ const { label, locale, addendumBase, heading, citation, body, addendum, cta, var
       min-height: auto;
     }
 
-    .waka-lang-name,
-    .waka-lang-pct,
     .waka-metric-label {
       font-size: 11px;
     }
@@ -505,6 +534,30 @@ const { label, locale, addendumBase, heading, citation, body, addendum, cta, var
 
 <script>
   import { buildAddendum, type WakatimeData } from '../../lib/getWakatimeData';
+  import { activityCellTitle, buildActivityGrid, type ActivityDay } from '../../lib/wakatimeActivity';
+
+  // Mirrors the Astro markup for the activity grid, so live data redraws it in place.
+  function renderActivity(body: HTMLElement, activity: readonly ActivityDay[], locale: string): void {
+    const grid = buildActivityGrid(activity, locale);
+    body.style.setProperty('--weeks', String(grid.weeks.length));
+    const months = grid.months.map((month) => {
+      const label = document.createElement('span');
+      label.style.gridColumn = String(month.week + 1);
+      label.textContent = month.label;
+      return label;
+    });
+    const cells = grid.weeks.flat().map((cell) => {
+      const square = document.createElement('span');
+      square.className = cell ? 'waka-cell' : 'waka-cell waka-cell--blank';
+      if (cell) {
+        square.dataset.level = String(cell.level);
+        square.title = activityCellTitle(cell, locale);
+      }
+      return square;
+    });
+    body.querySelector('.waka-activity-months')!.replaceChildren(...months);
+    body.querySelector('.waka-activity-grid')!.replaceChildren(...cells);
+  }
 
   // The HTML ships a build-time snapshot; replace it with live numbers.
   async function refreshWakatime(): Promise<void> {
@@ -519,16 +572,10 @@ const { label, locale, addendumBase, heading, citation, body, addendum, cta, var
       el.textContent = buildAddendum(el.dataset.wakaAddendum!, data, el.dataset.wakaLocale!);
     });
 
-    const template = document.querySelector<HTMLTemplateElement>('[data-waka="lang-template"]');
-    const list = document.querySelector('[data-waka="langs"]');
-    if (!template || !list) return;
-    list.replaceChildren(...data.languages.map(lang => {
-      const item = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
-      item.querySelector('.waka-lang-name')!.textContent = lang.name;
-      item.querySelector('.waka-lang-pct')!.textContent = `${lang.percent.toFixed(1)}%`;
-      item.querySelector<HTMLElement>('.waka-bar-fill')!.style.width = `${Math.min(lang.percent, 100)}%`;
-      return item;
-    }));
+    document.querySelectorAll<HTMLElement>('[data-waka="activity"]').forEach(body => {
+      const locale = body.closest<HTMLElement>('[data-waka-locale]')!.dataset.wakaLocale!;
+      renderActivity(body, data.activity, locale);
+    });
   }
 
   if (document.querySelector('[data-waka]')) {

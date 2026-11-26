@@ -1,52 +1,43 @@
-export interface WakatimeLanguage {
-  name: string;
-  percent: number;
-}
+import type { ActivityDay } from './wakatimeActivity';
 
 export interface WakatimeData {
   totalText: string;
   totalSeconds: number;
   dailyAvgText: string;
-  languages: WakatimeLanguage[];
+  /** Last 365 days, oldest first. */
+  activity: ActivityDay[];
 }
 
-function fmtSeconds(secs: number): string {
+export function fmtSeconds(secs: number): string {
   const h = Math.floor(secs / 3600);
   const m = Math.floor((secs % 3600) / 60);
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
 const API = 'https://wakatime.com/api/v1/users/current';
-const EXCLUDED_LANGS = ['JSON', 'Markdown'];
 
 // Runs both at build time (Node) and in the Cloudflare Pages Function (Workers),
 // so it only relies on web-standard globals (fetch, btoa).
 export async function fetchWakatimeData(accessToken: string): Promise<WakatimeData> {
-  // WakaTime API keys are write-only, so reads use an OAuth access token with the read_stats scope.
+  // WakaTime API keys are write-only, so reads use an OAuth access token
+  // (scopes read_stats for the totals and read_summaries for the per-day insights).
   const headers = { Authorization: `Bearer ${accessToken}` };
-  const [allTimeRes, statsRes] = await Promise.all([
+  const [allTimeRes, daysRes] = await Promise.all([
     fetch(`${API}/all_time_since_today`, { headers }),
-    fetch(`${API}/stats/last_30_days`, { headers }),
+    fetch(`${API}/insights/days/last_year`, { headers }),
   ]);
-  if (!allTimeRes.ok || !statsRes.ok) {
-    throw new Error(`WakaTime API error: all_time=${allTimeRes.status} stats=${statsRes.status}`);
+  if (!allTimeRes.ok || !daysRes.ok) {
+    throw new Error(`WakaTime API error: all_time=${allTimeRes.status} days=${daysRes.status}`);
   }
   const allTime = (await allTimeRes.json()) as {
     data: { text: string; total_seconds: number; daily_average: number };
   };
-  const statsJson = (await statsRes.json()) as { data: { languages: WakatimeLanguage[] } };
-  const allLangs = statsJson.data.languages;
-  const excludedPct = allLangs
-    .filter(l => EXCLUDED_LANGS.includes(l.name))
-    .reduce((sum, l) => sum + l.percent, 0);
+  const daysJson = (await daysRes.json()) as { data: { days: { date: string; total: number }[] } };
   return {
     totalText: allTime.data.text,
     totalSeconds: allTime.data.total_seconds,
     dailyAvgText: fmtSeconds(allTime.data.daily_average),
-    languages: allLangs
-      .filter(l => !EXCLUDED_LANGS.includes(l.name))
-      .map(l => ({ name: l.name, percent: l.name === 'TypeScript' ? l.percent + excludedPct : l.percent }))
-      .slice(0, 4),
+    activity: daysJson.data.days.map((day) => ({ date: day.date, seconds: day.total })),
   };
 }
 
