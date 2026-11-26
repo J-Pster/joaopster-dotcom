@@ -9,7 +9,7 @@ export const langOf = (post: CollectionEntry<'blog'>): Lang => {
   if (!(folder in languages)) throw new Error(`Blog post "${post.id}" is not inside a language folder`);
   return folder as Lang;
 };
-const slugOf = (post: CollectionEntry<'blog'>) => post.id.slice(post.id.indexOf('/') + 1);
+export const slugOf = (post: CollectionEntry<'blog'>) => post.id.slice(post.id.indexOf('/') + 1);
 
 export const readTime = (body: string | undefined) =>
   Math.max(1, Math.round((body?.trim().split(/\s+/).length ?? 0) / 200));

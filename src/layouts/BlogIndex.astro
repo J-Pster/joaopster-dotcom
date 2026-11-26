@@ -1,0 +1,677 @@
+---
+// The blog index for every language; src/pages/{,en/,es/}blog/index.astro only render this.
+import { render } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import NewsletterModal from '../components/NewsletterModal.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { getPostsForLang, readTime, slugOf } from '../lib/getLatestPost';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const localePrefix = lang === defaultLang ? '' : '/' + lang;
+const blogBase = localePrefix + '/blog';
+
+const posts = await getPostsForLang(lang);
+const [featured] = posts;
+const hrefOf = (post: (typeof posts)[number]) => `${blogBase}/${slugOf(post)}/`;
+
+// The featured terminal lists the post's sections, so it previews what's inside instead of repeating the description.
+const TOC_LINES = 6;
+const featuredSections = featured ? (await render(featured)).headings.filter((h) => h.depth === 2) : [];
+const tocShown = featuredSections.slice(0, TOC_LINES);
+const tocHidden = featuredSections.length - tocShown.length;
+
+const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+const allYears = [...new Set(posts.map((p) => p.data.pubDate.getFullYear()))].sort((a, b) => b - a);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={t('blog.title')} description={t('blog.description')} />
+  </head>
+  <body>
+    <Header />
+
+    <section class="posts-section">
+      <div class="posts-inner">
+        {featured && (
+          <article class="featured">
+            <div class="featured-text">
+              <span class="pill">{t('blog.latestPost')}</span>
+              <h2 class="featured-title">
+                <a href={hrefOf(featured)}>{featured.data.title}</a>
+              </h2>
+              <p class="featured-desc">{featured.data.description}</p>
+              <div class="featured-meta">
+                <FormattedDate date={featured.data.pubDate} />
+                <span class="dot-sep">·</span>
+                <span class="read-time">{readTime(featured.body)} {t('blog.minRead')}</span>
+              </div>
+              {featured.data.tags.length > 0 && (
+                <div class="tag-list">
+                  {featured.data.tags.map((tag) => <span class="tag-chip">{tag}</span>)}
+                </div>
+              )}
+              <a class="featured-read" href={hrefOf(featured)}>{t('blog.readPost')}</a>
+            </div>
+            <div class="featured-panel">
+              <div class="panel-bar">
+                <span class="panel-dot"></span>
+                <span class="panel-file">~/blog/{slugOf(featured)}.md</span>
+              </div>
+              <div class="panel-body">
+                {tocShown.length > 0 ? (
+                  <>
+                    <p class="panel-cmd"><span class="panel-prompt">❯</span> grep "^## " {slugOf(featured)}.md</p>
+                    <ol class="panel-toc">
+                      {tocShown.map((section) => (
+                        <li>
+                          <a href={`${hrefOf(featured)}#${section.slug}`}>
+                            <span class="panel-hash" aria-hidden="true">##</span> {section.text}
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
+                    {tocHidden > 0 && <p class="panel-more">… +{tocHidden}</p>}
+                  </>
+                ) : (
+                  <p class="panel-excerpt">{featured.data.description}</p>
+                )}
+              </div>
+            </div>
+          </article>
+        )}
+
+        <!-- Blog plus quick links to my writing elsewhere (open in a new tab), and the newsletter -->
+        <nav class="channels" aria-label={t('blog.channelsLabel')}>
+          <span class="channel channel--current" aria-current="page">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+            Blog
+          </span>
+          <a class="channel" href="https://www.linkedin.com/in/joaopster/" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="24" height="24" rx="4" fill="#0a66c2"/>
+              <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">in</text>
+            </svg>
+            LinkedIn
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="https://x.com/JoaoPster" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#000000" d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+            </svg>
+            ex-Twitter
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="https://www.reddit.com/user/JoaoPster/" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="10" fill="#ff4500"/>
+              <path fill="white" d="M16.67 10a1.46 1.46 0 0 0-2.47-1 7.12 7.12 0 0 0-3.850-1.23l.65-3.08 2.13.45a1 1 0 1 0 .1-.61l-2.38-.5a.26.26 0 0 0-.31.2l-.73 3.44a7.14 7.14 0 0 0-3.89 1.23 1.46 1.46 0 1 0-1.61 2.39 2.87 2.87 0 0 0 0 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.820 5.83-4.06a2.87 2.87 0 0 0 0-.44 1.46 1.46 0 0 0 .61-1.29zM7.27 11a1 1 0 1 1 1 1 1 1 0 0 1-1-1zm5.58 2.65a3.56 3.56 0 0 1-2.85.86 3.56 3.56 0 0 1-2.85-.86.26.26 0 0 1 .37-.37 3.07 3.07 0 0 0 2.48.72 3.07 3.07 0 0 0 2.48-.72.26.26 0 0 1 .37.37zm-.17-1.65a1 1 0 1 1 1-1 1 1 0 0 1-1 1z"/>
+            </svg>
+            Reddit
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+          <button type="button" class="channel channel--newsletter" data-newsletter-open>
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="14" height="11" rx="2" /><path d="M2 7l7 4.5L16 7" />
+            </svg>
+            {t('newsletter.open')}
+          </button>
+        </nav>
+
+        <div class="filter-bar">
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder={t('blog.searchPlaceholder')}
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="filter-row">
+            <div class="chip-group">
+              <button class="chip active" data-tag="all">{t('blog.all')}</button>
+              {allTags.map((tag) => (
+                <button class="chip" data-tag={tag.toLowerCase()}>{tag}</button>
+              ))}
+            </div>
+            {allYears.length > 1 && (
+              <div class="chip-group chip-group--years">
+                {allYears.map((year) => (
+                  <button class="chip year-chip" data-year={String(year)}>{year}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div id="no-results" class="no-results" hidden>
+          <p>{t('blog.noResults')}</p>
+          <button class="clear-btn" id="clear-filters">{t('blog.clearFilters')}</button>
+        </div>
+
+        <!-- The featured post is already on top, so its card only shows up while filtering. -->
+        <div class="post-grid">
+          {posts.map((post) => (
+            <a
+              href={hrefOf(post)}
+              class="post-card"
+              data-featured={post === featured ? '' : undefined}
+              hidden={post === featured}
+              data-tags={post.data.tags.map((tag) => tag.toLowerCase()).join(',')}
+              data-year={String(post.data.pubDate.getFullYear())}
+              data-title={post.data.title.toLowerCase()}
+            >
+              <div class="post-card-body">
+                <h3 class="post-title">{post.data.title}</h3>
+                {post.data.description && <p class="post-desc">{post.data.description}</p>}
+                {post.data.tags.length > 0 && (
+                  <div class="tag-list">
+                    {post.data.tags.map((tag) => <span class="tag-chip">{tag}</span>)}
+                  </div>
+                )}
+              </div>
+              <div class="post-card-footer">
+                <div class="post-meta">
+                  <FormattedDate date={post.data.pubDate} />
+                  <span class="dot-sep">·</span>
+                  <span class="read-time">{readTime(post.body)} {t('blog.minRead')}</span>
+                </div>
+                <span class="post-arrow" aria-hidden="true">→</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="newsletter-end">
+          <NewsletterSignup />
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+    <NewsletterModal />
+  </body>
+</html>
+
+<script>
+  const searchInput = document.querySelector<HTMLInputElement>('#search-input');
+  const tagChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-tag]');
+  const yearChips = document.querySelectorAll<HTMLButtonElement>('.chip[data-year]');
+  const postCards = document.querySelectorAll<HTMLElement>('.post-card');
+  const noResults = document.querySelector<HTMLElement>('#no-results');
+  const clearFilters = document.querySelector<HTMLButtonElement>('#clear-filters');
+  if (!searchInput || !noResults || !clearFilters) throw new Error('Blog index markup is missing its filter controls');
+  const noResultsBox: HTMLElement = noResults;
+
+  let activeTag = 'all';
+  let activeYear = 'all';
+  let searchQuery = '';
+
+  const isFiltering = () => activeTag !== 'all' || activeYear !== 'all' || searchQuery !== '';
+
+  function matchesPost(card: HTMLElement): boolean {
+    const tags = card.dataset.tags ? card.dataset.tags.split(',') : [];
+    if (activeTag !== 'all' && !tags.includes(activeTag)) return false;
+    if (activeYear !== 'all' && card.dataset.year !== activeYear) return false;
+    if (searchQuery && !(card.dataset.title ?? '').includes(searchQuery)) return false;
+    return true;
+  }
+
+  function applyBlogFilters(): void {
+    const filtering = isFiltering();
+    let visible = 0;
+    postCards.forEach((card) => {
+      // Unfiltered, the featured post stays only in the hero card above the grid.
+      const show = matchesPost(card) && (filtering || !card.hasAttribute('data-featured'));
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    noResultsBox.hidden = !(filtering && visible === 0);
+  }
+
+  tagChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      tagChips.forEach((c) => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeTag = chip.dataset.tag ?? 'all';
+      applyBlogFilters();
+    });
+  });
+
+  yearChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const wasActive = chip.classList.contains('active');
+      yearChips.forEach((c) => c.classList.remove('active'));
+      if (!wasActive) chip.classList.add('active');
+      activeYear = wasActive ? 'all' : (chip.dataset.year ?? 'all');
+      applyBlogFilters();
+    });
+  });
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.trim().toLowerCase();
+    applyBlogFilters();
+  });
+
+  clearFilters.addEventListener('click', () => {
+    activeTag = 'all';
+    activeYear = 'all';
+    searchQuery = '';
+    searchInput.value = '';
+    tagChips.forEach((c) => c.classList.toggle('active', c.dataset.tag === 'all'));
+    yearChips.forEach((c) => c.classList.remove('active'));
+    applyBlogFilters();
+  });
+</script>
+
+<style>
+  .posts-section {
+    padding: var(--space-xxl) var(--space-xl) var(--space-section);
+  }
+  .posts-inner {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xxl);
+    align-items: center;
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xxl);
+    margin-bottom: var(--space-lg);
+  }
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-base);
+  }
+  .featured-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.84px;
+    line-height: 1.2;
+    margin: 0 0 var(--space-sm);
+  }
+  .featured-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .featured-title a:hover { color: var(--color-text-link); }
+  .featured-desc {
+    font-size: 16px;
+    color: var(--color-body);
+    line-height: 1.65;
+    margin: 0 0 var(--space-base);
+  }
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xs);
+  }
+  .dot-sep { color: var(--color-muted-soft); }
+  .read-time { font-size: 13px; color: var(--color-muted); font-weight: 500; }
+  .featured-read {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-link);
+    text-decoration: none;
+    margin-top: var(--space-md);
+  }
+  .featured-read:hover { text-decoration: underline; }
+
+  .featured-panel {
+    background: var(--color-surface-dark);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+  }
+  .panel-bar {
+    background: var(--color-surface-dark-elevated);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .panel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #28c840;
+    flex-shrink: 0;
+  }
+  .panel-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .panel-body {
+    padding: var(--space-lg);
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .panel-cmd { margin: 0 0 var(--space-sm); color: var(--color-on-dark); }
+  .panel-prompt { color: #47c2ff; }
+  .panel-toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .panel-toc a {
+    display: block;
+    color: var(--color-on-dark-soft);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .panel-toc a:hover { color: var(--color-on-dark); text-decoration: none; }
+  .panel-hash { color: #47c2ff; }
+  .panel-more { margin: 6px 0 0; color: #777; }
+  .panel-excerpt {
+    font-family: Inter, -apple-system, system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--color-on-dark-soft);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .channels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-lg);
+  }
+  .channel {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--color-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  .channel:not(.channel--current):hover {
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    text-decoration: none;
+  }
+  .channel--current {
+    cursor: default;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+  .channel--newsletter { color: var(--color-ink); }
+  .channel:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .channel-ext {
+    font-size: 13px;
+    transition: transform 0.15s ease;
+  }
+  a.channel:hover .channel-ext { transform: translate(2px, -2px); }
+
+  .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-base);
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+  }
+  .search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .search-input::placeholder { color: var(--color-muted); }
+  .search-input:focus {
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  }
+  .search-input::-webkit-search-cancel-button { display: none; }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    flex-wrap: wrap;
+  }
+  .chip-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+  .chip-group--years {
+    margin-left: auto;
+    padding-left: var(--space-base);
+    border-left: 1px solid var(--color-hairline-strong);
+  }
+  .chip {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--space-sm);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    color: var(--color-body);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  }
+  .chip:hover {
+    background: var(--color-surface-strong);
+    color: var(--color-ink);
+  }
+  .chip.active {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    border-color: var(--color-primary);
+  }
+
+  .tag-list {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    margin-top: var(--space-sm);
+  }
+  .tag-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: var(--space-xxl) 0;
+  }
+  .no-results[hidden] { display: none; }
+  .no-results p {
+    font-size: 16px;
+    color: var(--color-body);
+    margin-bottom: var(--space-lg);
+  }
+  .clear-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 var(--space-base);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .clear-btn:hover { background: var(--color-primary-active); }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-base);
+  }
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .post-card[hidden] { display: none; }
+  .post-card:hover {
+    border-color: var(--color-hairline-strong);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .post-card-body { flex: 1; }
+  .post-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    margin: 0 0 var(--space-xs);
+    transition: color 0.15s ease;
+  }
+  .post-card:hover .post-title { color: var(--color-text-link); }
+  .post-desc {
+    font-size: 14px;
+    color: var(--color-body);
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-xs);
+  }
+  .post-meta { display: flex; align-items: center; gap: var(--space-xs); }
+  .post-arrow {
+    font-size: 14px;
+    color: var(--color-muted);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .post-card:hover .post-arrow {
+    transform: translateX(3px);
+    color: var(--color-text-link);
+  }
+
+  /* Readers who reach the end of the list have finished scanning: the natural point to offer the digest. */
+  .newsletter-end { margin-top: var(--space-xxl); }
+
+  @media (max-width: 768px) {
+    .featured {
+      grid-template-columns: 1fr;
+      gap: var(--space-xl);
+      padding: var(--space-xl);
+    }
+    .featured-panel { min-height: 0; }
+    .post-grid { grid-template-columns: 1fr; }
+    .chip-group--years {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: none;
+    }
+    .filter-row { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 640px) {
+    /* Blog and newsletter take full rows; the three outbound links share one row. */
+    .channels { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .channel--current, .channel--newsletter { grid-column: 1 / -1; }
+    .channel { padding: 0 var(--space-xs); gap: 6px; }
+    .channel-ext { display: none; }
+    .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
+    .featured { padding: var(--space-lg); }
+    .featured-title { font-size: 22px; }
+    .panel-body { padding: var(--space-base); font-size: 12px; }
+    .filter-bar { padding: var(--space-sm); }
+  }
+</style>
