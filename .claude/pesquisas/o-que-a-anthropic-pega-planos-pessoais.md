@@ -57,3 +57,33 @@ A chave "permitir uso para melhorar o Claude" muda duas coisas: se a conversa en
 5. Não deixar segredo aparecer na conversa. Bloquear leitura de `.env` e afins com regras de `permissions.deny` no `settings.json` e não pedir para o Claude rodar comando que imprime credenciais.
 6. Para código de empresa, usar plano comercial (Team, Enterprise ou API), onde a Anthropic diz que não treina e guarda 30 dias, ou ZDR negociado.
 7. Limpar as transcrições locais com `cleanupPeriodDays` e, no Desktop, apagar sessões antigas.
+
+## Versão resumida da tabela (para o "povão")
+
+É a mesma informação da tabela completa acima, simplificada como foi mostrada ao João no chat em 26/11/2026.
+
+| O que | Chave DESLIGADA | Chave LIGADA |
+|---|---|---|
+| Teus prompts e as respostas do Claude | Guardados 30 dias, não entram no treino | Guardados até 5 anos, desidentificados, e entram no treino |
+| Código que o Claude lê ou escreve na sessão | Igual aos prompts, 30 dias, sem treino | Igual, até 5 anos, entra no treino |
+| Saída de comandos (testes, logs, `cat .env`) | Igual, 30 dias. Senha que aparece no terminal vai junto | Igual, e pode ir para o treino. A Anthropic diz que filtra dado sensível automaticamente |
+| CLAUDE.md, memória e skills carregadas | Igual, 30 dias | Igual, até 5 anos |
+| Resto do repositório que o Claude nunca abriu (no teu PC) | Não é enviado | Não é enviado |
+| Repositório inteiro no Claude Code na web | Clonado na máquina da Anthropic, segue os 30 dias | Idem, e a sessão pode ir para o treino |
+| Conteúdo de connectors e MCP (Drive, servidores MCP) | Não entra no treino | A Anthropic diz que o conteúdo bruto não entra, "a não ser que seja copiado para a conversa". No Claude Code, o resultado de um MCP entra na conversa, e a política não deixa claro o que vale nesse caso |
+| Conversa que você apaga | Some na hora do histórico e do servidor em até 30 dias | Idem, e sai dos próximos treinos |
+| Chat anônimo (incognito, no app) | Não entra no treino | Não entra no treino, mesmo com a chave ligada |
+| Joinha e `/feedback`, `/bug`, `/share` | Conversa inteira guardada 5 anos e pode ir para treino | Idem |
+| Pesquisa de satisfação do Claude Code, se responder "Yes" para mandar a transcrição | Manda a sessão e o código como estão (só mascara chaves conhecidas). Guarda 6 meses, não usa para treino | Idem |
+| Conversa marcada pelo filtro de segurança | Guardada até 2 anos (a nota da classificação, até 7 anos). Pode treinar os modelos de segurança | Idem |
+| Telemetria | Ligada por padrão. Mede latência e uso. A Anthropic diz que nunca inclui código, prompt nem caminho de arquivo | Idem |
+| Relatório de erro | Erros internos do Claude Code com dados sensíveis mascarados. Ligado no Pro, Max e Ultra | Idem |
+| O que já foi treinado antes de você desligar | Fica nos modelos já treinados e nos treinos em andamento | Não se aplica |
+| Retenção por obrigação legal ou disputa | Pode guardar além desses prazos | Idem |
+
+### O que o "povão" precisa saber
+
+1. Desligar a chave não esconde nada da Anthropic. Ela continua recebendo tudo e guarda por 30 dias, só não treina e não guarda por 5 anos.
+2. Ela não pega o repositório inteiro, só o que o Claude abre ou roda. Mas numa tarefa grande ele abre muita coisa.
+3. O joinha e o `/feedback` furam a chave. Mesmo com treino desligado, a conversa vai inteira, fica 5 anos e pode ir para treino.
+4. O teu próprio PC também guarda cópia. As sessões ficam em texto puro em `~/.claude/projects/`. No CLI são apagadas depois de 30 dias, no Claude Desktop não são apagadas sozinhas.
