@@ -124,6 +124,14 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
             Reddit
             <span class="channel-ext" aria-hidden="true">↗</span>
           </a>
+          <a class="channel" href="https://news.ycombinator.com/submitted?id=JoaoPster" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="24" height="24" rx="3" fill="#ff6600"/>
+              <path d="M7.5 6h2.2l2.3 4.6L14.3 6h2.2l-3.4 6.4V18h-2.2v-5.6z" fill="#ffffff"/>
+            </svg>
+            Hacker News
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
         </nav>
 
         <!-- Filter bar -->
@@ -281,8 +289,8 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
   }
 
   .channels {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 6px;
     background: var(--color-canvas-soft);
@@ -291,6 +299,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     margin-bottom: var(--space-xxl);
   }
   .channel {
+    flex: 1 1 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -645,8 +654,9 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     .filter-row { flex-direction: column; align-items: flex-start; }
   }
   @media (max-width: 640px) {
-    .channels { grid-template-columns: repeat(2, 1fr); }
-    .channel--current { grid-column: 1 / -1; }
+    .channels { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .channel--current,
+    .channels > :last-child:nth-child(even) { grid-column: 1 / -1; }
     .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
     .featured-title { font-size: 22px; }
     .filter-bar { padding: var(--space-sm) var(--space-sm); }
