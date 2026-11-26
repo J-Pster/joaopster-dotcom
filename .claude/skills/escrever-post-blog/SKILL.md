@@ -37,9 +37,9 @@ Antes de escrever uma frase do post, responda para você:
 
 ### 3. Entreviste o João antes de escrever (obrigatório)
 
-Depois que o João explicar o assunto e pedir o post, não escreva o rascunho ainda. Primeiro faça uma entrevista curta para pegar o que só ele sabe, porque é isso que faz um post parecer escrito por uma pessoa e não por IA, e nenhuma regra de estilo compensa a falta disso.
+Depois que o João explicar o assunto e pedir o post, não escreva o rascunho ainda. Primeiro entreviste ele para pegar o que só ele sabe, porque é isso que faz um post parecer escrito por uma pessoa e não por IA, e nenhuma regra de estilo compensa a falta disso.
 
-Mande de 4 a 7 perguntas numa mensagem só, específicas para o post, que ele consiga responder em poucos minutos, inclusive por áudio. Cubra o que faltar no material dele:
+Não tem limite de perguntas nem de rodadas. Pergunte quantas coisas quiser, em quantas rodadas precisar, até você julgar que tem material suficiente. Cada rodada pode aprofundar o que ele respondeu na anterior (um número que ficou vago, uma decisão sem motivo, uma história pela metade). As perguntas são específicas para o post e dá para responder inclusive por áudio. Pare quando cada seção do esqueleto tiver algo que só o João sabe, e avise a ele que a entrevista acabou. Cubra o que faltar no material dele:
 
 - **O momento.** Quando aconteceu, qual foi a primeira vez que ele viu aquilo funcionar ou dar errado, que tarefa ele estava fazendo.
 - **Números dele.** Quanto tempo levou, quanto custou, quantos agentes, quanta RAM, quantos meses usando, e se não tem número, por quê.
