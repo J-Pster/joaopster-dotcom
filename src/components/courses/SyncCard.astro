@@ -1,0 +1,69 @@
+---
+// Card that links this browser's course progress to the reader's other devices (lib/courses/client/syncCard.ts).
+// With no sync code it stays open: the title and the buttons to create or enter one. With a code it
+// collapses to a single status line that opens to show the code and how to use it. "bar": wide card above the course list.
+// "rail": narrow card on top of the note's right column. "inline": the same card above the note on narrow screens.
+import type { Lang } from '../../i18n/ui';
+import { courseText } from '../../lib/courses/i18n';
+
+interface Props {
+  lang: Lang;
+  layout: 'bar' | 'rail' | 'inline';
+}
+
+const { lang, layout } = Astro.props;
+const text = courseText(lang);
+const id = `sync-${layout}`;
+---
+
+<section class={`sync-card sync-card--${layout}`} data-sync-card aria-labelledby={`${id}-title`}>
+  <button type="button" class="sync-card-head" data-sync-toggle aria-expanded="false" aria-controls={`${id}-body`} hidden>
+    <span class="sync-card-dot" aria-hidden="true"></span>
+    <span class="sync-card-head-text" data-sync-head-status>{text.syncLinked}</span>
+    <span class="sync-card-head-more">{text.syncShowCode}</span>
+    <svg class="sync-card-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+
+  <div class="sync-card-body" id={`${id}-body`} data-sync-body>
+    <div class="sync-card-off" data-sync-off>
+      <div class="sync-card-text">
+        <p class="sync-card-title" id={`${id}-title`}>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="14" height="10" rx="1.5"/><path d="M6 18h6"/><rect x="17" y="8" width="5" height="12" rx="1"/></svg>
+          {text.syncTitle}
+        </p>
+      </div>
+      <div class="sync-card-actions">
+        <button type="button" class="course-btn" data-sync-create>{text.syncCreate}</button>
+        <button type="button" class="sync-card-link" data-sync-join-open aria-expanded="false" aria-controls={`${id}-join`}>{text.syncJoinOpen}</button>
+      </div>
+      <form class="sync-card-join" id={`${id}-join`} data-sync-join hidden>
+        <label class="sync-card-label" for={`${id}-input`}>{text.syncJoinLabel}</label>
+        <div class="sync-card-join-row">
+          <input
+            id={`${id}-input`}
+            name="code"
+            class="sync-card-input"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"
+            required
+          />
+          <button type="submit" class="course-btn course-btn--secondary">{text.syncJoinButton}</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="sync-card-on" data-sync-on hidden>
+      <p class="sync-card-label">{text.syncYourCode}</p>
+      <div class="sync-card-code-row">
+        <code class="sync-card-code" data-sync-code></code>
+        <button type="button" class="course-btn course-btn--secondary" data-sync-copy>{text.syncCopy}</button>
+      </div>
+      <p class="sync-card-hint">{text.syncCodeHint}</p>
+      <button type="button" class="sync-card-link" data-sync-forget>{text.syncDisconnect}</button>
+    </div>
+
+    <p class="sync-card-status" data-sync-status role="status" aria-live="polite"></p>
+  </div>
+</section>

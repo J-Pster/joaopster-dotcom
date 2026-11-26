@@ -8,6 +8,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import TableOfContents from '../components/post/TableOfContents.astro';
 import CourseSidebar from '../components/courses/CourseSidebar.astro';
+import SyncCard from '../components/courses/SyncCard.astro';
 import { courseOutlineUrl, coursesHome, glossaryUrl } from '../lib/courses/catalog';
 import { courseText } from '../lib/courses/i18n';
 import type { Note, Vault } from '../lib/courses/vault';
@@ -54,6 +55,15 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
         // Storage blocked or edited by hand: both panels stay visible.
       }
     </script>
+    <!-- With a sync code saved, the sync cards start collapsed (lib/courses/client/syncCard.ts),
+         so the right column does not jump. Same key as CODE_KEY in lib/courses/client/sync.ts. -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('jp-courses:sync-code')) document.documentElement.classList.add('sync-linked');
+      } catch {
+        // Storage blocked: sync is off and the cards start open, which is right.
+      }
+    </script>
   </head>
   <body>
     <Header autoHide />
@@ -63,7 +73,6 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
       data-note-url={note.url}
       data-note-kind={note.kind}
       data-outline={courseOutlineUrl(course)}
-      data-sync-url={`${coursesHome(course.lang)}#sincronizar`}
     >
       <div class="course-layout">
         <aside class="course-rail course-rail--nav" id="course-panel-nav">
@@ -72,6 +81,7 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
 
         <aside class="course-rail course-rail--toc" id="course-panel-toc">
           <div class="course-rail-inner">
+            <SyncCard lang={course.lang} layout="rail" />
             <TableOfContents headings={headings} variant="rail" title={text.onThisNote} />
           </div>
         </aside>
@@ -103,6 +113,7 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
             </button>
           </div>
 
+          <SyncCard lang={course.lang} layout="inline" />
           <TableOfContents headings={headings} variant="inline" title={text.onThisNote} />
 
           <div class="prose note-content" set:html={html} />

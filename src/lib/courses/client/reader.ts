@@ -3,6 +3,7 @@
 import { courseText, pageLang } from '../i18n';
 import { loadProgress, setChecks, setLast, setRead, type CourseProgress } from '../progress';
 import { startAutoSync } from './sync';
+import { initSyncCards } from './syncCard';
 
 interface CourseOutline {
   readonly modules: readonly {
@@ -16,7 +17,7 @@ interface CourseOutline {
 const WIDE_SCREEN = '(min-width: 1024px)';
 const text = () => courseText(pageLang());
 
-function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind' | 'outline' | 'syncUrl'): string {
+function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind' | 'outline'): string {
   const value = main.dataset[key];
   if (!value) throw new Error(`Course page is missing data-${key}`);
   return value;
@@ -151,18 +152,18 @@ function progressBar(done: number, total: number): string {
 const escapeText = (text: string) => text.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 // Stands in for the Obsidian Base on the course home: progress per module and where to continue.
-async function initProgressWidget(slug: string, outlineUrl: string, syncUrl: string): Promise<Repaint> {
+async function initProgressWidget(slug: string, outlineUrl: string): Promise<Repaint> {
   const widget = document.querySelector<HTMLElement>('[data-course-progress]');
   if (!widget) return () => {};
   const response = await fetch(outlineUrl);
   if (!response.ok) throw new Error(`Course outline request failed: ${response.status}`);
   const outline = (await response.json()) as CourseOutline;
-  const repaint = () => paintProgressWidget(widget, outline, loadProgress(slug), syncUrl);
+  const repaint = () => paintProgressWidget(widget, outline, loadProgress(slug));
   repaint();
   return repaint;
 }
 
-function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progress: CourseProgress, syncUrl: string): void {
+function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progress: CourseProgress): void {
   const t = text();
   const read = new Set(progress.read);
   const lessons = outline.modules.flatMap((m) => m.lessons);
@@ -185,7 +186,7 @@ function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progre
     </div>
     ${progressBar(done, lessons.length)}
     <ol class="progress-modules">${rows}</ol>
-    <p class="progress-note">${t.progressNote} <a href="${syncUrl}">${t.syncLink}</a></p>`;
+    <p class="progress-note">${t.progressNote}</p>`;
 }
 
 export function initReader(): void {
@@ -203,8 +204,10 @@ export function initReader(): void {
     initReadToggle(slug, url),
     initTaskChecks(slug, url),
   ];
-  void initProgressWidget(slug, requireData(main, 'outline'), requireData(main, 'syncUrl')).then((repaint) => {
+  void initProgressWidget(slug, requireData(main, 'outline')).then((repaint) => {
     repaints.push(repaint);
   });
-  startAutoSync(() => repaints.forEach((repaint) => repaint()));
+  const repaintAll = () => repaints.forEach((repaint) => repaint());
+  startAutoSync(repaintAll);
+  initSyncCards(text(), repaintAll);
 }

@@ -728,62 +728,113 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .courses-none-links { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin: var(--space-base) 0 0; padding: 0; list-style: none; }
 .howto-reading { margin-bottom: var(--space-xxl); }
 
-/* Sync between devices, on the landing below the course list. */
-.courses-sync {
-  max-width: 760px;
-  margin-top: var(--space-section);
-  scroll-margin-top: 88px; /* clears the sticky top nav when opened by #sincronizar */
-  padding: var(--space-xl);
+/* Sync card (components/courses/SyncCard.astro): open while this browser has no sync code, then a
+   one-line status that opens to show the code. "bar" above the course list, "rail" on top of the
+   note's right column, "inline" above the note when that column is not shown. */
+.sync-card {
+  background: var(--color-canvas-soft);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--radius-lg);
 }
-.courses-sync .courses-section-title { margin-bottom: var(--space-sm); }
-.sync-intro { margin: 0 0 var(--space-lg); font-size: 15px; line-height: 1.65; color: var(--color-body); }
-.sync-panel { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-lg); }
-.sync-panel[hidden] { display: none; }
-.sync-join { display: flex; flex-direction: column; gap: var(--space-xs); width: 100%; }
-.sync-label { margin: 0; font-size: 14px; font-weight: 500; color: var(--color-ink); }
-.sync-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); align-items: center; width: 100%; }
-.sync-input {
-  flex: 1 1 280px;
-  height: 44px;
-  padding: 0 var(--space-base);
+.sync-card[data-state='on'], :root.sync-linked .sync-card:not([data-ready]) { background: var(--color-surface-card); }
+.sync-card-head[hidden], .sync-card-body[hidden], .sync-card-off[hidden], .sync-card-on[hidden], .sync-card-join[hidden] { display: none; }
+/* Before the script runs, a saved code (class set in the page head) already shows the closed card. */
+:root.sync-linked .sync-card:not([data-ready]) .sync-card-head[hidden] { display: flex; }
+:root.sync-linked .sync-card:not([data-ready]) .sync-card-body { display: none; }
+
+.sync-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-body);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+.sync-card-head:hover { color: var(--color-ink); }
+.sync-card-head-text { flex: 1; min-width: 0; }
+.sync-card-head-more { font-size: 12px; color: var(--color-muted); }
+.sync-card-head[aria-expanded='true'] .sync-card-head-more { display: none; }
+.sync-card-dot { flex: none; width: 8px; height: 8px; background: var(--color-semantic-success); border-radius: var(--radius-pill); }
+.sync-card-head.is-error .sync-card-dot { background: var(--color-accent-warning); }
+.sync-card-chevron { flex: none; transition: transform 0.15s ease; }
+.sync-card-head[aria-expanded='true'] .sync-card-chevron { transform: rotate(180deg); }
+
+.sync-card-body { padding: var(--space-base); }
+.sync-card[data-state='on'] .sync-card-body { border-top: 1px solid var(--color-hairline); }
+.sync-card-title { display: flex; gap: var(--space-xs); align-items: center; margin: 0; font-size: 15px; font-weight: 600; color: var(--color-ink); }
+.sync-card-title svg { flex: none; }
+.sync-card-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-base); align-items: center; margin-top: var(--space-sm); }
+.sync-card-link { padding: 0; font: inherit; font-size: 13px; color: var(--color-text-link); background: none; border: 0; text-align: left; cursor: pointer; }
+.sync-card-link:hover { text-decoration: underline; }
+.sync-card-join { display: flex; flex-direction: column; gap: var(--space-xxs); margin-top: var(--space-sm); }
+.sync-card-label { margin: 0; font-size: 12px; font-weight: 500; color: var(--color-ink); }
+.sync-card-join-row, .sync-card-code-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); align-items: center; }
+.sync-card-input {
+  flex: 1 1 200px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 var(--space-sm);
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 14px;
-  letter-spacing: 0.5px;
+  font-size: 13px;
   text-transform: uppercase;
   color: var(--color-ink);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--radius-md);
 }
-.sync-input::placeholder { color: var(--color-muted-soft); }
-.sync-input:focus { outline: none; border: 2px solid var(--color-ink); padding: 0 calc(var(--space-base) - 1px); }
-.sync-code {
-  padding: var(--space-sm) var(--space-base);
+.sync-card-input::placeholder { color: var(--color-muted-soft); }
+.sync-card-input:focus { outline: none; border: 2px solid var(--color-ink); padding: 0 calc(var(--space-sm) - 1px); }
+.sync-card-on { display: flex; flex-direction: column; gap: var(--space-xs); align-items: flex-start; }
+.sync-card-code {
+  padding: 8px 12px;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 16px;
-  letter-spacing: 1px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
   color: var(--color-ink);
   background: var(--color-surface-strong);
   border-radius: var(--radius-md);
   user-select: all;
 }
-.sync-panel[data-sync-on] { gap: var(--space-xs); }
-.sync-hint { margin: var(--space-xs) 0 0; font-size: 14px; line-height: 1.6; color: var(--color-body); }
-.sync-forget {
-  margin-top: var(--space-xs);
-  padding: 0;
-  font: inherit;
-  font-size: 14px;
-  color: var(--color-text-link);
-  background: none;
-  border: 0;
-  cursor: pointer;
+.sync-card-hint { margin: 0; font-size: 13px; line-height: 1.55; color: var(--color-body); }
+.sync-card-status { margin: var(--space-xs) 0 0; font-size: 12px; line-height: 1.5; color: var(--color-muted); }
+.sync-card-status:empty { display: none; }
+.sync-card-status.is-error { color: var(--color-accent-warning); }
+
+/* Bar and inline: the title on the left, the buttons on the right when there is room. */
+.sync-card--bar { margin-bottom: var(--space-lg); }
+.sync-card--bar .sync-card-head { padding: 12px var(--space-lg); font-size: 14px; }
+.sync-card--bar .sync-card-body { padding: var(--space-md) var(--space-lg); }
+@media (min-width: 640px) {
+  :is(.sync-card--bar, .sync-card--inline) .sync-card-off { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-xs) var(--space-xl); align-items: center; }
+  :is(.sync-card--bar, .sync-card--inline) .sync-card-off[hidden] { display: none; }
+  :is(.sync-card--bar, .sync-card--inline) .sync-card-actions { justify-content: flex-end; margin-top: 0; }
+  :is(.sync-card--bar, .sync-card--inline) .sync-card-join { grid-column: 1 / -1; max-width: 560px; }
 }
-.sync-forget:hover { text-decoration: underline; }
-.sync-status { min-height: 1.4em; margin: var(--space-base) 0 0; font-size: 13px; color: var(--color-muted); }
-.sync-status.is-error { color: var(--color-accent-warning); }
+
+/* Rail: on top of the note's right column, 220px wide. */
+.sync-card--rail { flex: none; margin-bottom: var(--space-lg); }
+.sync-card--rail .sync-card-body { padding: var(--space-sm); }
+.sync-card--rail .sync-card-head-more { display: none; }
+.sync-card--rail .sync-card-title { font-size: 14px; }
+.sync-card--rail .sync-card-actions { flex-direction: column; align-items: stretch; }
+.sync-card--rail .sync-card-link { text-align: center; }
+.sync-card--rail .sync-card-join-row .course-btn { width: 100%; }
+.sync-card--rail .sync-card-code { padding: 6px 8px; font-size: 12px; letter-spacing: 0; }
+
+/* Inline: above the note while the right column is not shown. */
+.sync-card--inline { margin-bottom: var(--space-lg); }
+@media (min-width: 1280px) {
+  .sync-card--inline { display: none; }
+  :root.course-toc-hidden .sync-card--inline { display: block; }
+}
 
 .courses-howto { max-width: 820px; }
 .howto-section { margin-bottom: var(--space-xxl); }
@@ -802,7 +853,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   .courses-hero h1 { font-size: 32px; letter-spacing: -0.9px; }
   .courses-how-grid { grid-template-columns: minmax(0, 1fr); }
   .courses-cta h2 { font-size: 28px; }
-  .courses-sync { padding: var(--space-lg) var(--space-base); }
   .prose h1, .glossary-index h1 { font-size: 28px; letter-spacing: -0.84px; }
   .progress-modules li { grid-template-columns: minmax(0, 1fr) 44px; }
   .progress-modules .progress-bar { display: none; }
