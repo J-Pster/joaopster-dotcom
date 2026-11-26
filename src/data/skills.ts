@@ -23,6 +23,13 @@ export function skillName(skill: Skill, lang: Lang): string {
   return typeof skill === 'string' ? skill : skill[lang];
 }
 
+/** A skill listed under two groups (Cognito, AWS WAF) counts once. */
+export function countUniqueSkills(lang: Lang): number {
+  return new Set(
+    skillGroups.flatMap((group) => group.areas.flatMap((area) => area.skills.map((skill) => skillName(skill, lang)))),
+  ).size;
+}
+
 export const skillGroups: readonly SkillGroup[] = [
   {
     id: 'aws',
@@ -280,7 +287,7 @@ export const skillGroups: readonly SkillGroup[] = [
       },
       {
         label: l('Ferramentas', 'Tools', 'Herramientas'),
-        skills: ['Claude Code', 'Serena', 'Context7', 'Exa', 'ai-memory', "Pster's AI Workflow"],
+        skills: ['Claude Code', 'Serena', 'Context7', 'Exa', 'ai-memory'],
       },
     ],
   },

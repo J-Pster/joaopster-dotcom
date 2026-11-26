@@ -21,7 +21,7 @@ const extraSpecialties = specialties.slice(3);
       <div class="da-intro">
         <p class="da-label">{t('about.label')}</p>
         <h2 class="da-heading">{t('about.heading1')}<br/>{t('about.heading2')}</h2>
-        <p class="da-sub">{t('about.sub')}</p>
+        {t('about.sub').split('\n\n').map((paragraph) => <p class="da-sub">{paragraph}</p>)}
       </div>
       <div class="da-grid">
       <div class="da-card">
@@ -86,7 +86,8 @@ const extraSpecialties = specialties.slice(3);
   .dark-about-inner { max-width: 1000px; margin: 0 auto; }
   .da-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-on-dark-soft); margin-bottom: var(--space-lg); }
   .da-heading { font-size: 48px; font-weight: 600; color: var(--color-on-dark); letter-spacing: -1.44px; line-height: 1.1; margin-bottom: var(--space-lg); }
-  .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin-bottom: 0; }
+  .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin: 0 0 var(--space-base); }
+  .da-sub:last-of-type { margin-bottom: 0; }
   .da-top { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-xxl); align-items: start; }
   .da-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-base); }
   @media (max-width: 860px) { .da-top { grid-template-columns: 1fr; gap: var(--space-xl); } }

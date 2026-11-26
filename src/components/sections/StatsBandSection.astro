@@ -1,8 +1,10 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { skillGroups, countUniqueSkills } from '../../data/skills';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
+const skillsDesc = t('stats.s2.desc').replace('{groups}', String(skillGroups.length));
 ---
 
 <section class="stats-band-section">
@@ -20,9 +22,9 @@ const t = useTranslations(lang);
       </div>
 
       <div class="stat-card">
-        <span class="stat-number">6</span>
+        <span class="stat-number">{countUniqueSkills(lang)}</span>
         <span class="stat-label">{t('stats.s2.label')}</span>
-        <p class="stat-desc">{t('stats.s2.desc')}</p>
+        <p class="stat-desc">{skillsDesc}</p>
       </div>
 
       <div class="stat-card">

@@ -1,16 +1,12 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
-import { skillGroups, skillName } from '../../data/skills';
+import { skillGroups, skillName, countUniqueSkills } from '../../data/skills';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
-// A skill listed under two groups (Cognito, AWS WAF) counts once.
-const skillCount = new Set(
-  skillGroups.flatMap((group) => group.areas.flatMap((area) => area.skills.map((skill) => skillName(skill, lang)))),
-).size;
 const sub = t('skills.sub')
-  .replace('{count}', String(skillCount))
+  .replace('{count}', String(countUniqueSkills(lang)))
   .replace('{groups}', String(skillGroups.length));
 ---
 <section id="skills" class="skills-section">

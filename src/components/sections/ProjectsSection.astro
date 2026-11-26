@@ -5,7 +5,6 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
 const projects = [
-  { title: 'Psters AI Workflow', desc: t('projects.p5.desc'), dark: true, stars: '286', icon: 'M9 1.5l2 4 4.5.5-3.3 3 .9 4.5L9 11.3 4.9 13.5l.9-4.5L2.5 6l4.5-.5 2-4z', url: 'https://github.com/J-Pster/Psters_AI_Workflow' },
   { title: 'oh-my-claudecode', desc: t('projects.p7.desc'), dark: true, stars: '41k+', icon: 'M9 2a2 2 0 100 4 2 2 0 000-4zM3 13a2 2 0 100 4 2 2 0 000-4zM15 13a2 2 0 100 4 2 2 0 000-4zM9 6v4.5M9 10.5L4.5 13M9 10.5l4.5 2.5', url: 'https://github.com/Yeachan-Heo/oh-my-claudecode' },
   { title: 'Cake Wallet', desc: t('projects.p8.desc'), dark: true, stars: '2k+', icon: 'M2.5 5.5h13v9h-13v-9zM2.5 5.5l2-2.5h8l1 2.5M12 10h1.5', url: 'https://github.com/cake-tech/cake_wallet' },
 ];
@@ -45,7 +44,7 @@ const projects = [
   .proj-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
   .proj-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
   .proj-sub { font-size: 15px; color: var(--color-body); margin-bottom: var(--space-xxl); }
-  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: auto; gap: var(--space-base); }
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto; gap: var(--space-base); }
   .proj-card { border-radius: var(--radius-lg); padding: var(--space-lg); text-decoration: none; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
   .proj-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); text-decoration: none; }
   .proj-card--dark { background: var(--color-surface-dark); border: 1px solid rgba(255,255,255,0.06); }
@@ -65,7 +64,6 @@ const projects = [
 .proj-footer { margin-top: var(--space-xxl); text-align: center; }
   .proj-all-btn { display: inline-flex; align-items: center; border: 1px solid var(--color-hairline-strong); background: var(--color-canvas); color: var(--color-ink); font-size: 14px; font-weight: 500; padding: 10px 20px; height: 40px; border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s; }
   .proj-all-btn:hover { border-color: var(--color-muted); text-decoration: none; }
-  @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 640px) {
     .projects-section { padding: var(--space-section) var(--space-base); }
     .proj-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
