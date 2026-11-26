@@ -46,7 +46,7 @@ const today = new Date();
         </ul>
       </div>
 
-      <div class="footer-col">
+      <div class="footer-col footer-col--wide">
         <h3 class="footer-col-heading">{t('footer.connect')}</h3>
         <ul class="footer-links">
           <li><a href="mailto:joaopster@proton.me" class="footer-link">{t('footer.email')}</a></li>
@@ -55,7 +55,7 @@ const today = new Date();
         </ul>
       </div>
 
-      <div class="footer-col">
+      <div class="footer-col footer-col--wide">
         <h3 class="footer-col-heading">{t('footer.links')}</h3>
         <ul class="footer-links">
           <li><a href="https://www.linkedin.com/in/joaopster/" target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a></li>
@@ -149,10 +149,15 @@ const today = new Date();
     .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-xl) var(--space-lg); }
     .footer-brand { grid-column: 1 / -1; max-width: none; }
   }
+  /* Phones: two short groups side by side, the longer link lists as full-width rows that wrap. */
   @media (max-width: 640px) {
-    .footer-grid { grid-template-columns: 1fr; }
-    .footer-brand { grid-column: auto; }
     .footer-inner { padding: var(--space-xxl) var(--space-base) var(--space-xl); }
-    .footer-bottom { flex-direction: column; align-items: center; gap: var(--space-sm); }
+    .footer-grid { gap: var(--space-xl) var(--space-base); margin-bottom: var(--space-xl); }
+    .footer-col { gap: 0; }
+    .footer-links { gap: 0; }
+    .footer-link { display: inline-block; padding: 6px 0; }
+    .footer-col--wide { grid-column: 1 / -1; }
+    .footer-col--wide .footer-links { flex-direction: row; flex-wrap: wrap; column-gap: var(--space-md); }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: var(--space-xxs); }
   }
 </style>
