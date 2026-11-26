@@ -1,6 +1,7 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 import { skillGroups, countUniqueSkills } from '../../data/skills';
+import { uptimeText } from '../../lib/lifeUptime';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -16,7 +17,7 @@ const skillsDesc = t('stats.s2.desc').replace('{groups}', String(skillGroups.len
 
     <div class="stats-grid">
       <div class="stat-card">
-        <span class="stat-number">7</span>
+        <span class="stat-number" data-uptime="devYears">{uptimeText(new Date(), lang).devYears}</span>
         <span class="stat-label">{t('stats.s1.label')}</span>
         <p class="stat-desc">{t('stats.s1.desc')}</p>
       </div>

@@ -2,7 +2,7 @@
 
 Source code for my personal site at [joaopster.com](https://joaopster.com).
 
-Software engineer and startup co-founder with 7 years building production systems. The site is my professional home: who I am, what I build, how I think about engineering, and a blog where I write about the tradeoffs that don't fit in a tweet.
+Software engineer and startup co-founder, building production systems since 2019. The site is my professional home: who I am, what I build, how I think about engineering, and a blog where I write about the tradeoffs that don't fit in a tweet.
 
 ## What's on the site
 

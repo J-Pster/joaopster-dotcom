@@ -3,11 +3,14 @@ import { Image } from 'astro:assets';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 import profilePhoto from '../../assets/profile-photo.png';
 import { countUniqueSkills } from '../../data/skills';
+import { uptimeText } from '../../lib/lifeUptime';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
 const skillCount = countUniqueSkills(lang);
+// Build-time snapshot; the client script below redraws these with today's date.
+const uptime = uptimeText(new Date(), lang);
 
 // The terminal's `git log`, newest first. Hashes are decorative; years match the Experience section.
 const lifeLog = [
@@ -36,7 +39,7 @@ const lifeLog = [
     <p class="hero-sub">{t('hero.sub')}</p>
     <div class="hero-stats">
       <a class="stat" href="#experience">
-        <span class="stat-n">7</span>
+        <span class="stat-n" data-uptime="devYears">{uptime.devYears}</span>
         <span class="stat-l">{t('hero.yearsBuilding')}</span>
       </a>
       <div class="stat-divider"></div>
@@ -81,9 +84,9 @@ const lifeLog = [
         <span class="mockup-title">~/joaopster · zsh</span>
       </div>
       <div class="mockup-body">
-        <div class="ml"><span class="mp">❯</span> <span class="mc">git clone</span> <span class="mhi">joaopster</span> <span class="mc">--depth=</span><span class="mhi">7y</span></div>
+        <div class="ml"><span class="mp">❯</span> <span class="mc">git clone</span> <span class="mhi">joaopster</span> <span class="mc">--depth=</span><span class="mhi"><span data-uptime="devYears">{uptime.devYears}</span>y</span></div>
         <div class="ml mo">Cloning into 'who-i-am'…</div>
-        <div class="ml mo">remote: 7 years · {skillCount} skills, done.</div>
+        <div class="ml mo">remote: <span data-uptime="age">{uptime.age}</span> years old · <span data-uptime="devYears">{uptime.devYears}</span> years as a developer · {skillCount} skills, done.</div>
         <div class="ml mo"><span class="mg">✓</span> Resolving identity: 100%</div>
         <div class="ml mt8"><span class="mp">❯</span> <span class="mc">git log</span> <span class="mhi">--oneline</span></div>
         {lifeLog.map((entry, index) => (
@@ -92,7 +95,7 @@ const lifeLog = [
           </div>
         ))}
         <div class="ml mt8"><span class="mp">❯</span> <span class="mc">uptime</span></div>
-        <div class="ml mo">up <span class="mhi">11,000+ hrs</span> · load avg: <span class="mg">shipping</span></div>
+        <div class="ml mo">up <span class="mhi"><span data-uptime="devHours">{uptime.devHours}</span> hrs</span> (<span data-uptime="devYears">{uptime.devYears}</span> years) · load avg: <span class="mg">shipping</span></div>
         <div class="ml mt8"><span class="mp">❯</span> <span class="mc-cursor">█</span></div>
       </div>
     </div>
@@ -101,6 +104,12 @@ const lifeLog = [
 
 <script>
   import { animate, stagger } from "motion";
+  import type { Lang } from "../../i18n/ui";
+  import { refreshUptime } from "../../lib/lifeUptime";
+
+  // The page is static, so refresh every [data-uptime] on it (hero, stats, experience) with today's date.
+  // <html lang> is written by the layout from the page's Lang.
+  refreshUptime(document, document.documentElement.lang as Lang);
 
   // Staggered entrance: badge → h1 → sub → stats → CTAs
   animate(
