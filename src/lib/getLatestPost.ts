@@ -1,13 +1,21 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import type { Lang } from '../i18n/ui';
+import { languages, type Lang } from '../i18n/ui';
 
 const fallbackLang: Lang = 'pt';
 
-const langOf = (post: CollectionEntry<'blog'>) => post.id.slice(0, post.id.indexOf('/'));
+// Posts live in src/content/blog/<lang>/, so the id prefix is the language.
+export const langOf = (post: CollectionEntry<'blog'>): Lang => {
+  const folder = post.id.slice(0, post.id.indexOf('/'));
+  if (!(folder in languages)) throw new Error(`Blog post "${post.id}" is not inside a language folder`);
+  return folder as Lang;
+};
 const slugOf = (post: CollectionEntry<'blog'>) => post.id.slice(post.id.indexOf('/') + 1);
 
-const readTime = (body: string | undefined) =>
+export const readTime = (body: string | undefined) =>
   Math.max(1, Math.round((body?.trim().split(/\s+/).length ?? 0) / 200));
+
+// Share image emitted by src/pages/og/[...slug].png.ts.
+export const ogImagePathOf = (post: CollectionEntry<'blog'>) => `/og/${post.id}.png`;
 
 // Posts to show for a language: the post in that language when it exists,
 // otherwise the Portuguese fallback. Sorted newest first.

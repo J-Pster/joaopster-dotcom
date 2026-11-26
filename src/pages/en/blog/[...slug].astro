@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, render } from 'astro:content';
 import BlogPost from '../../../layouts/BlogPost.astro';
-import { getPostsForLang } from '../../../lib/getLatestPost';
+import { getPostsForLang, ogImagePathOf } from '../../../lib/getLatestPost';
 
 export async function getStaticPaths() {
   const posts = await getPostsForLang('en');
@@ -19,6 +19,6 @@ const words = post.body?.trim().split(/\s+/).length ?? 0;
 const readingTime = Math.max(1, Math.round(words / 200));
 ---
 
-<BlogPost {...post.data} readingTime={readingTime}>
+<BlogPost {...post.data} readingTime={readingTime} ogImage={ogImagePathOf(post)}>
   <Content />
 </BlogPost>
