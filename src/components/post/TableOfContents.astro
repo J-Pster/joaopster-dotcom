@@ -62,11 +62,24 @@ const Wrapper = variant === 'rail' ? 'nav' : 'details';
   }
 
   /* The rail column sets the height; the list scrolls inside it. */
+  /* Scrollbar: a thin hairline that only shows while the pointer (or keyboard focus) is on the rail. */
   .toc--rail {
     position: relative;
     min-height: 0;
     overflow-y: auto;
     scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.2s ease;
+  }
+  .toc--rail:hover,
+  .toc--rail:focus-within { scrollbar-color: var(--color-hairline-strong) transparent; }
+  /* Browsers without scrollbar-color (older Safari): same look through the WebKit pseudo-elements. */
+  @supports not (scrollbar-color: auto) {
+    .toc--rail::-webkit-scrollbar { width: 6px; }
+    .toc--rail::-webkit-scrollbar-track { background: transparent; }
+    .toc--rail::-webkit-scrollbar-thumb { background: transparent; border-radius: var(--radius-pill); }
+    .toc--rail:hover::-webkit-scrollbar-thumb,
+    .toc--rail:focus-within::-webkit-scrollbar-thumb { background: var(--color-hairline-strong); }
   }
 
   .toc--inline {
