@@ -117,16 +117,25 @@ Espere ele revisar. Ele itera várias vezes, e cada pedido dele vale para esta e
 
 ## Versões para outras plataformas
 
-Quando o João pedir as versões para Reddit ou LinkedIn, entregue arquivos `.md` separados, fora do repositório (no scratchpad da sessão), e mande pelo chat com a ferramenta de enviar arquivo para ele abrir e copiar. Use o idioma que ele pedir, e PT se ele não disser.
+Quando o João pedir as versões para outras plataformas, entregue arquivos `.md` separados, fora do repositório (no scratchpad da sessão), e mande pelo chat com a ferramenta de enviar arquivo para ele abrir e copiar. Use o idioma que ele pedir, e PT se ele não disser. São três arquivos:
 
-- **Reddit.** Um arquivo só, com o `.md` cru do próprio post. É o corpo do post igual ao do blog, sem frontmatter, sem rótulo, sem título separado e sem nada em volta. Os links internos viram URLs completas do joaopster.com.
-- **LinkedIn.** Dois arquivos separados.
-  - **Post curto**, para o feed do perfil, no padrão do LinkedIn. É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
-  - **Artigo**, para a função de artigos do LinkedIn. É o post completo, igual ao do blog, com os links internos como URLs completas.
+1. **`post-completo.md`, que serve para Reddit, artigo do LinkedIn e TabNews.** É o `.md` cru do próprio post, igual ao do blog, sem frontmatter, sem título, sem rótulo e sem nada em volta. Os links internos viram URLs completas do joaopster.com.
+2. **`linkedin-post.md`, o post curto para o feed do LinkedIn.** É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
+3. **`x-threads.md`, um post só para X e Threads.** É texto puro com o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Valem as mesmas regras do post curto do LinkedIn.
 
-- **X/Threads.** Um arquivo só, que serve para os dois, com um post curto em texto puro e o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Mesmas regras do post curto do LinkedIn (primeira pessoa, a tese com um dado do João, sem hashtag, sem emoji, sem dois-pontos no meio da frase).
+Na mesma mensagem, mande o título do post e o link do post no blog, cada um num bloco de código próprio, para o João copiar com um clique. Faça isso também sempre que ele pedir só o título ou só o link. Exemplo:
 
-Antes de entregar, rode nos textos novos (principalmente no post curto do LinkedIn, que é escrito do zero) a mesma revisão do passo 6.
+````markdown
+```text
+O harness do Claude Code deixou meu workflow obsoleto
+```
+
+```text
+https://joaopster.com/blog/claude-code-harness-workflows-obsoletos/
+```
+````
+
+Antes de entregar, rode nos textos escritos do zero (o post curto do LinkedIn e o do X/Threads) a mesma revisão do passo 6.
 
 ## Arquivos
 
