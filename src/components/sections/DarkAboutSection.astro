@@ -11,9 +11,6 @@ const specialties = [
   { title: t('about.spec.g4.title'), items: t('about.spec.g4.items').split(' | ') },
   { title: t('about.spec.g5.title'), items: t('about.spec.g5.items').split(' | ') },
 ];
-
-const primarySpecialties = specialties.slice(0, 3);
-const extraSpecialties = specialties.slice(3);
 ---
 <section id="about" class="dark-about">
   <div class="dark-about-inner">
@@ -23,57 +20,21 @@ const extraSpecialties = specialties.slice(3);
         <h2 class="da-heading">{t('about.heading1')}<br/>{t('about.heading2')}</h2>
         {t('about.sub').split('\n\n').map((paragraph) => <p class="da-sub">{paragraph}</p>)}
       </div>
-      <div class="da-grid">
-      <div class="da-card">
-        <div class="da-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path d="M5 6l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M10 12h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3>{t('about.card1.title')}</h3>
-        <p>{t('about.card1.desc')}</p>
-        <a href="#specialties" class="da-link">{t('about.card1.link')}</a>
-      </div>
-      <div class="da-card">
-        <div class="da-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.5 3.5l1.4 1.4M13.1 13.1l1.4 1.4M14.5 3.5l-1.4 1.4M4.9 13.1l-1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <h3>{t('about.card2.title')}</h3>
-        <p>{t('about.card2.desc')}</p>
-        <a href="#skills" class="da-link">{t('about.card2.link')}</a>
-      </div>
-      </div>
-    </div>
-
-    <div id="specialties" class="da-specialties">
-      <p class="da-spec-label">{t('about.specialties.label')}</p>
-      <div class="da-spec-grid">
-        {primarySpecialties.map((g) => (
-          <div class="da-spec-card">
-            <h4>{g.title}</h4>
-            <ul>
-              {g.items.map((item) => <li>{item}</li>)}
-            </ul>
+      <div id="specialties" class="da-specialties">
+        <p class="da-spec-label">{t('about.specialties.label')}</p>
+        <div class="da-spec-frame">
+          <div class="da-spec-scroll" tabindex="0" aria-label={t('about.specialties.label')}>
+            {specialties.map((g) => (
+              <div class="da-spec-card">
+                <h3>{g.title}</h3>
+                <ul>
+                  {g.items.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <details class="da-spec-more">
-        <summary class="da-spec-more-btn">{t('about.specialties.more')}</summary>
-        <div class="da-spec-grid da-spec-grid-extra">
-          {extraSpecialties.map((g) => (
-            <div class="da-spec-card">
-              <h4>{g.title}</h4>
-              <ul>
-                {g.items.map((item) => <li>{item}</li>)}
-              </ul>
-            </div>
-          ))}
         </div>
-      </details>
+      </div>
     </div>
   </div>
 </section>
@@ -88,37 +49,42 @@ const extraSpecialties = specialties.slice(3);
   .da-heading { font-size: 48px; font-weight: 600; color: var(--color-on-dark); letter-spacing: -1.44px; line-height: 1.1; margin-bottom: var(--space-lg); }
   .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin: 0 0 var(--space-base); }
   .da-sub:last-of-type { margin-bottom: 0; }
-  .da-top { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-xxl); align-items: start; }
-  .da-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-base); }
-  @media (max-width: 860px) { .da-top { grid-template-columns: 1fr; gap: var(--space-xl); } }
-  .da-card { background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: var(--space-lg); }
-  .da-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.07); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-on-dark-soft); margin-bottom: var(--space-md); }
-  .da-card h3 { font-size: 18px; font-weight: 600; color: var(--color-on-dark); margin-bottom: var(--space-sm); }
-  .da-card p { font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.65; margin-bottom: var(--space-lg); }
-  .da-card p strong { color: var(--color-on-dark); font-weight: 600; }
-  .da-link { font-size: 14px; font-weight: 500; color: #47c2ff; text-decoration: none; }
-  .da-link:hover { opacity: 0.8; text-decoration: none; }
-  .da-specialties { margin-top: var(--space-xxl); }
+  .da-top { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-xxl); }
+
+  /* The specialties column takes the intro's height; the list scrolls inside it instead of growing the section. */
+  .da-specialties { display: flex; flex-direction: column; min-height: 0; }
   .da-spec-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-on-dark-soft); margin-bottom: var(--space-lg); }
-  .da-spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-base); }
-  .da-spec-card { background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: var(--space-lg); }
-  .da-spec-card h4 { font-size: 16px; font-weight: 600; color: var(--color-on-dark); margin: 0 0 var(--space-base); line-height: 1.4; }
+  .da-spec-frame { position: relative; flex: 1; min-height: 480px; }
+  .da-spec-scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-base);
+    padding: 0 var(--space-xs) var(--space-xxl) 0;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+    /* Fades the bottom edge so a half-visible card reads as "there is more below". */
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+  }
+  .da-spec-scroll:focus-visible { outline: 2px solid var(--color-on-dark); outline-offset: 4px; border-radius: var(--radius-lg); }
+  .da-spec-card { flex-shrink: 0; background: var(--color-surface-dark-elevated); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-lg); padding: var(--space-lg); }
+  .da-spec-card h3 { font-size: 16px; font-weight: 600; color: var(--color-on-dark); margin: 0 0 var(--space-base); line-height: 1.4; letter-spacing: 0; }
   .da-spec-card ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm); }
   .da-spec-card li { position: relative; padding-left: 18px; font-size: 14px; color: var(--color-on-dark-soft); line-height: 1.5; }
   .da-spec-card li::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.28); }
-  .da-spec-more { margin: 0; }
-  .da-spec-more-btn { display: block; width: fit-content; margin: var(--space-lg) auto 0; padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--color-on-dark); font-size: 14px; font-weight: 500; line-height: 1; cursor: pointer; user-select: none; list-style: none; transition: background 0.15s ease; }
-  .da-spec-more-btn::-webkit-details-marker { display: none; }
-  .da-spec-more-btn:hover { background: rgba(255,255,255,0.1); }
-  .da-spec-more-btn:focus-visible { outline: 2px solid var(--color-on-dark); outline-offset: 2px; }
-  .da-spec-more[open] .da-spec-more-btn { display: none; }
-  .da-spec-grid-extra { margin-top: var(--space-base); }
-  @media (max-width: 900px) { .da-spec-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 560px) { .da-spec-grid { grid-template-columns: 1fr; } }
-  @media (max-width: 768px) { .da-heading { font-size: 36px; } .da-grid { grid-template-columns: 1fr; } }
+
+  @media (max-width: 860px) {
+    .da-top { grid-template-columns: 1fr; gap: var(--space-xxl); }
+    /* Stacked under the intro there is no row height to borrow, so cap the list instead. */
+    .da-spec-frame { flex: none; height: 520px; min-height: 0; }
+  }
+  @media (max-width: 768px) { .da-heading { font-size: 36px; } }
   @media (max-width: 640px) {
     .dark-about { padding: var(--space-section) var(--space-base); }
     .da-heading { font-size: 28px; }
-    .da-card { padding: var(--space-base); }
+    .da-spec-card { padding: var(--space-base); }
   }
 </style>
