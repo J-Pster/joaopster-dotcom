@@ -155,7 +155,7 @@ export const ui = {
     'cta.primary': 'Fale comigo',
     'cta.secondary': 'Ler o blog',
 
-    'footer.tagline': `Parabéns, você zerou o site. Agora é só dar aquele scroll e passar pro próximo.`,
+    'footer.tagline': `Parabéns, você zerou o site. Agora scrolla e passa pro próximo.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabalho',
     'footer.connect': 'Contato',
@@ -357,7 +357,7 @@ export const ui = {
     'cta.primary': 'Get in touch',
     'cta.secondary': 'Read the blog',
 
-    'footer.tagline': `Congrats, you beat the whole site. Now give it that scroll and swipe on to the next one.`,
+    'footer.tagline': `Congrats, you beat the site. Now scroll and swipe to the next one.`,
     'footer.explore': 'Explore',
     'footer.work': 'Work',
     'footer.connect': 'Connect',
@@ -559,7 +559,7 @@ export const ui = {
     'cta.primary': 'Contáctame',
     'cta.secondary': 'Leer el blog',
 
-    'footer.tagline': `Felicidades, te pasaste el sitio entero. Ahora dale ese scroll y pasa al siguiente.`,
+    'footer.tagline': `Felicidades, te pasaste el sitio. Ahora haz scroll y pasa al siguiente.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabajo',
     'footer.connect': 'Contacto',
