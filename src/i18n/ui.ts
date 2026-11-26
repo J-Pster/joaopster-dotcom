@@ -155,6 +155,7 @@ export const ui = {
     'cta.primary': 'Fale comigo',
     'cta.secondary': 'Ler o blog',
 
+    'footer.tagline': `Parabéns, você chegou ao fim do site. Aqui o scroll acaba e não tem próximo vídeo carregando. Rola pra cima e continua a jornada.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabalho',
     'footer.connect': 'Contato',
@@ -356,6 +357,7 @@ export const ui = {
     'cta.primary': 'Get in touch',
     'cta.secondary': 'Read the blog',
 
+    'footer.tagline': `Congrats, you made it to the end. Unlike your feed, this scroll actually stops, and no next video is loading. Scroll back up and keep exploring.`,
     'footer.explore': 'Explore',
     'footer.work': 'Work',
     'footer.connect': 'Connect',
@@ -557,6 +559,7 @@ export const ui = {
     'cta.primary': 'Contáctame',
     'cta.secondary': 'Leer el blog',
 
+    'footer.tagline': `Felicidades, llegaste al final. A diferencia de tu feed, aquí el scroll se acaba y no hay próximo video cargando. Vuelve arriba y sigue explorando.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabajo',
     'footer.connect': 'Contacto',
