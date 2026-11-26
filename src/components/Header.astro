@@ -5,6 +5,13 @@ import LanguageSelector from './LanguageSelector.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { getWakatimeData } from '../lib/getWakatimeData';
 
+interface Props {
+  /** Long reads (posts, course notes): the header slides away while scrolling down. */
+  autoHide?: boolean;
+}
+
+const { autoHide = false } = Astro.props;
+
 // Every page gets the counter; the fetch is memoized, so the whole build shares one API call.
 const codingTime = (await getWakatimeData())?.totalText;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
@@ -13,7 +20,7 @@ const prefix = lang === 'pt' ? '' : `/${lang}`;
 const homePath = lang === 'pt' ? '/' : `/${lang}`;
 ---
 
-<header id="site-header">
+<header id="site-header" data-auto-hide={autoHide ? '' : undefined}>
   <nav>
     <a href={homePath} class="logo" aria-label="joaopster home">
       <svg class="logo-mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -152,8 +159,9 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     z-index: 100;
     background: rgba(255, 255, 255, 0.92);
     border-bottom: 1px solid var(--color-hairline);
-    transition: box-shadow 0.2s ease, background 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.2s ease, background 0.2s ease;
   }
+  header.is-hidden { transform: translateY(-100%); box-shadow: none; }
   header.scrolled {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -431,6 +439,25 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
   window.addEventListener('scroll', () => {
     header?.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
+
+  // Long reads: scrolling down hides the header, any scroll up brings it back. The html class lets
+  // sticky side rails move up into the freed space.
+  const HEADER_HEIGHT = 64;
+  const SCROLL_NOISE = 4;
+  if (header && header.hasAttribute('data-auto-hide')) {
+    const setHidden = (hidden: boolean) => {
+      header.classList.toggle('is-hidden', hidden);
+      document.documentElement.classList.toggle('header-hidden', hidden);
+    };
+    let lastY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (Math.abs(y - lastY) < SCROLL_NOISE) return;
+      setHidden(y > lastY && y > HEADER_HEIGHT);
+      lastY = y;
+    }, { passive: true });
+    header.addEventListener('focusin', () => setHidden(false));
+  }
 
   function setMenu(open: boolean) {
     mobileNav?.classList.toggle('open', open);
