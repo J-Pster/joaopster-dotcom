@@ -155,7 +155,6 @@ export const ui = {
     'cta.primary': 'Fale comigo',
     'cta.secondary': 'Ler o blog',
 
-    'footer.tagline': `Sócio-fundador e desenvolvedor de uma startup confidencial. Faço o software inteiro, da infra ao app, e escrevo aqui sobre o que eu construo.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabalho',
     'footer.connect': 'Contato',
@@ -357,7 +356,6 @@ export const ui = {
     'cta.primary': 'Get in touch',
     'cta.secondary': 'Read the blog',
 
-    'footer.tagline': `Co-founder and developer at a confidential startup. I build the whole product, from the infrastructure to the app, and I write here about what I build.`,
     'footer.explore': 'Explore',
     'footer.work': 'Work',
     'footer.connect': 'Connect',
@@ -559,7 +557,6 @@ export const ui = {
     'cta.primary': 'Contáctame',
     'cta.secondary': 'Leer el blog',
 
-    'footer.tagline': `Socio fundador y desarrollador de una startup confidencial. Hago el software entero, de la infraestructura a la app, y aquí escribo sobre lo que construyo.`,
     'footer.explore': 'Explorar',
     'footer.work': 'Trabajo',
     'footer.connect': 'Contacto',
