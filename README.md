@@ -2,7 +2,7 @@
 
 Source code for my personal site at [joaopster.com](https://joaopster.com).
 
-Senior software engineer and AI engineer with 6+ years building production systems. The site is my professional home: who I am, what I build, how I think about engineering, and a blog where I write about the tradeoffs that don't fit in a tweet.
+Lead software engineer with 7 years building production systems. The site is my professional home: who I am, what I build, how I think about engineering, and a blog where I write about the tradeoffs that don't fit in a tweet.
 
 ## What's on the site
 

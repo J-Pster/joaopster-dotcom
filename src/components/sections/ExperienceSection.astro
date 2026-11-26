@@ -4,7 +4,7 @@ import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
-const yearsBuilding = new Date().getFullYear() - 2020;
+const yearsBuilding = new Date().getFullYear() - 2019;
 const numberWords: Record<Lang, string[]> = {
   pt: ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove', 'vinte'],
   en: ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'],
@@ -16,113 +16,101 @@ const expHeading1 = t('exp.heading1').replace('{years}', yearsWord);
 const roles = [
   {
     roleKey: 'exp.role1.role' as const,
-    company: 'Confidencial · PropTech',
-    meta: 'United States · Remote',
-    dates: '2025 - Present',
+    company: 'Confidential startup',
+    meta: 'Full-time · Remote',
+    dates: 'Dec 2025 - Present',
     current: true,
     descKey: 'exp.role1.desc' as const,
-    tags: ['AI-driven', 'Spec-driven dev', 'TypeScript', 'Scale'],
+    tags: ['AWS', 'OpenTofu', 'TypeScript', 'NestJS', 'Angular', 'AI in production'],
   },
   {
     roleKey: 'exp.role2.role' as const,
     company: 'adMixt',
-    meta: 'United States · Remote',
-    dates: '2025',
+    meta: 'United States · Remote · Contract',
+    dates: 'Mar 2025 - Dec 2025',
     current: false,
     descKey: 'exp.role2.desc' as const,
-    tags: ['Vanilla JS', 'Legacy modernization', 'PHP', 'AWS'],
+    tags: ['Vanilla JS', 'PHP', 'Legacy modernization', 'Front-end architecture'],
   },
   {
     roleKey: 'exp.role3.role' as const,
     company: 'Howhow',
-    meta: 'São Paulo · Hybrid',
-    dates: '2024 - 2025',
+    meta: 'São Paulo · Remote · Contract',
+    dates: 'Feb 2024 - Apr 2025',
     current: false,
     descKey: 'exp.role3.desc' as const,
-    tags: ['AI / NLP', 'Architecture', 'Node.js', 'Full-stack'],
+    tags: ['Architecture', 'AI / NLP', 'Node.js', 'Tech lead'],
   },
   {
     roleKey: 'exp.role4.role' as const,
-    company: 'Artweb · João Pster',
-    meta: 'Brazil · Remote',
-    dates: '2023 - 2025',
+    company: 'João Pster',
+    meta: 'Brazil · Remote · Own company',
+    dates: 'Jan 2020 - Mar 2025',
     current: false,
     descKey: 'exp.role4.desc' as const,
-    tags: ['React', 'React Native', 'Angular', 'Flutter', 'GCP'],
+    tags: ['Consulting', 'Team leadership', 'Teaching', 'Full-stack'],
   },
   {
     roleKey: 'exp.role5.role' as const,
-    company: 'Independent',
-    meta: 'Brazil · Remote',
-    dates: '2021 - 2024',
+    company: 'Artweb · João Pster',
+    meta: 'Brazil · Remote · Outsourced',
+    dates: 'Jan 2023 - Mar 2025',
     current: false,
     descKey: 'exp.role5.desc' as const,
-    tags: ['React', 'Node', 'NestJS', 'Cloud'],
+    tags: ['React', 'React Native', 'Angular', 'Flutter', 'Google Cloud', 'Firebase'],
   },
   {
     roleKey: 'exp.role6.role' as const,
-    company: 'João Pster',
-    meta: 'Brazil · Remote',
-    dates: '2023 - 2024',
+    company: 'AfterSale',
+    meta: 'Brazil · Remote · Fixed-term',
+    dates: 'Oct 2023 - Feb 2024',
     current: false,
     descKey: 'exp.role6.desc' as const,
-    tags: ['Tech lead', 'Consulting', 'Hands-on', 'Team building'],
+    tags: ['React', 'Legacy integration'],
   },
   {
     roleKey: 'exp.role7.role' as const,
-    company: 'Howhow · João Pster',
-    meta: 'São Paulo · Hybrid',
-    dates: '2023 - 2024',
-    current: false,
-    descKey: 'exp.role7.desc' as const,
-    tags: ['CTO', 'AI / NLP', 'Leadership'],
-  },
-  {
-    roleKey: 'exp.role8.role' as const,
-    company: 'AfterSale',
-    meta: 'Brazil · Remote',
-    dates: '2023 - 2024',
-    current: false,
-    descKey: 'exp.role8.desc' as const,
-    tags: ['React', 'Front-end', 'Legacy'],
-  },
-  {
-    roleKey: 'exp.role9.role' as const,
     company: 'Digital Republic',
     meta: 'São Paulo · On-site',
-    dates: '2023',
+    dates: 'Feb 2023 - Jul 2023',
     current: false,
-    descKey: 'exp.role9.desc' as const,
+    descKey: 'exp.role7.desc' as const,
     tags: ['Next.js', 'Angular', 'Atomic Design'],
   },
   {
-    roleKey: 'exp.role10.role' as const,
-    company: 'Verzel',
-    meta: 'Brazil · Remote',
-    dates: '2022 - 2023',
+    roleKey: 'exp.role8.role' as const,
+    company: 'Verzel Soluções em Sistemas',
+    meta: 'Brazil · Remote · Contract',
+    dates: 'Nov 2022 - Feb 2023',
     current: false,
-    descKey: 'exp.role10.desc' as const,
-    tags: ['Angular', 'React', 'Node', 'Chatbot'],
+    descKey: 'exp.role8.desc' as const,
+    tags: ['Angular', 'React', 'Node.js', 'AI chatbot'],
   },
   {
-    roleKey: 'exp.role11.role' as const,
-    company: 'Independent',
-    meta: 'Brazil',
-    dates: '2020 - 2022',
-    current: false,
-    descKey: 'exp.role11.desc' as const,
-    tags: ['React', 'Angular', 'Vue', 'UI/UX'],
-  },
-  {
-    roleKey: 'exp.role12.role' as const,
+    roleKey: 'exp.role9.role' as const,
     company: 'Self-employed',
-    meta: 'Remote',
-    dates: '2019 - 2020',
+    meta: 'Brazil · Remote',
+    dates: 'Dec 2019 - Nov 2022',
     current: false,
-    descKey: 'exp.role12.desc' as const,
-    tags: ['.NET', 'C#', 'HarmonyX', 'Game dev'],
+    descKey: 'exp.role9.desc' as const,
+    tags: ['React', 'Angular', 'Vue', 'Node.js', 'C# / .NET', 'WordPress'],
   },
 ];
+
+type DescBlock = { kind: 'p'; text: string } | { kind: 'ul'; items: string[] };
+
+const BULLET = '• ';
+
+/** Splits a description into paragraphs and bullet lists; consecutive "• " lines form one list. */
+function parseDesc(text: string): DescBlock[] {
+  return text.split('\n').reduce<DescBlock[]>((blocks, line) => {
+    if (!line.startsWith(BULLET)) return [...blocks, { kind: 'p', text: line }];
+    const last = blocks.at(-1);
+    const item = line.slice(BULLET.length);
+    if (last?.kind === 'ul') return [...blocks.slice(0, -1), { kind: 'ul', items: [...last.items, item] }];
+    return [...blocks, { kind: 'ul', items: [item] }];
+  }, []);
+}
 ---
 <section id="experience" class="experience">
   <div class="exp-inner">
@@ -142,9 +130,10 @@ const roles = [
             <span class="exp-company-meta">{r.meta}</span>
           </p>
           <div class="exp-desc">
-            {t(r.descKey).split('\n\n').map((para) => (
-              <p>{para.split('\n').map((line, li) => (<Fragment>{li > 0 && <br />}{line}</Fragment>))}</p>
-            ))}
+            {parseDesc(t(r.descKey)).map((block) => block.kind === 'p'
+              ? <p>{block.text}</p>
+              : <ul>{block.items.map((item) => <li>{item}</li>)}</ul>
+            )}
           </div>
           <div class="exp-tags">
             {r.tags.map(tag => <span class="exp-tag">{tag}</span>)}
@@ -231,7 +220,10 @@ const roles = [
   .exp-company-meta { font-size: 13px; color: var(--color-muted); }
   .exp-desc { margin: 0 0 var(--space-md); }
   .exp-desc p { font-size: 14px; color: var(--color-body); line-height: 1.65; margin: 0 0 var(--space-sm); }
-  .exp-desc p:last-child { margin-bottom: 0; }
+  .exp-desc ul { list-style: none; margin: 0 0 var(--space-sm); padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .exp-desc li { position: relative; padding-left: 16px; font-size: 14px; color: var(--color-body); line-height: 1.6; }
+  .exp-desc li::before { content: ''; position: absolute; left: 2px; top: 9px; width: 5px; height: 5px; border-radius: 50%; background: var(--color-hairline-strong); }
+  .exp-desc > :last-child { margin-bottom: 0; }
   .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .exp-tag {
     font-size: 11px; font-weight: 500; color: var(--color-ink);

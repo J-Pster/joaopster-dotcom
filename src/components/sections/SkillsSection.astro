@@ -1,0 +1,83 @@
+---
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { skillGroups, skillName } from '../../data/skills';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+// A skill listed under two groups (Cognito, AWS WAF) counts once.
+const skillCount = new Set(
+  skillGroups.flatMap((group) => group.areas.flatMap((area) => area.skills.map((skill) => skillName(skill, lang)))),
+).size;
+const sub = t('skills.sub')
+  .replace('{count}', String(skillCount))
+  .replace('{groups}', String(skillGroups.length));
+---
+<section id="skills" class="skills-section">
+  <div class="sk-inner">
+    <p class="sk-label">{t('skills.label')}</p>
+    <h2 class="sk-heading">{t('skills.heading')}</h2>
+    <p class="sk-sub">{sub}</p>
+
+    <nav class="sk-index" aria-label={t('skills.indexLabel')}>
+      {skillGroups.map((group) => (
+        <a href={`#skills-${group.id}`} class="sk-index-link">{group.title[lang]}</a>
+      ))}
+    </nav>
+
+    <div class="sk-groups">
+      {skillGroups.map((group) => (
+        <article id={`skills-${group.id}`} class="sk-group">
+          <header class="sk-group-head">
+            <h3 class="sk-group-title">{group.title[lang]}</h3>
+            <p class="sk-group-summary">{group.summary[lang]}</p>
+          </header>
+          <div class="sk-areas">
+            {group.areas.map((area) => (
+              <div class="sk-area">
+                <h4 class="sk-area-label">{area.label[lang]}</h4>
+                <ul class="sk-list">
+                  {area.skills.map((skill) => <li class="sk-item">{skillName(skill, lang)}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-section { padding: var(--space-section) var(--space-xl); background: var(--color-canvas); border-top: 1px solid var(--color-hairline); }
+  .sk-inner { max-width: 1200px; margin: 0 auto; }
+  .sk-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-md); }
+  .sk-heading { font-size: 36px; font-weight: 600; color: var(--color-ink); letter-spacing: -1.08px; line-height: 1.15; margin-bottom: var(--space-sm); }
+  .sk-sub { font-size: 16px; color: var(--color-body); line-height: 1.6; max-width: 640px; margin-bottom: var(--space-xl); }
+
+  .sk-index { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-bottom: var(--space-xxl); }
+  .sk-index-link { font-size: 13px; font-weight: 500; color: var(--color-ink); background: var(--color-surface-strong); border-radius: var(--radius-sm); padding: 6px 12px; text-decoration: none; transition: background 0.15s; }
+  .sk-index-link:hover { background: var(--color-hairline-strong); text-decoration: none; }
+
+  .sk-groups { display: flex; flex-direction: column; }
+  .sk-group { display: grid; grid-template-columns: 280px 1fr; gap: var(--space-xl); padding: var(--space-xxl) 0; border-top: 1px solid var(--color-hairline); scroll-margin-top: 80px; }
+  .sk-group:last-child { border-bottom: 1px solid var(--color-hairline); }
+  .sk-group-head { align-self: start; position: sticky; top: 88px; }
+  .sk-group-title { font-size: 22px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.5px; line-height: 1.25; margin: 0 0 var(--space-sm); }
+  .sk-group-summary { font-size: 14px; color: var(--color-body); line-height: 1.6; margin: 0; }
+
+  .sk-areas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xl) var(--space-lg); }
+  .sk-area-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); margin: 0 0 var(--space-sm); }
+  .sk-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .sk-item { font-size: 13px; line-height: 1.4; color: var(--color-ink); background: var(--color-surface-card); border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-sm); padding: 5px 10px; }
+
+  @media (max-width: 900px) {
+    .sk-group { grid-template-columns: 1fr; gap: var(--space-lg); }
+    .sk-group-head { position: static; }
+  }
+  @media (max-width: 640px) {
+    .skills-section { padding: var(--space-section) var(--space-base); }
+    .sk-heading { font-size: 28px; }
+    .sk-areas { grid-template-columns: 1fr; }
+  }
+</style>
