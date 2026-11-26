@@ -63,7 +63,8 @@ const specialties = [
     flex-direction: column;
     gap: var(--space-base);
     padding: 0 var(--space-xs) var(--space-xxl) 0;
-    overscroll-behavior: contain;
+    /* Default chaining: once the list hits its top or bottom, the same gesture keeps scrolling the page. */
+    overscroll-behavior-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
     /* Fades the bottom edge so a half-visible card reads as "there is more below". */
