@@ -79,6 +79,8 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </article>
         )}
 
+        <NewsletterSignup />
+
         <!-- Blog plus quick links to my writing elsewhere (open in a new tab) -->
         <nav class="channels" aria-label={t('blog.channelsLabel')}>
           <span class="channel channel--current" aria-current="page">
@@ -181,7 +183,6 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </div>
         </div>
 
-        <NewsletterSignup />
       </div>
     </section>
 

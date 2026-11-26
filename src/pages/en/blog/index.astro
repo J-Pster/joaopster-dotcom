@@ -75,6 +75,8 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </article>
         )}
 
+        <NewsletterSignup />
+
         <div class="filter-bar">
           <input
             type="search"
@@ -137,7 +139,6 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           ))}
         </div>
 
-        <NewsletterSignup />
       </div>
     </section>
 
