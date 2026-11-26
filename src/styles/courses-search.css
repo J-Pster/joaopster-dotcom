@@ -97,6 +97,7 @@
 .course-search-close:hover { color: var(--color-ink); }
 /* Touch screens have no Esc key: the same button shows a close icon with a finger-sized target. */
 @media (hover: none) {
+  .course-search-open kbd { display: none; }
   .course-search-close {
     width: 40px;
     height: 40px;

@@ -31,11 +31,11 @@ const pageNote: Note = {
     <h1>{text.reviewLink}</h1>
     <p class="study-lead">{text.reviewLead}</p>
     <div class="review-stats" data-review-count aria-live="polite"><div class="study-skeleton" aria-label={text.loading}></div></div>
-    <div class="review-card" data-review-card hidden>
+    <div class="review-card" data-review-card tabindex="-1" hidden>
       <p class="review-kind" data-review-kind></p>
       <div class="review-front prose" data-review-front></div>
       <div class="review-back prose" data-review-back hidden></div>
-      <div class="review-actions">
+      <div class="review-actions" data-review-actions>
         <button type="button" class="review-show" data-review-show>{text.reviewShow}<kbd>{text.spaceKey}</kbd></button>
         <div class="review-ratings" data-review-ratings hidden>
           {(['again', 'hard', 'good', 'easy'] as const).map((rating, i) => (

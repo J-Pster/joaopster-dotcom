@@ -6,6 +6,7 @@ import { pageLang } from '../i18n';
 import { studyText } from '../studyText';
 import { ICON } from './icons';
 import { gradeOf, type Quiz, type QuizItem } from './quiz';
+import { toReadingLine } from './viewport';
 
 interface Attempt {
   readonly startedAt: number;
@@ -132,7 +133,8 @@ export function initExam(bar: HTMLElement, slug: string, url: string, rules: Exa
     if (answered && !window.confirm(t.examRestartConfirm)) return;
     quiz.clear(quiz.items);
     setState({ ...state, runningSince: Date.now() });
-    quiz.items[0]?.question.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const first = quiz.items[0];
+    if (first) toReadingLine(first.question, 'move');
   };
 
   const finish = (askFirst: boolean) => {
@@ -142,7 +144,7 @@ export function initExam(bar: HTMLElement, slug: string, url: string, rules: Exa
     const finishedAt = Math.min(Date.now(), deadline());
     const attempt = grade(quiz.items, state.runningSince, finishedAt);
     setState({ runningSince: undefined, attempts: [...state.attempts, attempt].slice(-MAX_ATTEMPTS) });
-    bar.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    toReadingLine(bar, 'move');
   };
 
   const tick = () => {
@@ -201,7 +203,8 @@ export function initExam(bar: HTMLElement, slug: string, url: string, rules: Exa
       jump.addEventListener('click', () => {
         navigator.hidden = true;
         toggle.setAttribute('aria-expanded', 'false');
-        item.question.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        toReadingLine(item.question, 'move');
+        item.options[0]?.input.focus({ preventScroll: true });
       });
       grid.append(jump);
     });

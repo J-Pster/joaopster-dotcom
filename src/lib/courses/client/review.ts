@@ -11,6 +11,7 @@ import { studyText } from '../studyText';
 import { ICON } from './icons';
 import { courseMistakes, emptyState, loadStudyIndex } from './mistakes';
 import { answerExplanation, answerLabel } from './quiz';
+import { peek, startsInView, toReadingLine } from './viewport';
 
 const STORAGE = 'jp-courses:review:v1:';
 const NEW_PER_DAY = 20;
@@ -209,6 +210,7 @@ export async function initReview(): Promise<void> {
   const back = requireElement<HTMLElement>(page, '[data-review-back]');
   const show = requireElement<HTMLButtonElement>(page, '[data-review-show]');
   const ratings = requireElement<HTMLElement>(page, '[data-review-ratings]');
+  const actions = requireElement<HTMLElement>(page, '[data-review-actions]');
   const t = studyText(pageLang());
   const key = `${STORAGE}${slug}`;
 
@@ -245,6 +247,9 @@ export async function initReview(): Promise<void> {
     ratings.hidden = true;
     show.hidden = false;
     cardBox.hidden = false;
+    // The next card replaces the one just rated: it starts where the eyes are, at the top of the card.
+    if (!startsInView(cardBox)) toReadingLine(cardBox, 'swap');
+    cardBox.focus({ preventScroll: true }); // the rating button that had focus is now hidden
     const content = await (shown.kind === 'term' ? termContent(shown.term) : questionContent(shown.question)).catch((err: unknown) => {
       front.textContent = t.loadFailed;
       throw err;
@@ -253,6 +258,9 @@ export async function initReview(): Promise<void> {
     const link = document.createElement('a');
     link.className = 'review-open';
     link.href = shown.kind === 'term' ? shown.term.url : shown.question.note;
+    // A new tab: the review session stays where it is.
+    link.target = '_blank';
+    link.rel = 'noopener';
     link.textContent = t.reviewOpenNote;
     front.replaceChildren(...content.front);
     back.replaceChildren(...content.back, link);
@@ -271,8 +279,17 @@ export async function initReview(): Promise<void> {
     back.hidden = false;
     show.hidden = true;
     ratings.hidden = false;
-    // On a phone the answer opens below the fold: bring it up to the reader.
-    back.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    // The answer shows where the eyes already are: the right options light up in place.
+    if (current.kind === 'question') {
+      const correct = new Set(current.question.correct);
+      for (const option of front.querySelectorAll<HTMLElement>('[data-quiz-options] > li[data-option]')) {
+        const right = correct.has(option.dataset.option ?? '');
+        option.classList.add(right ? 'review-option--right' : 'review-option--muted');
+        if (right) option.dataset.outcome = t.optionCorrect;
+      }
+    }
+    cardBox.focus({ preventScroll: true }); // the show button that had focus is now hidden
+    peek(back, cardBox, actions.offsetHeight);
   };
 
   const rate = (rating: keyof typeof RATINGS) => {
@@ -295,9 +312,12 @@ export async function initReview(): Promise<void> {
   document.addEventListener('keydown', (event) => {
     if (event.target instanceof HTMLElement && event.target.closest('input, textarea, [contenteditable], dialog')) return;
     if (event.key === ' ' || event.key === 'Enter') {
-      if (!revealed && current) {
+      if (!current) return;
+      if (!revealed) {
         event.preventDefault();
         reveal();
+      } else if (event.key === ' ' && !(event.target instanceof HTMLButtonElement)) {
+        event.preventDefault(); // Space would page the screen down and lose the card
       }
       return;
     }

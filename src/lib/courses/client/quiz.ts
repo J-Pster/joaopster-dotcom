@@ -6,6 +6,7 @@ import { pageLang } from '../i18n';
 import { studyText } from '../studyText';
 import { gradeAnswer, type Grade } from '../studyModel';
 import { ICON } from './icons';
+import { peek, toReadingLine } from './viewport';
 
 export interface QuizOptionBox {
   readonly letter: string;
@@ -184,19 +185,39 @@ export function initQuiz(isBlind: () => boolean): Quiz {
     repaint();
   };
 
+  // The retry button that had focus disappears: focus goes to the first option, without moving the page.
+  const retryQuestion = (item: QuizItem) => {
+    clear([item]);
+    item.options[0]?.input.focus({ preventScroll: true });
+  };
+  // Retrying the whole quiz from its score, at the end: the reader starts over at the first question.
+  const retryQuiz = (retried: readonly QuizItem[]) => {
+    clear(retried);
+    const [first] = retried;
+    if (!first) return;
+    toReadingLine(first.question, 'move');
+    first.options[0]?.input.focus({ preventScroll: true });
+  };
+
   const repaint = () => {
     const blind = isBlind();
-    for (const item of items) paintItem(item, blind, (retried) => clear([retried]));
+    for (const item of items) paintItem(item, blind, retryQuestion);
     for (const [quiz, quizItems] of byQuiz) {
       const slot = document.querySelector<HTMLElement>(`[data-quiz-score="${quiz}"]`);
-      if (slot) paintScore(slot, quizItems, blind, clear);
+      if (slot) paintScore(slot, quizItems, blind, retryQuiz);
     }
     for (const key of keys) key.hidden = blind;
     for (const intro of intros) intro.hidden = blind;
   };
 
   for (const item of items) {
-    for (const option of item.options) option.input.addEventListener('change', repaint);
+    for (const option of item.options) {
+      option.input.addEventListener('change', () => {
+        repaint();
+        // The verdict shows on the options themselves; on a small screen the explanation can open below the fold.
+        if (!item.feedback.hidden) peek(item.feedback, item.question, 0);
+      });
+    }
   }
   repaint();
   return { items, repaint, clear };

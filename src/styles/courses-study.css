@@ -98,6 +98,8 @@
   outline: 2px solid var(--color-text-link);
   outline-offset: 2px;
 }
+/* Links to a question (#q-…, from the mistakes notebook) land under the sticky header, with room to breathe. */
+.note-content [data-quiz-question] { scroll-margin-top: 88px; }
 /* The task checkbox stays the source of truth (the reader saves it); only its look changes. */
 .note-content [data-quiz-options] > li[data-option] input {
   appearance: none;
@@ -572,7 +574,28 @@ html.exam-running body { padding-bottom: 104px; }
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
 }
-.review-back { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--color-hairline); scroll-margin-top: 88px; }
+/* Revealing marks the right options in place, with the same look and tag as the quiz. */
+.review-front [data-quiz-options] > li { transition: background-color 0.15s, border-color 0.15s, opacity 0.15s; }
+.review-front [data-quiz-options] > li.review-option--right { background: var(--study-right-soft); border-color: var(--study-right); }
+.review-front [data-quiz-options] > li.review-option--muted { opacity: 0.55; }
+.review-front [data-quiz-options] > li[data-outcome]::after {
+  content: attr(data-outcome);
+  display: inline-block;
+  margin-left: var(--space-xs);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  vertical-align: 1px;
+  color: var(--color-on-primary);
+  background: var(--study-right);
+  border-radius: var(--radius-pill);
+}
+/* The card takes focus when a card changes (the button that had it disappears); the focus is not a target to show. */
+.review-card:focus { outline: none; }
+.review-back { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--color-hairline); }
 .review-answer {
   display: inline-block;
   margin: 0 0 var(--space-sm);
@@ -610,6 +633,11 @@ html.exam-running body { padding-bottom: 104px; }
   border: 1px solid currentColor;
   border-radius: var(--radius-xs);
   opacity: 0.55;
+}
+
+/* Key hints mean nothing on a touch screen (tablets included). */
+@media (hover: none) {
+  .review-actions kbd, .review-rate kbd { display: none; }
 }
 
 /* ---- Tablet and phone */
