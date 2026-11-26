@@ -32,3 +32,7 @@ pnpm-debug.log*
 
 # generated LinkedIn article covers (npm run cover)
 linkedin-covers/
+
+# wrangler local state (local D1 copy) and local secrets
+.wrangler/
+.dev.vars

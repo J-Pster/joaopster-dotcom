@@ -104,6 +104,42 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
           </>
         )}
       </section>
+
+      {courses.length > 0 && (
+        <section class="courses-sync" id="sincronizar" aria-labelledby="sync-title">
+          <h2 class="courses-section-title" id="sync-title">{text.syncTitle}</h2>
+          <p class="sync-intro">{text.syncIntro}</p>
+          <div class="sync-panel" data-sync-off>
+            <button type="button" class="course-btn" data-sync-create>{text.syncCreate}</button>
+            <form class="sync-join" data-sync-join>
+              <label class="sync-label" for="sync-code-input">{text.syncJoinLabel}</label>
+              <div class="sync-row">
+                <input
+                  id="sync-code-input"
+                  name="code"
+                  class="sync-input"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"
+                  required
+                />
+                <button type="submit" class="course-btn course-btn--secondary">{text.syncJoinButton}</button>
+              </div>
+            </form>
+          </div>
+          <div class="sync-panel" data-sync-on hidden>
+            <p class="sync-label">{text.syncYourCode}</p>
+            <div class="sync-row">
+              <code class="sync-code" data-sync-code></code>
+              <button type="button" class="course-btn course-btn--secondary" data-sync-copy>{text.syncCopy}</button>
+            </div>
+            <p class="sync-hint">{text.syncCodeHint}</p>
+            <button type="button" class="sync-forget" data-sync-forget>{text.syncDisconnect}</button>
+          </div>
+          <p class="sync-status" data-sync-status role="status" aria-live="polite"></p>
+        </section>
+      )}
     </main>
     <section class="courses-cta-band" aria-labelledby="crie-title">
       <div class="courses-cta">
@@ -117,8 +153,19 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
 </html>
 
 <script>
+  import {
+    createSyncCode,
+    forgetSyncCode,
+    joinSyncCode,
+    loadSyncCode,
+    startAutoSync,
+    SYNC_STATUS,
+    type SyncProblem,
+    type SyncStatus,
+  } from '../lib/courses/client/sync';
   import { courseText, pageLang } from '../lib/courses/i18n';
   import { loadProgress } from '../lib/courses/progress';
+  import { formatSyncCode } from '../lib/courses/syncCode';
 
   const text = courseText(pageLang());
 
@@ -140,7 +187,11 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
     });
   }
 
-  document.querySelectorAll<HTMLElement>('[data-course-card]').forEach((card) => {
+  function paintCards(): void {
+    document.querySelectorAll<HTMLElement>('[data-course-card]').forEach(paintCard);
+  }
+
+  function paintCard(card: HTMLElement): void {
     const slug = card.dataset.courseCard ?? '';
     const total = Number(card.dataset.lessons);
     const progress = loadProgress(slug);
@@ -157,5 +208,92 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
     count.textContent = text.lessonsDone(done, total);
     start.textContent = text.continue;
     start.href = progress.last ?? card.dataset.firstLesson ?? start.href;
-  });
+  }
+
+  paintCards();
+  startAutoSync(paintCards);
+
+  // Sync between devices: create a code, or paste one made on another device.
+  const syncSection = document.querySelector<HTMLElement>('#sincronizar');
+  if (syncSection) initSyncPanel(syncSection);
+
+  function syncElement<T extends HTMLElement>(root: HTMLElement, selector: string): T {
+    const element = root.querySelector<T>(selector);
+    if (!element) throw new Error(`Sync panel is missing ${selector}`);
+    return element;
+  }
+
+  function problemText(problem: SyncProblem | 'invalid_code'): string {
+    if (problem === 'invalid_code') return text.syncInvalidCode;
+    if (problem === 'unknown_code') return text.syncUnknownCode;
+    if (problem === 'too_large') return text.syncTooLarge;
+    return text.syncFailed;
+  }
+
+  function initSyncPanel(root: HTMLElement): void {
+    const off = syncElement(root, '[data-sync-off]');
+    const on = syncElement(root, '[data-sync-on]');
+    const codeView = syncElement(root, '[data-sync-code]');
+    const statusView = syncElement(root, '[data-sync-status]');
+    const create = syncElement<HTMLButtonElement>(root, '[data-sync-create]');
+    const join = syncElement<HTMLFormElement>(root, '[data-sync-join]');
+    const input = syncElement<HTMLInputElement>(root, '#sync-code-input');
+    const copy = syncElement<HTMLButtonElement>(root, '[data-sync-copy]');
+    const forget = syncElement<HTMLButtonElement>(root, '[data-sync-forget]');
+    const time = new Intl.DateTimeFormat(text.locale, { hour: '2-digit', minute: '2-digit' });
+
+    const paintState = () => {
+      const code = loadSyncCode();
+      off.hidden = code !== null;
+      on.hidden = code === null;
+      codeView.textContent = code ? formatSyncCode(code) : '';
+    };
+    const paintStatus = (status: SyncStatus) => {
+      statusView.classList.toggle('is-error', status.kind === 'failed');
+      if (status.kind === 'off') statusView.textContent = '';
+      if (status.kind === 'syncing') statusView.textContent = text.syncSyncing;
+      if (status.kind === 'synced') statusView.textContent = text.syncSynced(time.format(status.at));
+      if (status.kind === 'failed') statusView.textContent = problemText(status.problem);
+    };
+    window.addEventListener(SYNC_STATUS, (event) => paintStatus((event as CustomEvent<SyncStatus>).detail));
+    paintState();
+
+    const connected = () => {
+      paintState();
+      paintCards();
+    };
+
+    create.addEventListener('click', async () => {
+      create.disabled = true;
+      const { result } = await createSyncCode();
+      create.disabled = false;
+      if (result.ok) connected();
+    });
+
+    join.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submit = join.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (submit) submit.disabled = true;
+      const result = await joinSyncCode(input.value);
+      if (submit) submit.disabled = false;
+      if (result.ok) {
+        input.value = '';
+        connected();
+      } else if (result.problem === 'invalid_code') {
+        statusView.classList.add('is-error');
+        statusView.textContent = problemText('invalid_code');
+      }
+    });
+
+    copy.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(codeView.textContent ?? '');
+      copy.textContent = text.syncCopied;
+      setTimeout(() => { copy.textContent = text.syncCopy; }, 2000);
+    });
+
+    forget.addEventListener('click', () => {
+      forgetSyncCode();
+      paintState();
+    });
+  }
 </script>

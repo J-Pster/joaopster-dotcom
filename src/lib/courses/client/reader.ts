@@ -1,6 +1,8 @@
-// Course reader behaviour: read marks, task checkboxes and the progress widget, all stored locally.
+// Course reader behaviour: read marks, task checkboxes and the progress widget, stored locally and
+// synced with the reader's other devices when they set a sync code (client/sync.ts).
 import { courseText, pageLang } from '../i18n';
 import { loadProgress, setChecks, setLast, setRead, type CourseProgress } from '../progress';
+import { startAutoSync } from './sync';
 
 interface CourseOutline {
   readonly modules: readonly {
@@ -14,7 +16,7 @@ interface CourseOutline {
 const WIDE_SCREEN = '(min-width: 1024px)';
 const text = () => courseText(pageLang());
 
-function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind' | 'outline'): string {
+function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind' | 'outline' | 'syncUrl'): string {
   const value = main.dataset[key];
   if (!value) throw new Error(`Course page is missing data-${key}`);
   return value;
@@ -45,30 +47,38 @@ function paintReadToggle(button: HTMLButtonElement, isRead: boolean): void {
   if (label) label.textContent = isRead ? text().lessonRead : text().markRead;
 }
 
-function initReadToggle(slug: string, url: string): void {
+type Repaint = () => void;
+
+function initReadToggle(slug: string, url: string): Repaint {
   const button = document.querySelector<HTMLButtonElement>('[data-read-toggle]');
-  if (!button) return;
-  paintReadToggle(button, loadProgress(slug).read.includes(url));
+  if (!button) return () => {};
+  const repaint = () => paintReadToggle(button, loadProgress(slug).read.includes(url));
+  repaint();
   button.addEventListener('click', () => {
     const isRead = button.getAttribute('aria-pressed') !== 'true';
     const progress = setRead(slug, url, isRead);
     paintReadToggle(button, isRead);
     paintSidebar(progress);
   });
+  return repaint;
 }
 
 // GFM renders "- [ ]" as disabled checkboxes; here they become the reader's own ticks (quiz answers, checklists).
-function initTaskChecks(slug: string, url: string): void {
+function initTaskChecks(slug: string, url: string): Repaint {
   const boxes = [...document.querySelectorAll<HTMLInputElement>('.note-content input[type="checkbox"]')];
-  const saved = new Set(loadProgress(slug).checks[url] ?? []);
-  boxes.forEach((box, index) => {
+  const repaint = () => {
+    const saved = new Set(loadProgress(slug).checks[url] ?? []);
+    boxes.forEach((box, index) => { box.checked = saved.has(index); });
+  };
+  boxes.forEach((box) => {
     box.disabled = false;
-    box.checked = saved.has(index);
     box.addEventListener('change', () => {
       const ticked = boxes.flatMap((b, i) => (b.checked ? [i] : []));
       setChecks(slug, url, ticked);
     });
   });
+  repaint();
+  return repaint;
 }
 
 // Keeps the current lesson in view inside the scrolling sidebar (without scrolling the page).
@@ -141,13 +151,18 @@ function progressBar(done: number, total: number): string {
 const escapeText = (text: string) => text.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 // Stands in for the Obsidian Base on the course home: progress per module and where to continue.
-async function initProgressWidget(slug: string, outlineUrl: string): Promise<void> {
+async function initProgressWidget(slug: string, outlineUrl: string, syncUrl: string): Promise<Repaint> {
   const widget = document.querySelector<HTMLElement>('[data-course-progress]');
-  if (!widget) return;
+  if (!widget) return () => {};
   const response = await fetch(outlineUrl);
   if (!response.ok) throw new Error(`Course outline request failed: ${response.status}`);
   const outline = (await response.json()) as CourseOutline;
-  const progress = loadProgress(slug);
+  const repaint = () => paintProgressWidget(widget, outline, loadProgress(slug), syncUrl);
+  repaint();
+  return repaint;
+}
+
+function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progress: CourseProgress, syncUrl: string): void {
   const t = text();
   const read = new Set(progress.read);
   const lessons = outline.modules.flatMap((m) => m.lessons);
@@ -170,7 +185,7 @@ async function initProgressWidget(slug: string, outlineUrl: string): Promise<voi
     </div>
     ${progressBar(done, lessons.length)}
     <ol class="progress-modules">${rows}</ol>
-    <p class="progress-note">${t.progressNote}</p>`;
+    <p class="progress-note">${t.progressNote} <a href="${syncUrl}">${t.syncLink}</a></p>`;
 }
 
 export function initReader(): void {
@@ -183,7 +198,13 @@ export function initReader(): void {
   openNavOnWideScreens();
   initPanelToggles();
   paintSidebar(loadProgress(slug));
-  initReadToggle(slug, url);
-  initTaskChecks(slug, url);
-  void initProgressWidget(slug, requireData(main, 'outline'));
+  const repaints = [
+    () => paintSidebar(loadProgress(slug)),
+    initReadToggle(slug, url),
+    initTaskChecks(slug, url),
+  ];
+  void initProgressWidget(slug, requireData(main, 'outline'), requireData(main, 'syncUrl')).then((repaint) => {
+    repaints.push(repaint);
+  });
+  startAutoSync(() => repaints.forEach((repaint) => repaint()));
 }

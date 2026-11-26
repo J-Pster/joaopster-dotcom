@@ -1,0 +1,12 @@
+# Cloudflare Pages configuration. With this file in the repo it is the source of truth for the
+# project's settings: the dashboard shows them read-only. Secrets stay in the dashboard.
+name = "joaopster-dotcom"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-05-25"
+
+# Course progress synced between a reader's devices (functions/api/progress.ts).
+[[d1_databases]]
+binding = "COURSES_DB"
+database_name = "joaopster-courses"
+database_id = "da99af96-741a-403f-96fe-9a2d5566a24f"
+migrations_dir = "migrations"

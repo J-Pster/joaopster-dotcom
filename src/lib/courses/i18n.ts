@@ -57,6 +57,25 @@ export interface CourseText {
   readonly startCourse: string;
   readonly courseDone: string;
   readonly progressNote: string;
+  readonly syncLink: string;
+
+  // Sync between devices (courses landing)
+  readonly syncTitle: string;
+  readonly syncIntro: string;
+  readonly syncCreate: string;
+  readonly syncJoinLabel: string;
+  readonly syncJoinButton: string;
+  readonly syncYourCode: string;
+  readonly syncCodeHint: string;
+  readonly syncCopy: string;
+  readonly syncCopied: string;
+  readonly syncDisconnect: string;
+  readonly syncSyncing: string;
+  readonly syncSynced: (time: string) => string;
+  readonly syncInvalidCode: string;
+  readonly syncUnknownCode: string;
+  readonly syncTooLarge: string;
+  readonly syncFailed: string;
 
   // Glossary index
   readonly glossaryTitle: (course: string) => string;
@@ -120,7 +139,27 @@ const pt: CourseText = {
   progressTotal: (done, total) => `<strong>${done}</strong> de ${total} aulas lidas`,
   startCourse: 'Começar o curso',
   courseDone: 'Curso concluído',
-  progressNote: 'O progresso fica salvo só neste navegador.',
+  progressNote: 'O progresso fica salvo neste navegador.',
+  syncLink: 'Sincronizar com outros aparelhos',
+
+  syncTitle: 'Seu progresso em outros aparelhos',
+  syncIntro:
+    'O progresso fica salvo neste navegador. Com um código de sincronização ele vai junto pra qualquer outro aparelho, sem cadastro e sem e-mail.',
+  syncCreate: 'Criar código de sincronização',
+  syncJoinLabel: 'Já tem um código? Cole aqui',
+  syncJoinButton: 'Usar este código',
+  syncYourCode: 'Seu código de sincronização',
+  syncCodeHint:
+    'Use este código em outro aparelho pra continuar de onde parou. Guarde ele bem: quem tiver o código vê e altera o seu progresso.',
+  syncCopy: 'Copiar',
+  syncCopied: 'Copiado',
+  syncDisconnect: 'Parar de sincronizar neste aparelho',
+  syncSyncing: 'Sincronizando...',
+  syncSynced: (time) => `Sincronizado às ${time}`,
+  syncInvalidCode: 'O código tem 20 letras e números, no formato XXXX-XXXX-XXXX-XXXX-XXXX.',
+  syncUnknownCode: 'Esse código não existe. Confira e tente de novo.',
+  syncTooLarge: 'O progresso ficou grande demais pra sincronizar.',
+  syncFailed: 'Não deu pra sincronizar agora. O progresso continua salvo neste navegador e sincroniza na próxima visita.',
 
   glossaryTitle: (course) => `Glossário: ${course}`,
   glossaryLead: (count) =>
@@ -187,7 +226,27 @@ const en: CourseText = {
   progressTotal: (done, total) => `<strong>${done}</strong> of ${total} lessons read`,
   startCourse: 'Start the course',
   courseDone: 'Course completed',
-  progressNote: 'Progress is saved only in this browser.',
+  progressNote: 'Progress is saved in this browser.',
+  syncLink: 'Sync with other devices',
+
+  syncTitle: 'Your progress on other devices',
+  syncIntro:
+    'Progress is saved in this browser. With a sync code it follows you to any other device, with no sign-up and no email.',
+  syncCreate: 'Create a sync code',
+  syncJoinLabel: 'Already have a code? Paste it here',
+  syncJoinButton: 'Use this code',
+  syncYourCode: 'Your sync code',
+  syncCodeHint:
+    'Use this code on another device to pick up where you left off. Keep it safe: anyone with the code can see and change your progress.',
+  syncCopy: 'Copy',
+  syncCopied: 'Copied',
+  syncDisconnect: 'Stop syncing on this device',
+  syncSyncing: 'Syncing...',
+  syncSynced: (time) => `Synced at ${time}`,
+  syncInvalidCode: 'The code has 20 letters and numbers, like XXXX-XXXX-XXXX-XXXX-XXXX.',
+  syncUnknownCode: 'That code does not exist. Check it and try again.',
+  syncTooLarge: 'Your progress got too large to sync.',
+  syncFailed: 'Could not sync right now. Progress is still saved in this browser and will sync on your next visit.',
 
   glossaryTitle: (course) => `Glossary: ${course}`,
   glossaryLead: (count) =>
@@ -254,7 +313,27 @@ const es: CourseText = {
   progressTotal: (done, total) => `<strong>${done}</strong> de ${total} clases leídas`,
   startCourse: 'Empezar el curso',
   courseDone: 'Curso completado',
-  progressNote: 'El progreso se guarda solo en este navegador.',
+  progressNote: 'El progreso se guarda en este navegador.',
+  syncLink: 'Sincronizar con otros dispositivos',
+
+  syncTitle: 'Tu progreso en otros dispositivos',
+  syncIntro:
+    'El progreso se guarda en este navegador. Con un código de sincronización te acompaña a cualquier otro dispositivo, sin registro y sin correo.',
+  syncCreate: 'Crear código de sincronización',
+  syncJoinLabel: '¿Ya tienes un código? Pégalo aquí',
+  syncJoinButton: 'Usar este código',
+  syncYourCode: 'Tu código de sincronización',
+  syncCodeHint:
+    'Usa este código en otro dispositivo para seguir donde lo dejaste. Guárdalo bien: quien tenga el código ve y cambia tu progreso.',
+  syncCopy: 'Copiar',
+  syncCopied: 'Copiado',
+  syncDisconnect: 'Dejar de sincronizar en este dispositivo',
+  syncSyncing: 'Sincronizando...',
+  syncSynced: (time) => `Sincronizado a las ${time}`,
+  syncInvalidCode: 'El código tiene 20 letras y números, con el formato XXXX-XXXX-XXXX-XXXX-XXXX.',
+  syncUnknownCode: 'Ese código no existe. Revísalo e inténtalo de nuevo.',
+  syncTooLarge: 'Tu progreso es demasiado grande para sincronizar.',
+  syncFailed: 'No se pudo sincronizar ahora. El progreso sigue guardado en este navegador y se sincroniza en tu próxima visita.',
 
   glossaryTitle: (course) => `Glosario: ${course}`,
   glossaryLead: (count) =>

@@ -63,6 +63,7 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
       data-note-url={note.url}
       data-note-kind={note.kind}
       data-outline={courseOutlineUrl(course)}
+      data-sync-url={`${coursesHome(course.lang)}#sincronizar`}
     >
       <div class="course-layout">
         <aside class="course-rail course-rail--nav" id="course-panel-nav">
