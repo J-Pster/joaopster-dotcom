@@ -1,0 +1,147 @@
+---
+// Post table of contents built from the Markdown headings (h2, with h3 nested).
+// "rail": sticky column beside the text on wide screens. "inline": collapsible block above the text.
+// The section currently being read is marked with aria-current="location".
+import type { MarkdownHeading } from 'astro';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+interface Props {
+  headings: readonly MarkdownHeading[];
+  variant: 'rail' | 'inline';
+}
+
+// Short posts read fine without a table of contents.
+const MIN_SECTIONS = 3;
+
+const { headings, variant } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? defaultLang) as Lang);
+const entries = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const visible = entries.filter((h) => h.depth === 2).length >= MIN_SECTIONS;
+const Wrapper = variant === 'rail' ? 'nav' : 'details';
+---
+
+{visible && (
+  <Wrapper class={`toc toc--${variant}`} aria-label={t('post.toc')}>
+    {variant === 'inline' ? <summary class="toc-title">{t('post.toc')}</summary> : <p class="toc-title">{t('post.toc')}</p>}
+    <ol class="toc-list">
+      {entries.map((h) => (
+        <li class={`toc-item toc-item--h${h.depth}`}>
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </Wrapper>
+)}
+
+<style>
+  .toc-title {
+    margin: 0 0 var(--space-sm);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .toc-list { list-style: none; margin: 0; padding: 0; }
+  .toc-item a {
+    display: block;
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid var(--color-hairline);
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--color-body);
+    text-decoration: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc-item--h3 a { padding-left: 24px; font-size: 12.5px; }
+  .toc-item a:hover { color: var(--color-ink); text-decoration: none; }
+  .toc-item a[aria-current='location'] {
+    color: var(--color-ink);
+    font-weight: 500;
+    border-left-color: var(--color-ink);
+  }
+
+  /* The rail column sets the height; the list scrolls inside it. */
+  .toc--rail {
+    position: relative;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .toc--inline {
+    margin: 0 0 var(--space-xxl);
+    padding: var(--space-base) var(--space-lg);
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+  }
+  .toc--inline .toc-title {
+    margin: 0;
+    cursor: pointer;
+    list-style-position: inside;
+  }
+  .toc--inline[open] .toc-title { margin-bottom: var(--space-sm); }
+</style>
+
+<script>
+  // Highlights the section being read: the last heading that has scrolled past the sticky header.
+  const READ_LINE = 120;
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a[href^="#"]')];
+  const ids = [...new Set(links.map((a) => decodeURIComponent(a.hash.slice(1))))];
+  const headings = ids.map((id) => {
+    const heading = document.getElementById(id);
+    if (!heading) throw new Error(`Table of contents points to a missing heading: #${id}`);
+    return heading;
+  });
+
+  // Keeps the active entry visible when the rail list is taller than its column and scrolls.
+  const revealInRail = (link: HTMLAnchorElement) => {
+    const rail = link.closest<HTMLElement>('.toc--rail');
+    if (!rail || rail.scrollHeight <= rail.clientHeight) return;
+    const top = link.offsetTop;
+    const bottom = top + link.offsetHeight;
+    if (top < rail.scrollTop || bottom > rail.scrollTop + rail.clientHeight) {
+      rail.scrollTop = top - rail.clientHeight / 2;
+    }
+  };
+
+  let scheduled = false;
+  let active: string | undefined;
+  const update = () => {
+    scheduled = false;
+    let current: string | undefined;
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top > READ_LINE) break;
+      current = heading.id;
+    }
+    // A short last section never reaches the read line: at the bottom of the page it is the one being read.
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    if (atBottom && headings.length > 0) current = headings[headings.length - 1].id;
+    if (current === active) return;
+    active = current;
+    for (const link of links) {
+      if (decodeURIComponent(link.hash.slice(1)) !== current) {
+        link.removeAttribute('aria-current');
+        continue;
+      }
+      link.setAttribute('aria-current', 'location');
+      revealInRail(link);
+    }
+  };
+
+  if (links.length > 0) {
+    window.addEventListener('scroll', () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+    // On small screens, close the collapsible table of contents after picking a section.
+    document.querySelectorAll<HTMLDetailsElement>('details.toc').forEach((details) => {
+      details.addEventListener('click', (event) => {
+        if (event.target instanceof HTMLAnchorElement) details.open = false;
+      });
+    });
+  }
+</script>

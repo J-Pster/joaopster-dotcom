@@ -1,4 +1,5 @@
 ---
+import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
@@ -6,23 +7,33 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import AuthorBio from '../components/post/AuthorBio.astro';
+import RelatedPosts from '../components/post/RelatedPosts.astro';
+import ShareLinks from '../components/post/ShareLinks.astro';
+import TableOfContents from '../components/post/TableOfContents.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 
-type Props = CollectionEntry<'blog'>['data'] & { readingTime: number; ogImage: string };
+type Props = CollectionEntry<'blog'>['data'] & {
+	readingTime: number;
+	ogImage: string;
+	post: CollectionEntry<'blog'>;
+	headings: MarkdownHeading[];
+};
 
-const { title, description, pubDate, updatedDate, readingTime, ogImage } = Astro.props;
+const { title, description, pubDate, updatedDate, readingTime, ogImage, post, headings } = Astro.props;
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const blogPath = lang === 'pt' ? '/blog' : `/${lang}/blog`;
 
 const site = Astro.site ?? new URL('https://joaopster.com');
+const postUrl = new URL(Astro.url.pathname, site).href;
 const blogLd = {
 	'@context': 'https://schema.org',
 	'@type': 'BlogPosting',
 	headline: title,
 	description,
-	url: new URL(Astro.url.pathname, site).href,
+	url: postUrl,
 	datePublished: pubDate.toISOString(),
 	...(updatedDate && { dateModified: updatedDate.toISOString() }),
 	inLanguage: lang,
@@ -40,6 +51,14 @@ const blogLd = {
     <div class="reading-progress" id="reading-progress"></div>
     <Header />
     <main class="post-main">
+      <div class="post-layout">
+      <aside class="post-rail">
+        <div class="post-rail-inner">
+          <TableOfContents headings={headings} variant="rail" />
+          <ShareLinks title={title} url={postUrl} />
+          <NewsletterSignup variant="rail" />
+        </div>
+      </aside>
       <div class="post-container">
         <nav class="post-breadcrumb">
           <a href={blogPath} class="breadcrumb-link">
@@ -62,13 +81,25 @@ const blogLd = {
           {description && <p class="post-desc">{description}</p>}
         </header>
 
+        <TableOfContents headings={headings} variant="inline" />
+
         <div class="prose">
           <slot />
         </div>
 
-        <NewsletterSignup />
+        <div class="post-share">
+          <ShareLinks title={title} url={postUrl} />
+        </div>
+
+        <AuthorBio />
 
         <Giscus />
+
+        <RelatedPosts post={post} />
+
+        <div class="post-newsletter">
+          <NewsletterSignup />
+        </div>
 
         <footer class="post-footer">
           <div class="post-footer-inner">
@@ -81,6 +112,7 @@ const blogLd = {
             <a href="mailto:joaopster@proton.me" class="reply-link">{t('post.replyEmail')}</a>
           </div>
         </footer>
+      </div>
       </div>
     </main>
     <Footer />
@@ -100,6 +132,31 @@ const blogLd = {
   }
   .post-main { padding: var(--space-xxl) var(--space-base) var(--space-section); }
   .post-container { max-width: 680px; margin: 0 auto; }
+  /* Wide screens: table of contents and share links in a sticky rail left of the text. */
+  .post-rail { display: none; }
+  @media (min-width: 1200px) {
+    .post-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 680px) minmax(0, 1fr);
+      column-gap: var(--space-xxl);
+    }
+    .post-rail { display: block; grid-column: 1; justify-self: end; width: 100%; max-width: 240px; }
+    .post-rail-inner {
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+      max-height: calc(100vh - 112px);
+    }
+    /* The table of contents shrinks (and scrolls) so share and newsletter always fit. */
+    .post-rail-inner > :global(.toc--rail) { flex: 1 1 auto; min-height: 120px; }
+    .post-rail-inner > :global(:not(.toc--rail)) { flex: none; }
+    .post-newsletter { display: none; }
+    .post-container { grid-column: 2; width: 100%; }
+    .post-container :global(.toc--inline) { display: none; }
+  }
+  .post-share { margin-top: var(--space-xxl); padding-top: var(--space-xl); border-top: 1px solid var(--color-hairline); }
   .post-breadcrumb { margin-bottom: var(--space-xl); }
   .breadcrumb-link {
     display: inline-flex;
@@ -194,6 +251,28 @@ const blogLd = {
   .prose :global(ul), .prose :global(ol) { padding-left: var(--space-lg); margin-bottom: 1.5em; }
   .prose :global(li) { margin-bottom: 0.4em; }
   .prose :global(img) { border-radius: var(--radius-lg); max-width: 100%; height: auto; border: 1px solid var(--color-hairline); }
+  .prose :global(h2), .prose :global(h3) { scroll-margin-top: 88px; }
+  .prose :global(.heading-anchor) {
+    margin-left: 8px;
+    color: var(--color-muted-soft);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease;
+  }
+  .prose :global(.heading-anchor)::before { content: '#'; }
+  .prose :global(.heading-anchor.is-copied)::before { content: '✓'; }
+  .prose :global(h2:hover .heading-anchor),
+  .prose :global(h3:hover .heading-anchor),
+  .prose :global(.heading-anchor.is-copied) { opacity: 1; }
+  .prose :global(.heading-anchor:hover) { color: var(--color-ink); text-decoration: none; }
+  @media (hover: none) { .prose :global(.heading-anchor) { opacity: 1; } }
+  .prose :global(a.external-link)::after {
+    content: '↗';
+    display: inline-block;
+    margin-left: 2px;
+    font-size: 0.8em;
+    text-decoration: none;
+  }
   .prose :global(hr) { border: none; border-top: 1px solid var(--color-hairline); margin: 2.5em 0; }
   .post-footer {
     margin-top: var(--space-xxl);
@@ -241,4 +320,13 @@ const blogLd = {
   update();
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update, { passive: true });
+
+  // Section anchors (added by rehypePostLinks): jump to the section and copy its link.
+  document.querySelectorAll<HTMLAnchorElement>('.prose .heading-anchor').forEach((anchor) => {
+    anchor.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(anchor.href);
+      anchor.classList.add('is-copied');
+      setTimeout(() => anchor.classList.remove('is-copied'), 1500);
+    });
+  });
 </script>

@@ -1,0 +1,78 @@
+---
+// Share the current post: copy its link or open the network's own share page (no third-party scripts).
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? defaultLang) as Lang);
+const enc = encodeURIComponent;
+const networks = [
+  { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}` },
+  { name: 'X', href: `https://x.com/intent/post?text=${enc(title)}&url=${enc(url)}` },
+  { name: 'Bluesky', href: `https://bsky.app/intent/compose?text=${enc(`${title} ${url}`)}` },
+];
+---
+
+<div class="share" role="group" aria-label={t('post.share')}>
+  <p class="share-title">{t('post.share')}</p>
+  <div class="share-actions">
+    <button type="button" class="share-btn share-copy" data-url={url} data-copied={t('post.linkCopied')} aria-live="polite">
+      {t('post.copyLink')}
+    </button>
+    {networks.map((n) => (
+      <a class="share-btn" href={n.href} target="_blank" rel="noopener noreferrer" aria-label={`${t('post.share')}: ${n.name}`}>{n.name}</a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .share-title {
+    margin: 0 0 var(--space-xs);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .share-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .share-btn:hover { border-color: var(--color-ink); text-decoration: none; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.share-copy').forEach((button) => {
+    const idleLabel = button.textContent ?? '';
+    button.addEventListener('click', async () => {
+      const { url, copied } = button.dataset;
+      if (!url || !copied) throw new Error('Share button is missing its url or copied label');
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // Clipboard blocked (in-app webviews, denied permission): hand the link over to copy by hand.
+        window.prompt(idleLabel, url);
+        return;
+      }
+      button.textContent = copied;
+      setTimeout(() => { button.textContent = idleLabel; }, 2000);
+    });
+  });
+</script>

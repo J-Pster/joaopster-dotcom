@@ -3,6 +3,16 @@
 // which forwards the address to Buttondown with the page language.
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 
+interface Props {
+  /** "card": full-width card. "rail": compact, stacked form for the post's side column. */
+  variant?: 'card' | 'rail';
+}
+
+const { variant = 'card' } = Astro.props;
+// Ids are per variant because a post page renders both (rail on wide screens, card on small ones).
+const titleId = `newsletter-title-${variant}`;
+const emailId = `newsletter-email-${variant}`;
+
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const messages = {
@@ -13,13 +23,13 @@ const messages = {
 };
 ---
 
-<section class="newsletter" aria-labelledby="newsletter-title">
-  <h2 class="newsletter-title" id="newsletter-title">{t('newsletter.title')}</h2>
+<section class={`newsletter newsletter--${variant}`} aria-labelledby={titleId}>
+  <h2 class="newsletter-title" id={titleId}>{t('newsletter.title')}</h2>
   <p class="newsletter-desc">{t('newsletter.description')}</p>
   <form class="newsletter-form" data-lang={lang} data-messages={JSON.stringify(messages)} data-sending={t('newsletter.sending')}>
-    <label class="visually-hidden" for="newsletter-email">E-mail</label>
+    <label class="visually-hidden" for={emailId}>E-mail</label>
     <input
-      id="newsletter-email"
+      id={emailId}
       class="newsletter-input"
       type="email"
       name="email"
@@ -109,6 +119,13 @@ const messages = {
   @media (max-width: 640px) {
     .newsletter-form { flex-direction: column; }
   }
+  .newsletter--rail { margin: 0; padding: var(--space-base); }
+  .newsletter--rail .newsletter-title { font-size: 14px; letter-spacing: 0; }
+  .newsletter--rail .newsletter-desc { font-size: 13px; margin-bottom: var(--space-sm); }
+  .newsletter--rail .newsletter-form { flex-direction: column; }
+  .newsletter--rail .newsletter-input,
+  .newsletter--rail .newsletter-button { height: 40px; }
+  .newsletter--rail .newsletter-status { font-size: 13px; }
 </style>
 
 <script>

@@ -1,0 +1,67 @@
+---
+// "Written by" card at the end of a post, reusing the home hero's photo, role and bio.
+import { Image } from 'astro:assets';
+import profilePhoto from '../../assets/profile-photo.png';
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const homePath = lang === 'pt' ? '/' : `/${lang}/`;
+const profiles = [
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/in/joaopster/' },
+  { name: 'X', href: 'https://x.com/JoaoPster' },
+  { name: 'GitHub', href: 'https://github.com/J-Pster' },
+];
+---
+
+<section class="author" aria-labelledby="author-name">
+  <Image src={profilePhoto} alt="" width={64} height={64} densities={[1, 2]} class="author-photo" />
+  <div class="author-text">
+    <p class="author-eyebrow">{t('post.writtenBy')}</p>
+    <h2 class="author-name" id="author-name">João Pster</h2>
+    <p class="author-role">{t('hero.role')}</p>
+    <p class="author-bio">{t('hero.sub')}</p>
+    <p class="author-links">
+      <a href={`${homePath}#about`}>{t('nav.about')}</a>
+      {profiles.map((p) => (
+        <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name} ↗</a>
+      ))}
+    </p>
+  </div>
+</section>
+
+<style>
+  .author {
+    display: flex;
+    gap: var(--space-lg);
+    margin: var(--space-xxl) 0;
+    padding: var(--space-lg);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+  }
+  .author-photo {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+  }
+  .author-eyebrow {
+    margin: 0 0 2px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .author-name { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: 0; color: var(--color-ink); }
+  .author-role { margin: 0 0 var(--space-xs); font-size: 14px; color: var(--color-body); }
+  .author-bio { margin: 0 0 var(--space-sm); font-size: 14px; line-height: 1.6; color: var(--color-body); }
+  .author-links { display: flex; flex-wrap: wrap; gap: var(--space-base); margin: 0; font-size: 13px; font-weight: 500; }
+  .author-links a { color: var(--color-text-link); text-decoration: none; }
+  .author-links a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .author { flex-direction: column; gap: var(--space-base); }
+  }
+</style>
