@@ -55,6 +55,11 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 - Medium: API descontinuada, a Medium não emite tokens novos (https://help.medium.com/hc/en-us/articles/213480228). A ferramenta de importar story puxa o post pela URL e marca o original (de memória, não conferido).
 - Reddit: desde nov/2025 a API exige pedir acesso e esperar aprovação manual (Responsible Builder Policy). Subreddits costumam punir autopromoção automatizada. Manual com texto adaptado.
+- Hacker News: API oficial só de leitura. Manual.
+- Substack (artigo): sem API oficial de publicação.
+- daily.dev: API pública não publica post e exige plano Plus.
+- Lobsters: só por convite.
+
 
 ## Reddit: onde postar (pesquisa de 26/11/2026)
 
@@ -69,20 +74,24 @@ Regra geral do Reddit: não existe mais proporção oficial, mas a regra 2 pede 
 
 ### Em inglês
 
-- r/ClaudeAI (~1,2 a 1,3 milhão): regra 2 exige que o post seja sobre Claude/Claude Code (IA em geral é removido). Flair obrigatória. Posts no feed exigem mais de 100 de karma de post (a fonte mais antiga falava em 50). Sem regra sobre texto de IA. Serve para os dois posts (harness e Evil Corp).
-- r/ClaudeCode (~500 mil): só sobre Claude Code. Flair obrigatória. Post solo de "fiz com Claude Code" tem que ser detalhado (o que fez, como usou, o que aprendeu), senão vai para a thread semanal de showcase. Sem referral nem promoção repetida. Serve para o post do harness, não para o da Evil Corp.
-- r/ChatGPTCoding (~410 mil): sobre usar IA para programar. Post cujo objetivo principal é divulgar site pessoal ou blog vai para a thread semanal de Self-Promotion ("Delete the link: if nothing is left, it's an ad"). Texto completo no post, com link só no fim, pode passar. Sem "AI slop" (IA só para gramática).
-- r/ExperiencedDevs (~400 mil): fontes classificam autopromoção como caso a caso. Regras completas não conferidas.
+Decisão do João (26/11/2026): nada de sub específico de Claude ou de IA (r/ClaudeAI, r/ClaudeCode, r/ChatGPTCoding ficam de fora). Só comunidades gerais de dev.
+
+Achado principal: quase todo sub geral de dev em inglês proíbe pelo menos uma de três coisas, que são texto escrito por LLM, tema de IA fora de dia fixo e link para blog próprio. Os posts do João são sobre IA e escritos com o Claude, então em inglês o post do Reddit funciona melhor escrito pelo próprio João, curto, com o link no fim.
+
+- r/ExperiencedDevs (~427 mil): só quem tem 7+ anos de experiência posta. Post com tema de IA só às quartas e sábados. Sem anúncio, sem post de baixo esforço. Flair obrigatória. Precisa ser discussão, não divulgação.
+- r/SoftwareEngineering (~176 mil): aceita conteúdo de blog de engenharia se for novo, pesquisado e não postado em todo sub, mas conteúdo próprio precisa de aprovação dos mods antes. Regra 8 proíbe discutir repercussão de IA (trabalho, como mudou sua vida), só a tecnologia em termos técnicos. O post da Evil Corp não cabe.
+- r/softwaredevelopment (~167 mil): sem regras publicadas. Foco em metodologia, processo e ferramentas, não em código. Post sobre workflow cabe.
+- r/vibecoding (~400 mil): dev que programa com IA. Post de projeto precisa explicar como foi feito. Pede uso mínimo de IA no texto ("fully generated AI slop isn't allowed").
 
 ### Não usar
 
+- r/webdev (3,3 milhões): proíbe post ou comentário gerado por LLM e autopromoção fora do Showoff Saturday.
+- r/devops (~520 mil): post tem que ser autocontido, sem link para blog externo. Texto que parece de LLM é removido.
+- r/coding (~650 mil): proíbe "AI slop", "I made this" e self-post.
+- r/cscareerquestions: autopromoção só na thread mensal.
 - r/programming (~6,9 milhões): regra 1 proíbe conteúdo escrito por LLM, incluindo tradução e resumo por LLM, e a política de IA considera off-topic tudo de IA que não seja profundamente técnico (review de ferramenta, debate sobre o fim da programação).
 - r/LocalLLaMA (~870 mil): proíbe texto "completely/primarily LLM generated". Exceção para não nativo que usa LLM para traduzir, desde que avise. Os posts do João são escritos com o Claude, então não cabe.
-- r/webdev, r/learnprogramming: sem autopromoção ou só em dia fixo.
-- Hacker News: API oficial só de leitura. Manual.
-- Substack (artigo): sem API oficial de publicação.
-- daily.dev: API pública não publica post e exige plano Plus.
-- Lobsters: só por convite.
+- r/learnprogramming: sem autopromoção.
 
 ## Limites de caracteres usados
 
