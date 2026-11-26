@@ -39,7 +39,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:/Users/joaop/Desktop/Repos/joaopster-dotcom"
+        "I:/Repos/joaopster-dotcom"
       ]
     }
   }
