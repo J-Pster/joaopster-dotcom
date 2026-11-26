@@ -23,45 +23,6 @@ const readTime = (body: string | undefined) =>
 
 const [featured, ...rest] = posts;
 
-type RedditPost = {
-  title: string;
-  url: string;
-  subreddit: string;
-  score: number;
-  numComments: number;
-  created: Date;
-};
-
-type RedditApiPost = {
-  title: string;
-  permalink: string;
-  subreddit: string;
-  score: number;
-  num_comments: number;
-  created_utc: number;
-};
-
-let redditPosts: RedditPost[] = [];
-try {
-  const res = await fetch(
-    'https://www.reddit.com/user/Joao-Pster/submitted.json?limit=8&raw_json=1',
-    { headers: { 'User-Agent': 'joaopster.com/1.0' } }
-  );
-  if (res.ok) {
-    const data = await res.json() as { data: { children: Array<{ data: RedditApiPost }> } };
-    redditPosts = data.data.children.map(c => ({
-      title: c.data.title,
-      url: `https://www.reddit.com${c.data.permalink}`,
-      subreddit: c.data.subreddit,
-      score: c.data.score,
-      numComments: c.data.num_comments,
-      created: new Date(c.data.created_utc * 1000),
-    }));
-  }
-} catch {
-  // Reddit API unavailable at build time
-}
-
 const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort((a, b) => b - a);
 ---
@@ -77,7 +38,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     <section class="posts-section">
       <div class="posts-inner">
 
-        <!-- Latest post (always visible, above tabs) -->
+        <!-- Latest post -->
         {featured && (
           <article
             class="featured"
@@ -117,9 +78,9 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </article>
         )}
 
-        <!-- Tab switcher -->
-        <div class="tab-switcher">
-          <button class="tab-btn active" data-tab="blog">
+        <!-- Blog plus quick links to my writing elsewhere (open in a new tab) -->
+        <nav class="channels" aria-label={t('blog.channelsLabel')}>
+          <span class="channel channel--current" aria-current="page">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -128,15 +89,34 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
               <line x1="10" y1="9" x2="8" y2="9"/>
             </svg>
             Blog
-          </button>
-          <button class="tab-btn" data-tab="reddit">
-            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="10" cy="10" r="10" fill="#ff4500"/>
-              <path fill="white" d="M16.67 10a1.46 1.46 0 0 0-2.47-1 7.12 7.12 0 0 0-3.85-1.23l.65-3.08 2.13.45a1 1 0 1 0 .1-.61l-2.38-.5a.26.26 0 0 0-.31.2l-.73 3.44a7.14 7.14 0 0 0-3.89 1.23 1.46 1.46 0 1 0-1.61 2.39 2.87 2.87 0 0 0 0 .44c0 2.24 2.61 4.06 5.83 4.06s5.83-1.82 5.83-4.06a2.87 2.87 0 0 0 0-.44 1.46 1.46 0 0 0 .61-1.29zM7.27 11a1 1 0 1 1 1 1 1 1 0 0 1-1-1zm5.58 2.65a3.56 3.56 0 0 1-2.85.86 3.56 3.56 0 0 1-2.85-.86.26.26 0 0 1 .37-.37 3.07 3.07 0 0 0 2.48.72 3.07 3.07 0 0 0 2.48-.72.26.26 0 0 1 .37.37zm-.17-1.65a1 1 0 1 1 1-1 1 1 0 0 1-1 1z"/>
+          </span>
+          <a class="channel" href="https://dev.to/jpster" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="24" height="24" rx="4" fill="#0a0a0a"/>
+              <text x="12" y="15.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-weight="700" fill="#ffffff">DEV</text>
             </svg>
-            Reddit
-          </button>
-        </div>
+            dev.to
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="https://www.tabnews.com.br/JoaoPster/conteudos/1" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+              <path d="M18 14h-8"/>
+              <path d="M15 18h-5"/>
+              <path d="M10 6h8v4h-8V6Z"/>
+            </svg>
+            TabNews
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+          <a class="channel" href="https://www.linkedin.com/in/joaopster/" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="24" height="24" rx="4" fill="#0a66c2"/>
+              <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">in</text>
+            </svg>
+            LinkedIn
+            <span class="channel-ext" aria-hidden="true">↗</span>
+          </a>
+        </nav>
 
         <!-- Filter bar -->
         <div class="filter-bar">
@@ -203,44 +183,6 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </div>
         </div>
 
-        <!-- Reddit tab -->
-        <div id="tab-reddit" style="display:none">
-          <div class="reddit-tab-header">
-            <span class="reddit-tab-count">{redditPosts.length} posts</span>
-            <a
-              class="reddit-profile-link"
-              href="https://www.reddit.com/user/Joao-Pster/submitted/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('reddit.viewProfile')}
-            </a>
-          </div>
-          <div id="no-results-reddit" class="no-results" style={redditPosts.length === 0 ? '' : 'display:none'}>
-            <p>{t('reddit.noResults')}</p>
-          </div>
-          <div class="reddit-list">
-            {redditPosts.map(post => (
-              <a href={post.url} class="reddit-item" target="_blank" rel="noopener noreferrer">
-                <div class="reddit-item-top">
-                  <div class="reddit-item-meta">
-                    <span class="reddit-sub">r/{post.subreddit}</span>
-                    <span class="reddit-sep">·</span>
-                    <FormattedDate date={post.created} />
-                  </div>
-                  <span class="reddit-arrow" aria-hidden="true">↗</span>
-                </div>
-                <p class="reddit-title">{post.title}</p>
-                <div class="reddit-stats">
-                  <span class="reddit-score">▲ {post.score}</span>
-                  <span class="reddit-sep">·</span>
-                  <span class="reddit-comments">{post.numComments} {t('reddit.comments')}</span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-
       </div>
     </section>
 
@@ -255,14 +197,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
   const postCards = document.querySelectorAll<HTMLElement>('.post-card');
   const noResultsEl = document.getElementById('no-results');
   const clearFiltersBtn = document.getElementById('clear-filters');
-  const tabBtns = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
-  const tabBlogEl = document.getElementById('tab-blog');
-  const tabRedditEl = document.getElementById('tab-reddit');
-  const blogFiltersEl = document.getElementById('blog-filters');
-  const redditItemEls = document.querySelectorAll<HTMLElement>('.reddit-item');
-  const noResultsRedditEl = document.getElementById('no-results-reddit');
 
-  let activeTab = 'blog';
   let activeTag = 'all';
   let activeYear = 'all';
   let searchQuery = '';
@@ -287,37 +222,6 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     });
     if (noResultsEl) noResultsEl.style.display = gridVisible === 0 ? '' : 'none';
   }
-
-  function applyRedditSearch(): void {
-    let visible = 0;
-    redditItemEls.forEach(item => {
-      const title = item.querySelector('.reddit-title')?.textContent?.toLowerCase() ?? '';
-      const show = !searchQuery || title.includes(searchQuery);
-      item.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    if (noResultsRedditEl) noResultsRedditEl.style.display = visible === 0 ? '' : 'none';
-  }
-
-  function switchTab(tab: string): void {
-    activeTab = tab;
-    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    const onBlog = tab === 'blog';
-    if (tabBlogEl) tabBlogEl.style.display = onBlog ? '' : 'none';
-    if (tabRedditEl) tabRedditEl.style.display = onBlog ? 'none' : '';
-    if (blogFiltersEl) blogFiltersEl.style.display = onBlog ? '' : 'none';
-    if (searchInput) searchInput.value = '';
-    searchQuery = '';
-    if (onBlog) {
-      applyBlogFilters();
-    } else {
-      applyRedditSearch();
-    }
-  }
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab ?? 'blog'));
-  });
 
   tagChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -344,8 +248,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
 
   searchInput?.addEventListener('input', () => {
     searchQuery = (searchInput.value ?? '').trim().toLowerCase();
-    if (activeTab === 'blog') applyBlogFilters();
-    else applyRedditSearch();
+    applyBlogFilters();
   });
 
   clearFiltersBtn?.addEventListener('click', () => {
@@ -369,49 +272,46 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     margin: 0 auto;
   }
 
-  .tab-switcher {
-    display: flex;
-    width: 100%;
+  .channels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 6px;
     background: var(--color-canvas-soft);
     border: 1px solid var(--color-hairline);
     border-radius: var(--radius-xl);
-    padding: 6px;
-    gap: 6px;
     margin-bottom: var(--space-xxl);
-    box-sizing: border-box;
   }
-  .tab-btn {
-    -webkit-appearance: none;
-    appearance: none;
-    flex: 1;
+  .channel {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     height: 52px;
     padding: 0 var(--space-base);
-    font-family: inherit;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: -0.2px;
     color: var(--color-muted);
-    background: transparent;
-    border: none;
     border-radius: var(--radius-lg);
-    cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    text-decoration: none;
+    transition: background 0.18s ease, color 0.18s ease;
   }
-  .tab-btn:hover { color: var(--color-ink); background: var(--color-surface-card); }
-  .tab-btn[data-tab="blog"].active {
+  a.channel:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    text-decoration: none;
+  }
+  .channel--current {
     background: var(--color-primary);
     color: var(--color-on-primary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   }
-  .tab-btn[data-tab="reddit"].active {
-    background: #ff4500;
-    color: #ffffff;
-    box-shadow: 0 2px 12px rgba(255, 69, 0, 0.28);
+  .channel-ext {
+    font-size: 13px;
+    transition: transform 0.15s ease;
   }
+  a.channel:hover .channel-ext { transform: translate(2px, -2px); }
 
   .featured {
     display: grid;
@@ -721,93 +621,6 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     color: var(--color-text-link);
   }
 
-  .reddit-tab-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-base);
-  }
-  .reddit-tab-count {
-    font-size: 13px;
-    color: var(--color-muted);
-    font-weight: 500;
-  }
-  .reddit-profile-link {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-link);
-    text-decoration: none;
-  }
-  .reddit-profile-link:hover { text-decoration: underline; }
-  .reddit-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-  .reddit-item {
-    display: block;
-    padding: var(--space-base) var(--space-lg);
-    background: var(--color-surface-card);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .reddit-item:hover {
-    border-color: var(--color-hairline-strong);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  }
-  .reddit-item-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-xs);
-  }
-  .reddit-item-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-  .reddit-sub {
-    font-size: 12px;
-    font-weight: 600;
-    color: #ff4500;
-  }
-  .reddit-sep { color: var(--color-muted-soft); font-size: 12px; }
-  .reddit-arrow {
-    font-size: 14px;
-    color: var(--color-muted);
-    transition: color 0.15s ease, transform 0.15s ease;
-  }
-  .reddit-item:hover .reddit-arrow {
-    color: var(--color-text-link);
-    transform: translate(2px, -2px);
-  }
-  .reddit-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--color-ink);
-    line-height: 1.45;
-    margin: 0 0 var(--space-xs);
-    transition: color 0.15s ease;
-  }
-  .reddit-item:hover .reddit-title { color: var(--color-text-link); }
-  .reddit-stats {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-  .reddit-score {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-muted);
-  }
-  .reddit-comments {
-    font-size: 12px;
-    color: var(--color-muted);
-  }
-
   @media (max-width: 768px) {
     .featured {
       grid-template-columns: 1fr;
@@ -824,6 +637,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
     .filter-row { flex-direction: column; align-items: flex-start; }
   }
   @media (max-width: 640px) {
+    .channels { grid-template-columns: repeat(2, 1fr); }
     .posts-section { padding: var(--space-xl) var(--space-base) var(--space-xxl); }
     .featured-title { font-size: 22px; }
     .filter-bar { padding: var(--space-sm) var(--space-sm); }
