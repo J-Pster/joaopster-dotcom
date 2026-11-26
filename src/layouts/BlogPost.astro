@@ -164,6 +164,8 @@ const blogLd = {
     }
     /* Taller than the viewport, the table of contents scrolls inside its rail. */
     .post-rail-inner > :global(.toc--rail) { flex: 1 1 auto; min-height: 0; }
+    /* The right rail already has share and newsletter: no second copy at the end of the post. */
+    .post-share,
     .post-newsletter { display: none; }
     .post-container { grid-column: 2; grid-row: 1; width: 100%; }
     .post-container :global(.toc--inline) { display: none; }
