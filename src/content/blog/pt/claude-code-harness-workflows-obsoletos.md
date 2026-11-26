@@ -1,25 +1,25 @@
 ---
-title: 'O harness do Claude Code deixou meu workflow obsoleto (e a maioria dos outros)'
-description: 'Criei um workflow com 20 comandos e 45 agentes. Hoje o Claude Code faz quase tudo isso sozinho. O que mudou no harness e o que eu ainda uso por fora.'
+title: 'O harness do Claude Code deixou meu workflow obsoleto'
+description: 'Criei um workflow com 20 comandos e 45 agentes e hoje o Claude Code faz quase tudo isso sozinho, aqui eu conto o que mudou no harness e o que eu ainda uso por fora'
 pubDate: 'Nov 26 2026'
 tags: ['AI', 'Claude Code', 'My Opinion', 'Setup']
 ---
 
-Em março eu fechei a versão 1.0 do [Pster's AI Workflow](https://github.com/J-Pster/Psters_AI_Workflow), um plugin com 20 comandos, 45 agentes, 17 skills, 4 hooks e 8 rules para organizar como a IA trabalha num projeto. Em maio, no [post sobre a minha migração do Cursor para o Claude Code](/blog/migrei-cursor-para-claude-code/), eu terminei escrevendo "viva o OMC", o orquestrador de agentes que eu tinha instalado por cima do Claude Code.
+Em março eu fechei a versão 1.0 do [Pster's AI Workflow](https://github.com/J-Pster/Psters_AI_Workflow), um plugin que eu fiz pra organizar como a IA trabalha nos meus projetos, com 20 comandos, 45 agentes, 17 skills, 4 hooks e 8 rules. Em maio, no [post em que eu contei a minha migração do Cursor pro Claude Code](/blog/migrei-cursor-para-claude-code/), eu ainda terminei escrevendo "viva o OMC", que era o orquestrador de agentes que eu tinha instalado por cima do Claude Code.
 
-Hoje eu não uso nenhum dos dois, e eles continuam funcionando. O que mudou foi o próprio Claude Code, o harness dele evoluiu tanto que passou a fazer sozinho quase tudo que esses workflows faziam, e em alguns casos faz melhor. Na minha opinião isso vale para a maioria dos workflows que a gente instalava por cima dele, e o meu é só o exemplo que eu conheço melhor.
+Hoje eu não uso nenhum dos dois.
+
+E eles continuam funcionando, o que mudou foi o próprio Claude Code. O harness dele evoluiu tanto nesses meses que passou a fazer sozinho quase tudo que eu tinha montado, e em alguns casos faz melhor do que o meu workflow fazia. Eu acho que isso vale pra maioria dos workflows que a gente instalava por cima dele, o meu é só o exemplo que eu conheço por dentro.
 
 ## O que é o harness do Claude Code?
 
-Harness é tudo que roda em volta do modelo. O modelo (Opus, Sonnet) é quem pensa. O harness é o que dá a ele as ferramentas para agir, como ler e editar arquivos, rodar comandos, lançar outros agentes, guardar contexto e lembrar das coisas entre uma conversa e outra.
+Harness é tudo que roda em volta do modelo. O modelo, que é o Opus ou o Sonnet, é quem pensa, e o harness é o que dá as ferramentas pra ele agir, tipo ler e editar arquivo, rodar comando, lançar outros agentes, guardar contexto e lembrar das coisas de uma conversa pra outra. Eu gosto de pensar que o modelo é o motor e o harness é o resto do carro, e motor bom em carro ruim não anda.
 
-Uma analogia que ajuda é pensar que o modelo é o motor e o harness é o resto do carro. Um motor bom num carro ruim não anda direito.
+Por muito tempo o motor foi melhor que o carro. O modelo já dava conta de muita coisa, mas o harness não dava estrutura pra ele se organizar numa tarefa grande, e foi esse buraco que os workflows, inclusive o meu, vieram tapar.
 
-Por muito tempo o motor foi melhor que o carro. O modelo já era capaz de muita coisa, mas o harness não dava estrutura para ele se organizar em tarefas grandes. Foi esse buraco que os workflows vieram tapar.
+## O que o meu workflow fazia
 
-## O que o meu workflow fazia (e por que fazia sentido)
-
-O Pster's AI Workflow nasceu para o Cursor e tinha um fluxo fixo:
+O Pster's AI Workflow nasceu no Cursor e tinha um fluxo fixo, que eu rodava comando por comando:
 
 ```text
 /pwf-brainstorm      → define escopo e decisões
@@ -30,17 +30,15 @@ O Pster's AI Workflow nasceu para o Cursor e tinha um fluxo fixo:
 /pwf-commit-changes  → commits estruturados
 ```
 
-Ele se apoiava em duas ideias. A primeira era a **previsibilidade**, o próprio README dizia que os comandos não escolhem o caminho sozinhos e que quem escolhe o próximo passo é o dev. A segunda era a **documentação como memória**, os comandos liam a documentação do projeto antes de implementar e atualizavam ela no fim, porque a IA esquecia tudo de uma sessão para outra.
+Tinha duas ideias por trás dele. A primeira era previsibilidade, o próprio README dizia que os comandos não escolhem o caminho sozinhos e que quem decide o próximo passo é o dev. A segunda era usar a documentação como memória, os comandos liam os docs do projeto antes de mexer em qualquer coisa e atualizavam eles no fim, porque a IA esquecia tudo de uma sessão pra outra.
 
-Quando fui para o Claude Code, faltava outra peça, que era rodar vários agentes ao mesmo tempo. Para isso eu instalei o OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), que trazia comandos como `/team`, `/ralph` e `/ultrawork` para orquestrar agentes em paralelo.
-
-O modelo não se organizava bem sozinho em tarefas longas, então eu dava o trilho para ele.
+Quando eu fui pro Claude Code ainda faltava uma peça, que era rodar vários agentes ao mesmo tempo, e aí eu instalei o OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), que trazia comandos como `/team`, `/ralph` e `/ultrawork` pra orquestrar agentes em paralelo. Fazia sentido. O modelo não se organizava bem sozinho em tarefa longa, então eu dava o trilho pra ele.
 
 ## O que o Claude Code faz sozinho hoje
 
-Esta é a comparação com o que eu tinha montado:
+Pra eu mesmo enxergar a diferença, montei essa tabela com o que eu precisava, como eu resolvia e como tá hoje:
 
-| O que eu precisava | Como eu resolvia antes | Como é hoje |
+| O que eu precisava | Como eu resolvia antes | Como tá hoje |
 |---|---|---|
 | Planejar antes de implementar | `/pwf-brainstorm` + `/pwf-plan` | O Claude planeja sozinho quando a tarefa pede |
 | Executar em partes | `/pwf-work-plan`, uma fase por vez | Ele divide o trabalho e lança subagentes |
@@ -49,45 +47,21 @@ Esta é a comparação com o que eu tinha montado:
 | Instruções que se repetem | Rules e skills do plugin | Skills e plugins nativos |
 | Memória do projeto | Docs mantidos pelo workflow | Memória do Claude (ainda fraca) + ai-memory |
 
-### Orquestração de agentes virou nativa
+O que mais me surpreendeu foi a orquestração de agentes. Subagente é um agente que o Claude lança pra fazer uma parte do trabalho, ele roda com o próprio contexto e devolve só o resultado, sem lotar a conversa principal. Com o `/workflow` o Claude Code monta um fluxo que lança vários desses e junta o que eles fazem, coisa que antes eu só conseguia com o OMC, e as orquestrações que ele monta hoje já vão além do que o OMC antigo fazia.
 
-Um **subagente** é um agente que o Claude lança para fazer uma parte do trabalho. Ele roda com o próprio contexto e devolve só o resultado, sem lotar a conversa principal. **Orquestrar** é coordenar vários desses ao mesmo tempo.
+A sessão também ficou bem mais flexível. Dá pra fazer uma pergunta paralela com o `/btw` sem atrapalhar a tarefa que tá rodando, dá pra abrir um subchat a partir da sessão, e o que eu acho mais foda é que agora um chat consegue falar com o outro. Uma sessão manda uma tarefa pra outra, a outra responde, e eu não preciso mais ficar copiando e colando entre elas.
 
-Com o `/workflow`, o Claude Code monta um fluxo que lança vários subagentes e junta o que eles fazem. Antes isso só era possível com o OMC. Hoje vem de fábrica, e as orquestrações que ele monta já vão além das que o OMC antigo tinha.
+E o Claude passou a se gerenciar sozinho. Aquela sequência de brainstorm, plano e execução por fase, que eu forçava na base do comando, ele já faz sem eu pedir, ele decide quando vale planejar, quando quebrar em partes e quando chamar um subagente. Isso matou a ideia central do meu workflow. Eu escolhia cada passo porque o modelo não sabia escolher, e hoje ele sabe.
 
-### A sessão ficou mais flexível
+Até o comando que eu tinha pra montar um workspace com todos os repositórios do projeto perdeu o sentido, porque os projects do Claude Code fazem isso de forma nativa, com uma sessão central que orquestra subsessões, que eles chamam de tópicos.
 
-O `/btw` deixa você fazer uma pergunta paralela sem atrapalhar a tarefa que está rodando. Também dá para abrir um subchat a partir da sessão em que você está.
+## O que eu ainda uso por fora
 
-E o que eu acho mais foda é que agora um chat consegue falar com o outro. Uma sessão manda uma tarefa para outra, a outra responde, e você não precisa ficar copiando e colando entre elas.
+A primeira coisa é o [Serena](https://github.com/oraios/serena). O Claude Code ainda mexe no código com ferramentas básicas de arquivo, que só leem, editam e buscam texto, como o sistema operacional faz. Funciona, mas é bruto, pra mudar uma função ele precisa ler o arquivo, achar o trecho e trocar o texto. O Serena dá pro Claude ferramentas que entendem o código, como o `find_symbol` pra achar uma função ou classe, o `find_referencing_symbols` pra ver quem usa ela e o `replace_symbol_body` pra trocar o corpo dela sem ler o arquivo inteiro. Gasta menos contexto e erra menos. Eu acho que algo assim ainda vai entrar no harness, mas por enquanto não entrou.
 
-### O Claude se gerencia sozinho
+A outra é memória. A do Claude tá começando a melhorar, mas ainda não é boa, então eu uso o [ai-memory](https://github.com/akitaonrails/ai-memory) do Akita, que guarda a memória como arquivos markdown versionados em git num servidor que você mesmo roda, e funciona entre agentes e entre máquinas. Dá pra sair do Claude Code no meio de uma tarefa, abrir outro agente na mesma pasta e continuar sem explicar a arquitetura de novo.
 
-Aquela sequência de brainstorm, plano e execução por fase, que eu forçava com comandos, ele já faz sem eu pedir. Ele decide quando vale planejar, quando dividir em partes e quando chamar um subagente.
-
-Com isso, a ideia central do meu workflow perdeu o sentido. Eu escolhia cada passo porque o modelo não sabia escolher bem, e hoje ele sabe.
-
-### Projects substituíram o meu workspace
-
-No meu workflow existia um comando só para criar um workspace com todos os repositórios do projeto e manter plano e docs juntos. Os projects do Claude Code fazem isso de forma nativa, com uma sessão central que orquestra subsessões, chamadas de tópicos.
-
-## O que ainda falta no harness
-
-### Serena, para buscar e editar código
-
-O Claude Code ainda trabalha com ferramentas básicas de arquivo, que só leem, editam e buscam texto, como o sistema operacional faz. Funciona, mas é bruto. Para mudar uma função, ele precisa ler o arquivo, achar o trecho e editar o texto.
-
-O [Serena](https://github.com/oraios/serena) dá ao Claude ferramentas que entendem o código, como o `find_symbol` para achar uma função ou classe, o `find_referencing_symbols` para ver quem usa ela e o `replace_symbol_body` para trocar o corpo dela sem ler o arquivo inteiro. Isso gasta menos contexto e erra menos. Acho que algo assim ainda vai entrar no harness, mas por enquanto não entrou.
-
-### ai-memory, para lembrar das coisas
-
-A memória do Claude está começando a evoluir, mas ainda não é muito boa. Por isso eu uso o [ai-memory](https://github.com/akitaonrails/ai-memory), do Akita.
-
-Ele guarda a memória como arquivos markdown num servidor que você mesmo roda, versionados em git, e funciona entre agentes e entre máquinas. Dá para sair do Claude Code no meio de uma tarefa, abrir outro agente na mesma pasta e continuar sem explicar a arquitetura de novo.
-
-## Meu setup hoje
-
-É bem menor do que o do post de maio:
+No fim o meu setup ficou bem menor que o do post de maio:
 
 - Claude Code, com o harness dele
 - Serena
@@ -98,12 +72,10 @@ O resto eu desinstalei ou parei de usar.
 
 ## Se explicou duas vezes, vira skill
 
-A dica que eu daria a quem usa Claude Code hoje é transformar em skill tudo que você precisa explicar duas vezes.
+A dica que eu daria pra quem usa Claude Code hoje é transformar em skill tudo que você precisa explicar duas vezes. Skill é um pacote de instruções que o Claude carrega quando a tarefa pede, você escreve uma vez como fazer algo e ele segue isso sempre que o assunto aparece. Eu tenho skill pra fazer deploy, pro meu padrão de commit e pra escrever do meu jeito.
 
-Uma **skill** é um pacote de instruções que o Claude carrega quando a tarefa pede. Você escreve uma vez como fazer algo, e ele segue isso sempre que o assunto aparece. Eu tenho skills para fazer deploy, para o padrão de commit e para escrever do meu jeito.
+Esse post mesmo é um exemplo. Na primeira versão o Claude usou uma skill que eu tinha feito pra mensagem de chat e o texto saiu curto demais pra um blog, então em vez de explicar de novo como eu queria o post eu pedi pra ele criar uma skill só pra post, com estrutura, SEO, as regras do meu site e uma lista grande de vícios de texto de IA pra evitar. Esse texto foi reescrito com ela.
 
-Este post é um exemplo. Na primeira versão, o Claude usou uma skill que eu tinha feito para mensagens de chat, e o texto saiu curto demais para um blog. Em vez de explicar de novo como eu queria o post, eu pedi para ele criar uma skill só para posts, com estrutura, SEO e as regras do meu site. Este texto foi escrito com ela.
+E as skills tão crescendo. Elas estão se juntando com os connectors, que são as integrações com serviços de fora, numa coisa só, os plugins. Antes uma skill era um arquivo `.md`, hoje um plugin pode ter várias skills, vários `.md`, scripts, comandos, connectors e outros arquivos de apoio, que é mais ou menos o que eu tentei montar na mão no Pster's AI Workflow, só que agora é nativo.
 
-E as skills estão crescendo. Agora elas estão se juntando com os connectors, que são as integrações com serviços externos, numa coisa só, os **plugins**. Antes uma skill era um arquivo `.md`. Hoje um plugin pode ter várias skills, vários `.md`, scripts, comandos, connectors e outros arquivos de apoio. É o que eu tentei montar à mão no Pster's AI Workflow, só que agora é um formato nativo.
-
-Se você tem um workflow instalado por cima do Claude Code, meu conselho é testar umas semanas sem ele. Veja o que faz falta e coloque só isso de volta, de preferência como skill. Me conta nos comentários o que sobrou no seu setup.
+Se você tem um workflow instalado por cima do Claude Code, testa umas semanas sem ele, vê o que faz falta e coloca só isso de volta, de preferência como skill. E me conta nos comentários o que sobrou no seu setup.
