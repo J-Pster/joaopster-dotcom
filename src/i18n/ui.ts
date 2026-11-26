@@ -357,7 +357,7 @@ export const ui = {
     'cta.primary': 'Get in touch',
     'cta.secondary': 'Read the blog',
 
-    'footer.tagline': `Congrats, you beat the site. Now scroll and swipe to the next one.`,
+    'footer.tagline': `Congrats, you beat the site. Now swipe to the next one.`,
     'footer.explore': 'Explore',
     'footer.work': 'Work',
     'footer.connect': 'Connect',
