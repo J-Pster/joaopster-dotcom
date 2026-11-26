@@ -12,31 +12,13 @@ import type { Blockquote, Link, Paragraph, PhrasingContent, Root, RootContent, T
 import { pathToFileURL } from 'node:url';
 import { SKIP, visit } from 'unist-util-visit';
 import { rehypePostLinks } from '../markdown/rehypePostLinks';
+import { courseText } from './i18n';
 import type { Note, Vault } from './vault';
 
 export interface RenderedNote {
   readonly html: string;
   readonly headings: readonly MarkdownHeading[];
 }
-
-const CALLOUT_TITLES: Record<string, string> = {
-  note: 'Nota',
-  abstract: 'Resumo',
-  summary: 'Resumo',
-  info: 'Info',
-  todo: 'Tarefa',
-  tip: 'Dica',
-  hint: 'Dica',
-  success: 'Resposta',
-  question: 'Pergunta',
-  warning: 'Atenção',
-  caution: 'Cuidado',
-  failure: 'Falha',
-  danger: 'Perigo',
-  bug: 'Bug',
-  example: 'Exemplo',
-  quote: 'Citação',
-};
 
 const WIKILINK = /(!?)\[\[([^\]\n]+?)\]\]/g;
 const CALLOUT_HEAD = /^\[!([a-z]+)\]([-+]?)[ \t]*/i;
@@ -142,7 +124,7 @@ function rewriteRelativeLink(link: Link, note: Note, vault: Vault, missing: Set<
 }
 
 // "> [!tip]- Title" + body becomes <details class="callout callout--tip"><summary>Title</summary>body</details>.
-function toCallout(quote: Blockquote): RootContent | undefined {
+function toCallout(quote: Blockquote, titles: Readonly<Record<string, string>>): RootContent | undefined {
   const first = quote.children[0];
   if (first?.type !== 'paragraph') return undefined;
   const head = first.children[0];
@@ -174,7 +156,7 @@ function toCallout(quote: Blockquote): RootContent | undefined {
     title.push(child);
   }
   const titleText = title.map((n) => ('value' in n ? n.value : 'x')).join('').trim();
-  const titleNodes: PhrasingContent[] = titleText ? title : [{ type: 'text', value: CALLOUT_TITLES[type] ?? type }];
+  const titleNodes: PhrasingContent[] = titleText ? title : [{ type: 'text', value: titles[type] ?? type }];
   const body: RootContent[] = [];
   const hasBodyText = bodyStart.some((n) => n.type !== 'text' || n.value.trim() !== '');
   if (hasBodyText) body.push({ type: 'paragraph', children: bodyStart } satisfies Paragraph);
@@ -195,18 +177,18 @@ function toCallout(quote: Blockquote): RootContent | undefined {
 }
 
 // Bottom-up, so a callout nested in another callout is converted too.
-function convertCallouts(node: Root | RootContent): void {
+function convertCallouts(node: Root | RootContent, titles: Readonly<Record<string, string>>): void {
   if (!('children' in node)) return;
   node.children.forEach((child, index) => {
-    convertCallouts(child);
+    convertCallouts(child, titles);
     if (child.type !== 'blockquote') return;
-    const callout = toCallout(child);
+    const callout = toCallout(child, titles);
     if (callout) (node.children as RootContent[])[index] = callout;
   });
 }
 
-function blockPass(tree: Root): void {
-  convertCallouts(tree);
+function blockPass(tree: Root, calloutTitles: Readonly<Record<string, string>>): void {
+  convertCallouts(tree, calloutTitles);
   visit(tree, (node, index, parent) => {
     if (!parent || index === undefined) return;
     if (node.type === 'code' && node.lang === 'mermaid') {
@@ -239,11 +221,12 @@ function blockPass(tree: Root): void {
 function remarkObsidian(options: { vault: Vault; missing: Map<string, Set<string>> }) {
   const { vault } = options;
   const byPath = new Map(vault.notes.map((n) => [n.absPath, n]));
+  const calloutTitles = courseText(vault.course.lang).calloutTitles;
   return (tree: Root, file: { path?: string }) => {
     const note = file.path ? byPath.get(file.path) : undefined;
     if (!note) throw new Error(`Course note not found for ${file.path}`);
     const missing = new Set<string>();
-    blockPass(tree);
+    blockPass(tree, calloutTitles);
     visit(tree, (node, index, parent) => {
       if (node.type === 'link') {
         rewriteRelativeLink(node, note, vault, missing);

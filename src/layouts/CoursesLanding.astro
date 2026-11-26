@@ -1,0 +1,161 @@
+---
+// Courses landing of one language: the courses written in it (with a search box) and a closing call
+// to create your own. With no course in the language yet, it points to the languages that have some.
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { Lang } from '../i18n/ui';
+import { coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
+import { courseText } from '../lib/courses/i18n';
+import { getVault } from '../lib/courses/vault';
+import '../styles/courses.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const text = courseText(lang);
+const courses = coursesIn(lang).map((course) => {
+  const vault = getVault(course.slug);
+  return {
+    course,
+    url: vault.home.url,
+    firstLesson: vault.lessons[0].url,
+    modules: vault.modules.length,
+    lessons: vault.lessons.length,
+    terms: vault.glossary.length,
+    // What the search box matches: title, goal and every module title.
+    search: [course.title, course.goal, ...vault.modules.map((m) => m.title)].join(' '),
+  };
+});
+const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0);
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead
+      title={text.landingMetaTitle}
+      description={text.landingMetaDescription}
+      alternates={sectionAlternates(coursesHome)}
+    />
+  </head>
+  <body>
+    <Header />
+    <main class="courses-landing">
+      <section class="courses-hero">
+        <p class="courses-eyebrow">{text.section}</p>
+        <h1>{text.heroTitle}</h1>
+        <div class="courses-hero-actions">
+          <a class="course-btn" href="#cursos">{text.seeCourses}</a>
+          <a class="course-btn course-btn--secondary" href={howToUrl(lang)}>{text.howToLink}</a>
+        </div>
+      </section>
+
+      <section class="courses-grid-section" id="cursos" aria-labelledby="cursos-title">
+        <div class="courses-list-head">
+          <h2 class="courses-section-title" id="cursos-title">{text.published}</h2>
+          {courses.length > 0 && (
+            <label class="courses-search">
+              <span class="visually-hidden">{text.searchLabel}</span>
+              <input type="search" placeholder={text.searchPlaceholder} autocomplete="off" data-course-search />
+            </label>
+          )}
+        </div>
+
+        {courses.length === 0 ? (
+          <div class="courses-none">
+            <p class="courses-none-title">{text.noCourses}</p>
+            {otherLanguages.length > 0 && (
+              <>
+                <p>{text.otherLanguagesIntro}</p>
+                <ul class="courses-none-links">
+                  {otherLanguages.map((other) => (
+                    <li>
+                      <a class="course-btn course-btn--secondary" href={coursesHome(other)} hreflang={other}>
+                        {text.coursesInLanguage(text.languageNames[other], coursesIn(other).length)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        ) : (
+          <>
+            <p class="courses-empty" data-course-empty hidden>{text.searchEmpty}</p>
+            <ul class="courses-grid">
+              {courses.map(({ course, url, firstLesson, modules, lessons, terms, search }) => (
+                <li class="course-card" data-course-card={course.slug} data-lessons={lessons} data-first-lesson={firstLesson} data-search={search}>
+                  <h3 class="course-card-title"><a href={url}>{course.title}</a></h3>
+                  <p class="course-card-goal">{course.goal}</p>
+                  <p class="course-card-stats">{text.cardStats(modules, lessons, terms)}</p>
+                  <div class="course-card-progress" data-card-progress hidden>
+                    <span class="progress-bar"><span data-card-bar></span></span>
+                    <span class="progress-count" data-card-count></span>
+                  </div>
+                  <div class="course-card-actions">
+                    <a class="course-btn" href={url} data-card-start>{text.start}</a>
+                    <a class="course-btn course-btn--secondary" href={courseZipUrl(course)} download>{text.downloadZip}</a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    </main>
+    <section class="courses-cta-band" aria-labelledby="crie-title">
+      <div class="courses-cta">
+        <h2 id="crie-title">{text.ctaTitle}</h2>
+        <p>{text.ctaText}</p>
+        <a class="course-btn course-btn--inverse" href={howToUrl(lang)}>{text.howToLink}</a>
+      </div>
+    </section>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  import { courseText, pageLang } from '../lib/courses/i18n';
+  import { loadProgress } from '../lib/courses/progress';
+
+  const text = courseText(pageLang());
+
+  // Search: every word typed must appear in the course's title, goal or module titles (accents ignored).
+  // Pages with no course in their language have no search box.
+  const search = document.querySelector<HTMLInputElement>('[data-course-search]');
+  const empty = document.querySelector<HTMLElement>('[data-course-empty]');
+  if (search) {
+    if (!empty) throw new Error('Course search has no empty-state message');
+    const fold = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-course-card]')].map((card) => ({
+      card,
+      words: fold(card.dataset.search ?? ''),
+    }));
+    search.addEventListener('input', () => {
+      const query = fold(search.value).split(/\s+/).filter(Boolean);
+      for (const { card, words } of cards) card.hidden = !query.every((w) => words.includes(w));
+      empty.hidden = cards.some(({ card }) => !card.hidden);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-course-card]').forEach((card) => {
+    const slug = card.dataset.courseCard ?? '';
+    const total = Number(card.dataset.lessons);
+    const progress = loadProgress(slug);
+    if (progress.read.length === 0 && !progress.last) return;
+    const done = Math.min(progress.read.length, total);
+    const percent = Math.round((done / total) * 100);
+    const box = card.querySelector<HTMLElement>('[data-card-progress]');
+    const bar = card.querySelector<HTMLElement>('[data-card-bar]');
+    const count = card.querySelector<HTMLElement>('[data-card-count]');
+    const start = card.querySelector<HTMLAnchorElement>('[data-card-start]');
+    if (!box || !bar || !count || !start) throw new Error(`Course card ${slug} is missing its progress markup`);
+    box.hidden = false;
+    bar.style.width = `${percent}%`;
+    count.textContent = text.lessonsDone(done, total);
+    start.textContent = text.continue;
+    start.href = progress.last ?? card.dataset.firstLesson ?? start.href;
+  });
+</script>

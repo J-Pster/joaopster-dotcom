@@ -1,30 +1,12 @@
 ---
-// Every note of every course, at the URL the vault gives it (the course home is /cursos/<slug>/).
-import CourseNote from '../../../layouts/CourseNote.astro';
-import { COURSES } from '../../../lib/courses/catalog';
-import { getRenderer } from '../../../lib/courses/render';
-import { getVault } from '../../../lib/courses/vault';
+import CourseNotePage from '../../../components/courses/CourseNotePage.astro';
+import { notePaths } from '../../../lib/courses/routes';
 
-export function getStaticPaths() {
-  return COURSES.flatMap((course) => {
-    const vault = getVault(course.slug);
-    const prefix = vault.home.url;
-    return vault.notes.map((note) => ({
-      params: { course: course.slug, note: note.url.slice(prefix.length, -1) || undefined },
-      props: { noteId: note.id },
-    }));
-  });
-}
+export const getStaticPaths = () => notePaths('pt');
 
 interface Props {
   noteId: string;
 }
-
-const vault = getVault(Astro.params.course as string);
-const note = vault.byId(Astro.props.noteId);
-if (!note) throw new Error(`Unknown note ${Astro.props.noteId}`);
-const renderer = await getRenderer(vault);
-const { html, headings } = await renderer.render(note);
 ---
 
-<CourseNote vault={vault} note={note} html={html} headings={headings} />
+<CourseNotePage slug={Astro.params.course as string} noteId={Astro.props.noteId} />

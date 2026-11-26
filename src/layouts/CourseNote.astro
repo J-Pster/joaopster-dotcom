@@ -1,13 +1,15 @@
 ---
 // Course reader page: module navigation on the left, the note in the middle, its table of contents
 // on the right, then (for lessons) "mark as read" and previous/next, then the notes that link here.
+// The page is in the course's language; the interface text comes from lib/courses/i18n.
 import type { MarkdownHeading } from 'astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import TableOfContents from '../components/post/TableOfContents.astro';
 import CourseSidebar from '../components/courses/CourseSidebar.astro';
-import { COURSES_ROOT } from '../lib/courses/catalog';
+import { courseOutlineUrl, coursesHome, glossaryUrl } from '../lib/courses/catalog';
+import { courseText } from '../lib/courses/i18n';
 import type { Note, Vault } from '../lib/courses/vault';
 import '../styles/courses.css';
 
@@ -22,6 +24,7 @@ const BACKLINKS_SHOWN = 24;
 
 const { vault, note, html, headings } = Astro.props;
 const { course } = vault;
+const text = courseText(course.lang);
 const module = vault.modules.find((m) => m.id === note.moduleId);
 const lessonIndex = note.kind === 'lesson' ? vault.lessons.indexOf(note) : -1;
 const previous = lessonIndex > 0 ? vault.lessons[lessonIndex - 1] : undefined;
@@ -31,13 +34,15 @@ const next = lessonIndex >= 0 ? vault.lessons[lessonIndex + 1] : undefined;
 const kindRank = { lesson: 0, module: 1, home: 2, page: 3, glossary: 4 } as const;
 const backlinks = [...(vault.backlinks.get(note.id) ?? [])].sort((a, b) => kindRank[a.kind] - kindRank[b.kind]);
 
-const pageTitle = note.kind === 'home' ? `${course.title}: curso gratuito` : `${note.title} | ${course.title}`;
-const description = note.kind === 'home' ? course.goal : `${note.title}. Do curso ${course.title}, gratuito e aberto.`;
+const pageTitle = note.kind === 'home' ? text.courseHomeTitle(course.title) : `${note.title} | ${course.title}`;
+const description = note.kind === 'home' ? course.goal : text.noteDescription(note.title, course.title);
+// A note exists only in its course's language: the language switcher goes to the courses landing of
+// the language picked (data-lang-* on <html>, read by i18n/switchLocale.ts).
 ---
 
-<html lang="pt">
+<html lang={course.lang} data-lang-pt={coursesHome('pt')} data-lang-en={coursesHome('en')} data-lang-es={coursesHome('es')}>
   <head>
-    <BaseHead title={pageTitle} description={description} alternateLocales="none" />
+    <BaseHead title={pageTitle} description={description} alternates="none" />
     <!-- Hidden side panels are applied before the first paint, so the layout does not jump.
          Same key and shape as saveHiddenPanels() in lib/courses/client/reader.ts. -->
     <script is:inline>
@@ -52,7 +57,13 @@ const description = note.kind === 'home' ? course.goal : `${note.title}. Do curs
   </head>
   <body>
     <Header autoHide />
-    <main class="course-main" data-course={course.slug} data-note-url={note.url} data-note-kind={note.kind}>
+    <main
+      class="course-main"
+      data-course={course.slug}
+      data-note-url={note.url}
+      data-note-kind={note.kind}
+      data-outline={courseOutlineUrl(course)}
+    >
       <div class="course-layout">
         <aside class="course-rail course-rail--nav" id="course-panel-nav">
           <CourseSidebar vault={vault} note={note} />
@@ -60,38 +71,38 @@ const description = note.kind === 'home' ? course.goal : `${note.title}. Do curs
 
         <aside class="course-rail course-rail--toc" id="course-panel-toc">
           <div class="course-rail-inner">
-            <TableOfContents headings={headings} variant="rail" title="Nesta nota" />
+            <TableOfContents headings={headings} variant="rail" title={text.onThisNote} />
           </div>
         </aside>
 
         <article class="course-article">
           <div class="course-toolbar">
-          <button type="button" class="course-panel-toggle course-panel-toggle--nav" data-panel-toggle="nav" aria-controls="course-panel-nav" aria-expanded="true" aria-label="Ocultar o menu do curso" title="Ocultar o menu do curso">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
-          </button>
-          <nav class="course-breadcrumb" aria-label="Você está em">
-            <a href={`${COURSES_ROOT}/`}>Cursos</a>
-            <span aria-hidden="true">/</span>
-            <a href={vault.home.url}>{course.title}</a>
-            {module && note.kind === 'lesson' && (
-              <>
-                <span aria-hidden="true">/</span>
-                <a href={module.note.url}>Módulo {module.number}</a>
-              </>
-            )}
-            {note.kind === 'glossary' && (
-              <>
-                <span aria-hidden="true">/</span>
-                <a href={`${vault.home.url}glossario/`}>Glossário</a>
-              </>
-            )}
-          </nav>
-          <button type="button" class="course-panel-toggle course-panel-toggle--toc" data-panel-toggle="toc" aria-controls="course-panel-toc" aria-expanded="true" aria-label="Ocultar o índice da nota" title="Ocultar o índice da nota">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
-          </button>
+            <button type="button" class="course-panel-toggle course-panel-toggle--nav" data-panel-toggle="nav" aria-controls="course-panel-nav" aria-expanded="true" aria-label={text.hideNav} title={text.hideNav}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>
+            </button>
+            <nav class="course-breadcrumb" aria-label={text.youAreHere}>
+              <a href={coursesHome(course.lang)}>{text.section}</a>
+              <span aria-hidden="true">/</span>
+              <a href={vault.home.url}>{course.title}</a>
+              {module && note.kind === 'lesson' && (
+                <>
+                  <span aria-hidden="true">/</span>
+                  <a href={module.note.url}>{text.module(module.number)}</a>
+                </>
+              )}
+              {note.kind === 'glossary' && (
+                <>
+                  <span aria-hidden="true">/</span>
+                  <a href={glossaryUrl(course)}>{text.glossary}</a>
+                </>
+              )}
+            </nav>
+            <button type="button" class="course-panel-toggle course-panel-toggle--toc" data-panel-toggle="toc" aria-controls="course-panel-toc" aria-expanded="true" aria-label={text.hideToc} title={text.hideToc}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+            </button>
           </div>
 
-          <TableOfContents headings={headings} variant="inline" title="Nesta nota" />
+          <TableOfContents headings={headings} variant="inline" title={text.onThisNote} />
 
           <div class="prose note-content" set:html={html} />
           <slot />
@@ -100,18 +111,18 @@ const description = note.kind === 'home' ? course.goal : `${note.title}. Do curs
             <div class="lesson-footer">
               <button type="button" class="lesson-read" data-read-toggle aria-pressed="false">
                 <span class="lesson-read-box" aria-hidden="true"></span>
-                <span data-read-label>Marcar aula como lida</span>
+                <span data-read-label>{text.markRead}</span>
               </button>
-              <nav class="lesson-pager" aria-label="Aulas">
+              <nav class="lesson-pager" aria-label={text.lessons}>
                 {previous ? (
                   <a class="lesson-pager-link" href={previous.url} rel="prev">
-                    <span class="lesson-pager-dir">← Aula anterior</span>
+                    <span class="lesson-pager-dir">{text.previousLesson}</span>
                     <span class="lesson-pager-title">{previous.title}</span>
                   </a>
                 ) : <span />}
                 {next && (
                   <a class="lesson-pager-link lesson-pager-link--next" href={next.url} rel="next">
-                    <span class="lesson-pager-dir">Próxima aula →</span>
+                    <span class="lesson-pager-dir">{text.nextLesson}</span>
                     <span class="lesson-pager-title">{next.title}</span>
                   </a>
                 )}
@@ -122,7 +133,7 @@ const description = note.kind === 'home' ? course.goal : `${note.title}. Do curs
           {backlinks.length > 0 && (
             <section class="backlinks" aria-labelledby="backlinks-title">
               <h2 class="backlinks-title" id="backlinks-title">
-                Mencionado em <span>{backlinks.length}</span>
+                {text.mentionedIn} <span>{backlinks.length}</span>
               </h2>
               <ul class="backlinks-list">
                 {backlinks.slice(0, BACKLINKS_SHOWN).map((source) => (
@@ -133,7 +144,7 @@ const description = note.kind === 'home' ? course.goal : `${note.title}. Do curs
               </ul>
               {backlinks.length > BACKLINKS_SHOWN && (
                 <details class="backlinks-more">
-                  <summary>Ver mais {backlinks.length - BACKLINKS_SHOWN}</summary>
+                  <summary>{text.seeMore(backlinks.length - BACKLINKS_SHOWN)}</summary>
                   <ul class="backlinks-list">
                     {backlinks.slice(BACKLINKS_SHOWN).map((source) => (
                       <li>

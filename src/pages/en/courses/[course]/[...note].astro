@@ -1,0 +1,12 @@
+---
+import CourseNotePage from '../../../../components/courses/CourseNotePage.astro';
+import { notePaths } from '../../../../lib/courses/routes';
+
+export const getStaticPaths = () => notePaths('en');
+
+interface Props {
+  noteId: string;
+}
+---
+
+<CourseNotePage slug={Astro.params.course as string} noteId={Astro.props.noteId} />

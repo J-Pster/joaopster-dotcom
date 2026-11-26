@@ -4,17 +4,22 @@
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import { SITE_TITLE } from '../consts';
+import type { Lang } from '../i18n/ui';
 
 interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata | string;
 	type?: 'website' | 'article';
-	/** "none" for pages that exist only in Portuguese (the courses): no hreflang alternates. */
-	alternateLocales?: 'all' | 'none';
+	/**
+	 * Language versions of the page, for hreflang and the language switcher. "auto": the same path
+	 * under each language prefix. "none": the page exists in one language only (a course note).
+	 * A map: pages whose path differs per language (the courses section).
+	 */
+	alternates?: 'auto' | 'none' | Readonly<Record<Lang, string>>;
 }
 
-const { title, description, image = '/og-image.png', type = 'website', alternateLocales = 'all' } = Astro.props;
+const { title, description, image = '/og-image.png', type = 'website', alternates = 'auto' } = Astro.props;
 
 const site = Astro.site ?? new URL('https://joaopster.com');
 const canonicalURL = new URL(Astro.url.pathname, site);
@@ -35,8 +40,10 @@ for (const l of ['en', 'es']) {
 	if (path === `/${l}`) { basePath = '/'; break; }
 	if (path.startsWith(`/${l}/`)) { basePath = path.slice(l.length + 1); break; }
 }
-const localizedURL = (l: string) =>
-	new URL(l === 'pt' ? basePath : `/${l}${basePath === '/' ? '' : basePath}`, site).href;
+const localizedURL = (l: Lang) =>
+	typeof alternates === 'object'
+		? new URL(alternates[l], site).href
+		: new URL(l === 'pt' ? basePath : `/${l}${basePath === '/' ? '' : basePath}`, site).href;
 
 const personLd = {
 	'@context': 'https://schema.org',
@@ -83,7 +90,7 @@ const siteLd = {
 
 <!-- Canonical + language alternates -->
 <link rel="canonical" href={canonicalURL} />
-{alternateLocales === 'all' && (
+{alternates !== 'none' && (
 	<>
 		<link rel="alternate" hreflang="pt-BR" href={localizedURL('pt')} />
 		<link rel="alternate" hreflang="en" href={localizedURL('en')} />

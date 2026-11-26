@@ -4,6 +4,8 @@
 // the ones already read and count them per module.
 // Glossary pages list the modules only: the course has thousands of terms and those pages
 // would otherwise carry the whole lesson tree each.
+import { glossaryUrl as glossaryUrlOf } from '../../lib/courses/catalog';
+import { courseText } from '../../lib/courses/i18n';
 import type { Note, Vault } from '../../lib/courses/vault';
 
 interface Props {
@@ -13,21 +15,24 @@ interface Props {
 
 const { vault, note } = Astro.props;
 const withLessons = note.kind !== 'glossary';
-const glossaryUrl = `${vault.home.url}glossario/`;
+const glossaryUrl = glossaryUrlOf(vault.course);
+const text = courseText(vault.course.lang);
+// "Aula 3.2: Title" in the sidebar reads as "Title": the module and the position already say the rest.
+const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
 ---
 
 <details class="course-nav" data-course-nav>
-  <summary class="course-nav-toggle">Módulos do curso</summary>
-  <nav class="course-nav-inner" aria-label="Módulos do curso">
+  <summary class="course-nav-toggle">{text.navToggle}</summary>
+  <nav class="course-nav-inner" aria-label={text.navToggle}>
     <a class="course-nav-home" href={vault.home.url} aria-current={note.kind === 'home' ? 'page' : undefined}>
       {vault.course.title}
     </a>
     <p class="course-nav-progress" data-course-total={vault.lessons.length}>
-      <span data-course-read>0</span> de {vault.lessons.length} aulas lidas
+      <span data-course-read>0</span>{text.lessonsReadOf(vault.lessons.length)}
     </p>
     {vault.glossary.length > 0 && (
       <a class="course-nav-glossary" href={glossaryUrl} aria-current={note.kind === 'glossary' ? 'page' : undefined}>
-        Glossário <span>{vault.glossary.length} termos</span>
+        {text.glossary} <span>{text.glossaryTerms(vault.glossary.length)}</span>
       </a>
     )}
     <ol class="course-nav-modules">
@@ -48,7 +53,7 @@ const glossaryUrl = `${vault.home.url}glossario/`;
                   {module.lessons.map((lesson) => (
                     <li>
                       <a href={lesson.url} data-lesson={lesson.url} aria-current={lesson.id === note.id ? 'page' : undefined}>
-                        {lesson.title.replace(/^Aula [\d.]+:\s*/, '')}
+                        {lesson.title.replace(LESSON_PREFIX, '')}
                       </a>
                     </li>
                   ))}

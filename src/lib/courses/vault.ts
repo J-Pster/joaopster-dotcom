@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatter } from '@astrojs/markdown-remark';
-import { COURSES, courseBySlug, courseUrl, type CourseInfo } from './catalog';
+import { COURSES, courseBySlug, courseFilesUrl, courseUrl, type CourseInfo } from './catalog';
 
 export type NoteKind = 'home' | 'module' | 'lesson' | 'glossary' | 'page';
 
@@ -63,7 +63,8 @@ export interface Vault {
 
 const COURSES_DIR = fileURLToPath(new URL('../../../courses/', import.meta.url));
 const MODULE_DIR = /^(\d+) - (.+)$/;
-const GLOSSARY_DIR = 'Glossario';
+// Glossary folder names: the course-making skill writes "Glossario"; courses in other languages may not.
+const GLOSSARY_DIRS = new Set(['Glossario', 'Glossário', 'Glossary', 'Glosario']);
 const naturalOrder = new Intl.Collator('pt-BR', { numeric: true, sensitivity: 'base' }).compare;
 
 export const slugify = (text: string): string =>
@@ -112,11 +113,11 @@ function loadVault(course: CourseInfo): Vault {
   };
 
   const urlFor = (id: string): string => {
-    if (id === course.home) return courseUrl(course.slug);
+    if (id === course.home) return courseUrl(course);
     const parts = (relToHome(id) ?? id).replace(/\.md$/, '').split('/');
     // Folder notes (README.md, or a note named like its folder) live at the folder URL.
     if (parts.at(-1) === 'README' || parts.at(-1) === parts.at(-2)) parts.pop();
-    const base = `${courseUrl(course.slug)}${parts.map(slugify).join('/')}/`;
+    const base = `${courseUrl(course)}${parts.map(slugify).join('/')}/`;
     // Two files can slugify the same way (accents, punctuation): keep both reachable.
     const seen = usedUrls.get(base) ?? 0;
     usedUrls.set(base, seen + 1);
@@ -133,7 +134,7 @@ function loadVault(course: CourseInfo): Vault {
 
   const kindOf = (id: string, name: string, moduleId: string | undefined): NoteKind => {
     if (id === course.home) return 'home';
-    if (id.split('/').includes(GLOSSARY_DIR)) return 'glossary';
+    if (id.split('/').some((part) => GLOSSARY_DIRS.has(part))) return 'glossary';
     if (!moduleId) return 'page';
     const isModuleNote = posix.dirname(id) === moduleId && (name === posix.basename(moduleId) || name === 'README');
     return isModuleNote ? 'module' : 'lesson';
@@ -176,9 +177,9 @@ function loadVault(course: CourseInfo): Vault {
     if (!match) throw new Error(`Not a module folder: ${id}`);
     const note = notes.find((n) => n.moduleId === id && n.kind === 'module');
     if (!note) throw new Error(`Course ${course.slug}: module ${id} has no module note`);
-    // The module note's heading ("Módulo 5: Multiconta, governança e federação") keeps the accents
-    // that the folder name drops.
-    const heading = note.title.match(/^M[oó]dulo \d+:\s*(.+)$/);
+    // The module note's heading ("Módulo 5: Multiconta, governança e federação", "Module 5: ...")
+    // keeps the accents that the folder name drops.
+    const heading = note.title.match(/^(?:M[oó]dulo|Module) \d+:\s*(.+)$/);
     return {
       id,
       number: Number(match[1]),
@@ -203,7 +204,7 @@ function loadVault(course: CourseInfo): Vault {
     .map((id) => {
       const ext = posix.extname(id);
       const slugged = id.slice(0, -ext.length).split('/').map(slugify).join('/');
-      return { id, absPath: join(root, id), url: `${courseUrl(course.slug)}arquivos/${slugged}${ext.toLowerCase()}` };
+      return { id, absPath: join(root, id), url: `${courseFilesUrl(course)}${slugged}${ext.toLowerCase()}` };
     });
   const assetById = new Map(assets.map((a) => [a.id, a]));
 

@@ -1,12 +1,6 @@
-// The whole course as a zip, ready to open as an Obsidian vault (or read in any Markdown editor).
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { COURSES, courseBySlug } from '../../lib/courses/catalog';
-import { getVault } from '../../lib/courses/vault';
-import { zipFolder, zipResponse } from '../../lib/courses/zip';
+import { courseZipResponse, coursePaths } from '../../lib/courses/routes';
 
-export const getStaticPaths: GetStaticPaths = () => COURSES.map((c) => ({ params: { course: c.slug } }));
+export const getStaticPaths: GetStaticPaths = () => coursePaths('pt');
 
-export const GET: APIRoute = ({ params }) => {
-  const course = courseBySlug(params.course as string);
-  return zipResponse(zipFolder(getVault(course.slug).root, course.vaultName));
-};
+export const GET: APIRoute = ({ params }) => courseZipResponse(params.course as string);

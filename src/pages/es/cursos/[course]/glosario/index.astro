@@ -1,0 +1,8 @@
+---
+import GlossaryIndex from '../../../../../components/courses/GlossaryIndex.astro';
+import { glossaryPaths } from '../../../../../lib/courses/routes';
+
+export const getStaticPaths = () => glossaryPaths('es');
+---
+
+<GlossaryIndex slug={Astro.params.course as string} />

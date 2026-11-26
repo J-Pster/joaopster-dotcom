@@ -1,4 +1,5 @@
 // Course reader behaviour: read marks, task checkboxes and the progress widget, all stored locally.
+import { courseText, pageLang } from '../i18n';
 import { loadProgress, setChecks, setLast, setRead, type CourseProgress } from '../progress';
 
 interface CourseOutline {
@@ -11,8 +12,9 @@ interface CourseOutline {
 }
 
 const WIDE_SCREEN = '(min-width: 1024px)';
+const text = () => courseText(pageLang());
 
-function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind'): string {
+function requireData(main: HTMLElement, key: 'course' | 'noteUrl' | 'noteKind' | 'outline'): string {
   const value = main.dataset[key];
   if (!value) throw new Error(`Course page is missing data-${key}`);
   return value;
@@ -40,7 +42,7 @@ function paintSidebar(progress: CourseProgress): void {
 function paintReadToggle(button: HTMLButtonElement, isRead: boolean): void {
   button.setAttribute('aria-pressed', String(isRead));
   const label = button.querySelector('[data-read-label]');
-  if (label) label.textContent = isRead ? 'Aula lida' : 'Marcar aula como lida';
+  if (label) label.textContent = isRead ? text().lessonRead : text().markRead;
 }
 
 function initReadToggle(slug: string, url: string): void {
@@ -93,10 +95,11 @@ function openNavOnWideScreens(): void {
 type Panel = 'nav' | 'toc';
 const LAYOUT_KEY = 'jp-courses:layout';
 const PANEL_CLASS: Record<Panel, string> = { nav: 'course-nav-hidden', toc: 'course-toc-hidden' };
-const PANEL_LABEL: Record<Panel, { hide: string; show: string }> = {
-  nav: { hide: 'Ocultar o menu do curso', show: 'Mostrar o menu do curso' },
-  toc: { hide: 'Ocultar o índice da nota', show: 'Mostrar o índice da nota' },
-};
+function panelLabel(panel: Panel, shown: boolean): string {
+  const t = text();
+  if (panel === 'nav') return shown ? t.hideNav : t.showNav;
+  return shown ? t.hideToc : t.showToc;
+}
 
 const isPanelHidden = (panel: Panel) => document.documentElement.classList.contains(PANEL_CLASS[panel]);
 
@@ -110,7 +113,7 @@ function saveHiddenPanels(): void {
 
 function paintPanelToggle(button: HTMLButtonElement, panel: Panel): void {
   const shown = !isPanelHidden(panel);
-  const label = shown ? PANEL_LABEL[panel].hide : PANEL_LABEL[panel].show;
+  const label = panelLabel(panel, shown);
   button.setAttribute('aria-expanded', String(shown));
   button.setAttribute('aria-label', label);
   button.title = label;
@@ -138,13 +141,14 @@ function progressBar(done: number, total: number): string {
 const escapeText = (text: string) => text.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 // Stands in for the Obsidian Base on the course home: progress per module and where to continue.
-async function initProgressWidget(slug: string): Promise<void> {
+async function initProgressWidget(slug: string, outlineUrl: string): Promise<void> {
   const widget = document.querySelector<HTMLElement>('[data-course-progress]');
   if (!widget) return;
-  const response = await fetch(`/cursos/${slug}/progresso.json`);
+  const response = await fetch(outlineUrl);
   if (!response.ok) throw new Error(`Course outline request failed: ${response.status}`);
   const outline = (await response.json()) as CourseOutline;
   const progress = loadProgress(slug);
+  const t = text();
   const read = new Set(progress.read);
   const lessons = outline.modules.flatMap((m) => m.lessons);
   const done = lessons.filter((l) => read.has(l.url)).length;
@@ -159,14 +163,14 @@ async function initProgressWidget(slug: string): Promise<void> {
   widget.innerHTML = `
     <div class="progress-head">
       <div>
-        <p class="progress-eyebrow">Seu progresso</p>
-        <p class="progress-total"><strong>${done}</strong> de ${lessons.length} aulas lidas</p>
+        <p class="progress-eyebrow">${t.progressEyebrow}</p>
+        <p class="progress-total">${t.progressTotal(done, lessons.length)}</p>
       </div>
-      ${resume ? `<a class="progress-resume" href="${resume.url}">${progress.read.length === 0 && !progress.last ? 'Começar o curso' : 'Continuar'}: ${escapeText(resume.title)}</a>` : '<span class="progress-done">Curso concluído</span>'}
+      ${resume ? `<a class="progress-resume" href="${resume.url}">${progress.read.length === 0 && !progress.last ? t.startCourse : t.continue}: ${escapeText(resume.title)}</a>` : `<span class="progress-done">${t.courseDone}</span>`}
     </div>
     ${progressBar(done, lessons.length)}
     <ol class="progress-modules">${rows}</ol>
-    <p class="progress-note">O progresso fica salvo só neste navegador.</p>`;
+    <p class="progress-note">${t.progressNote}</p>`;
 }
 
 export function initReader(): void {
@@ -181,5 +185,5 @@ export function initReader(): void {
   paintSidebar(loadProgress(slug));
   initReadToggle(slug, url);
   initTaskChecks(slug, url);
-  void initProgressWidget(slug);
+  void initProgressWidget(slug, requireData(main, 'outline'));
 }

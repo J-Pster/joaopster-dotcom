@@ -1,0 +1,78 @@
+---
+// Glossary index of a course: every term, grouped by initial, with a filter box.
+import CourseNote from '../../layouts/CourseNote.astro';
+import { glossaryUrl } from '../../lib/courses/catalog';
+import { courseText } from '../../lib/courses/i18n';
+import { getVault, type Note } from '../../lib/courses/vault';
+
+interface Props {
+  slug: string;
+}
+
+const vault = getVault(Astro.props.slug);
+const text = courseText(vault.course.lang);
+const collator = new Intl.Collator(text.locale, { sensitivity: 'base' });
+const initialOf = (term: Note) => term.title.normalize('NFD').charAt(0).toUpperCase();
+const aliasesOf = (term: Note): string[] => {
+  const aliases = term.frontmatter.aliases;
+  return Array.isArray(aliases) ? aliases.filter((a): a is string => typeof a === 'string') : [];
+};
+
+const groups = new Map<string, Note[]>();
+for (const term of [...vault.glossary].sort((a, b) => collator.compare(a.title, b.title))) {
+  const initial = /[A-Z]/.test(initialOf(term)) ? initialOf(term) : '#';
+  groups.set(initial, [...(groups.get(initial) ?? []), term]);
+}
+
+// The page reuses the reader layout with a synthetic note, so navigation and styles match.
+const indexNote: Note = {
+  id: 'Glossario',
+  name: text.glossary,
+  absPath: '',
+  url: glossaryUrl(vault.course),
+  title: text.glossaryTitle(vault.course.title),
+  kind: 'glossary',
+  moduleId: undefined,
+  frontmatter: {},
+  body: '',
+};
+---
+
+<CourseNote vault={vault} note={indexNote} html="" headings={[]}>
+  <div class="glossary-index">
+    <h1>{text.glossary}</h1>
+    <p class="glossary-lead">{text.glossaryLead(vault.glossary.length)}</p>
+    <label class="glossary-filter">
+      <span class="visually-hidden">{text.filterTerms}</span>
+      <input type="search" placeholder={text.filterTerms} data-glossary-filter autocomplete="off" />
+    </label>
+    <p class="glossary-empty" data-glossary-empty hidden>{text.noTerms}</p>
+    {[...groups].map(([initial, terms]) => (
+      <section class="glossary-group" data-glossary-group>
+        <h2 class="glossary-letter">{initial}</h2>
+        <ul class="glossary-terms">
+          {terms.map((term) => (
+            <li data-terms={[term.title, term.name, ...aliasesOf(term)].join(' | ').toLowerCase()}>
+              <a class="wikilink" href={term.url}>{term.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</CourseNote>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-glossary-filter]');
+  const empty = document.querySelector<HTMLElement>('[data-glossary-empty]');
+  if (!input || !empty) throw new Error('Glossary filter markup is missing');
+  const fold = (text: string) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-glossary-group]')];
+  const items = groups.flatMap((g) => [...g.querySelectorAll<HTMLElement>('li')]).map((li) => ({ li, terms: fold(li.dataset.terms ?? '') }));
+  input.addEventListener('input', () => {
+    const query = fold(input.value.trim());
+    for (const { li, terms } of items) li.hidden = query !== '' && !terms.includes(query);
+    for (const group of groups) group.hidden = [...group.querySelectorAll('li')].every((li) => li.hidden);
+    empty.hidden = groups.some((g) => !g.hidden);
+  });
+</script>

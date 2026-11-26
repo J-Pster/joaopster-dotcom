@@ -181,6 +181,8 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
 </style>
 
 <script>
+  import { isLang, localeSwitchTarget } from '../i18n/switchLocale';
+
   const selector = document.getElementById('lang-selector');
   const trigger = document.getElementById('lang-trigger');
   const dropdown = document.getElementById('lang-dropdown');
@@ -200,20 +202,8 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
   dropdown?.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-lang]');
     if (!btn) return;
-    const newLang = btn.dataset.lang ?? 'pt';
-    const path = window.location.pathname;
-    const nonDefault = ['en', 'es'];
-    let stripped = path;
-    for (const locale of nonDefault) {
-      if (path.startsWith(`/${locale}/`)) {
-        stripped = path.slice(locale.length + 1);
-        break;
-      } else if (path === `/${locale}`) {
-        stripped = '/';
-        break;
-      }
-    }
-    const target = newLang === 'pt' ? stripped : `/${newLang}${stripped}`;
-    window.location.href = target;
+    const newLang = btn.dataset.lang;
+    if (!isLang(newLang)) throw new Error(`Unknown language button: ${newLang}`);
+    window.location.href = localeSwitchTarget(newLang);
   });
 </script>

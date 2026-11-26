@@ -1,8 +1,13 @@
 // The published courses. Each one is an Obsidian vault copied into courses/<slug>/ by
-// scripts/sync-courses.mjs; this file only adds what the vault itself does not say.
+// scripts/sync-courses.mjs; this file only adds what the vault itself does not say, and where the
+// courses live on the site. A course is written in one language and is listed only in that
+// language's section (/cursos/, /en/courses/, /es/cursos/).
+import { languages, type Lang } from '../../i18n/ui';
 
 export interface CourseInfo {
   readonly slug: string;
+  /** The language the course is written in. */
+  readonly lang: Lang;
   readonly title: string;
   /** One sentence: where the course takes you. */
   readonly goal: string;
@@ -17,6 +22,7 @@ export interface CourseInfo {
 export const COURSES: readonly CourseInfo[] = [
   {
     slug: 'aws-saa-c03',
+    lang: 'pt',
     title: 'AWS Solutions Architect Associate (SAA-C03)',
     goal: 'Passar na certificação AWS SAA-C03 entendendo o porquê de cada decisão de arquitetura, com dois simulados completos.',
     home: 'SAA-C03/SAA-C03 - Inicio.md',
@@ -25,6 +31,7 @@ export const COURSES: readonly CourseInfo[] = [
   },
   {
     slug: 'primeiros-socorros',
+    lang: 'pt',
     title: 'Primeiros Socorros',
     goal: 'Agir em qualquer emergência até o socorro chegar (PHTLS, TCCC, TECC) e saber examinar, medir e raciocinar só com um kit e as mãos.',
     home: 'Primeiros Socorros - Inicio.md',
@@ -33,6 +40,7 @@ export const COURSES: readonly CourseInfo[] = [
   },
   {
     slug: 'radio',
+    lang: 'pt',
     title: 'Rádio, LoRa e Redes Mesh',
     goal: 'Entender rádio, RF, LoRa, mesh e Reticulum para montar uma rede de comunicação privada própria.',
     home: 'README.md',
@@ -41,6 +49,7 @@ export const COURSES: readonly CourseInfo[] = [
   },
   {
     slug: 'modelagem-de-casas',
+    lang: 'pt',
     title: 'Modelagem de Casas',
     goal: 'Entender os princípios de projeto residencial e dominar Sweet Home 3D, SketchUp, BIM e Blender para modelar a sua própria casa.',
     home: 'README.md',
@@ -49,12 +58,43 @@ export const COURSES: readonly CourseInfo[] = [
   },
 ];
 
+export const LANGS = Object.keys(languages) as Lang[];
+
 export function courseBySlug(slug: string): CourseInfo {
   const course = COURSES.find((c) => c.slug === slug);
   if (!course) throw new Error(`Unknown course: ${slug}`);
   return course;
 }
 
-export const COURSES_ROOT = '/cursos';
-export const courseUrl = (slug: string) => `${COURSES_ROOT}/${slug}/`;
-export const courseZipUrl = (slug: string) => `${COURSES_ROOT}/${slug}.zip`;
+export const coursesIn = (lang: Lang): readonly CourseInfo[] => COURSES.filter((c) => c.lang === lang);
+
+// URL segments of the courses section in each language. The route files under src/pages use the
+// same names: cursos/, en/courses/, es/cursos/.
+const SECTION: Record<Lang, { readonly root: string; readonly howTo: string; readonly glossary: string; readonly files: string }> = {
+  pt: { root: '/cursos', howTo: 'como-criar', glossary: 'glossario', files: 'arquivos' },
+  en: { root: '/en/courses', howTo: 'how-i-make-them', glossary: 'glossary', files: 'files' },
+  es: { root: '/es/cursos', howTo: 'como-los-creo', glossary: 'glosario', files: 'archivos' },
+};
+
+/** The courses landing of a language, without the trailing slash (the form the header links use). */
+export const coursesSection = (lang: Lang) => SECTION[lang].root;
+export const coursesHome = (lang: Lang) => `${SECTION[lang].root}/`;
+export const howToUrl = (lang: Lang) => `${SECTION[lang].root}/${SECTION[lang].howTo}/`;
+
+export const courseUrl = (course: CourseInfo) => `${SECTION[course.lang].root}/${course.slug}/`;
+export const courseZipUrl = (course: CourseInfo) => `${SECTION[course.lang].root}/${course.slug}.zip`;
+export const glossaryUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTION[course.lang].glossary}/`;
+export const courseFilesUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTION[course.lang].files}/`;
+/** Modules and lessons of a course, for the client-side progress widget. */
+export const courseOutlineUrl = (course: CourseInfo) => `${courseUrl(course)}outline.json`;
+
+/** The same page in every language, for pages that exist in all three (landing and method). */
+export const sectionAlternates = (page: (lang: Lang) => string): Record<Lang, string> =>
+  Object.fromEntries(LANGS.map((lang) => [lang, page(lang)])) as Record<Lang, string>;
+
+// The course-making skill is written in Portuguese and served once, from the Portuguese section.
+export const SKILL_DOWNLOADS = {
+  zip: '/cursos/skill-criar-curso.zip',
+  skillMd: '/cursos/skill/SKILL.md',
+  guideMd: '/cursos/skill/guia-de-escrita.md',
+} as const;

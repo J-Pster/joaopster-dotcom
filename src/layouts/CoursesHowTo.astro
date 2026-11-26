@@ -1,0 +1,116 @@
+---
+// How the courses are made, in one language: the method, the skill to download and how to send a
+// course for review.
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { Lang } from '../i18n/ui';
+import { coursesHome, howToUrl, sectionAlternates, SKILL_DOWNLOADS } from '../lib/courses/catalog';
+import { howToCopy } from '../lib/courses/howToCopy';
+import { courseText } from '../lib/courses/i18n';
+import '../styles/courses.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const SUBMIT_EMAIL = 'joao@joaopster.com';
+
+const { lang } = Astro.props;
+const text = courseText(lang);
+const copy = howToCopy(lang);
+const submitHref = `mailto:${SUBMIT_EMAIL}?subject=${encodeURIComponent(copy.mailSubject)}&body=${encodeURIComponent(copy.mailBody)}`;
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead title={copy.metaTitle} description={copy.metaDescription} alternates={sectionAlternates(howToUrl)} />
+  </head>
+  <body>
+    <Header />
+    <main class="courses-landing courses-howto">
+      <nav class="course-breadcrumb" aria-label={text.youAreHere}>
+        <a href={coursesHome(lang)}>{text.section}</a>
+        <span aria-hidden="true">/</span>
+        <span>{copy.current}</span>
+      </nav>
+
+      <section class="courses-hero courses-hero--left">
+        <p class="courses-eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.current}</h1>
+        <p class="courses-lead">{copy.lead}</p>
+      </section>
+
+      <section class="howto-reading" aria-labelledby="como-ler">
+        <h2 class="courses-section-title" id="como-ler">{copy.readingTitle}</h2>
+        <div class="courses-how-grid">
+          <div class="course-feature">
+            <h3>{copy.readingSiteTitle}</h3>
+            <p>{copy.readingSiteText}</p>
+          </div>
+          <div class="course-feature">
+            <h3>{copy.readingObsidianTitle}</h3>
+            <p set:html={copy.readingObsidianHtml} />
+          </div>
+        </div>
+      </section>
+
+      <section class="prose howto-section" aria-labelledby="filosofia">
+        <h2 id="filosofia">{copy.ruleTitle}</h2>
+        <p set:html={copy.ruleIntroHtml} />
+        <ul>
+          {copy.ruleItems.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2 id="processo">{copy.processTitle}</h2>
+        <ol>
+          {copy.processItemsHtml.map((item) => <li set:html={item} />)}
+        </ol>
+
+        <h2 id="estrutura">{copy.folderTitle}</h2>
+        <p>{copy.folderIntro}</p>
+        <pre class="howto-tree"><code>{copy.tree}</code></pre>
+      </section>
+
+      <section class="howto-downloads" aria-labelledby="baixar">
+        <h2 class="courses-section-title" id="baixar">{copy.downloadsTitle}</h2>
+        <p class="howto-text">{copy.downloadsText}</p>
+        {copy.skillLanguageNote && <p class="howto-text howto-note">{copy.skillLanguageNote}</p>}
+        <div class="courses-how-grid">
+          <div class="course-feature">
+            <h3>{copy.skillTitle}</h3>
+            <p set:html={copy.skillTextHtml} />
+            <a class="course-btn" href={SKILL_DOWNLOADS.zip} download>{copy.skillButton}</a>
+          </div>
+          <div class="course-feature">
+            <h3>{copy.mdTitle}</h3>
+            <p>{copy.mdText}</p>
+            <div class="howto-file-links">
+              <a class="course-btn course-btn--secondary" href={SKILL_DOWNLOADS.skillMd} download>SKILL.md</a>
+              <a class="course-btn course-btn--secondary" href={SKILL_DOWNLOADS.guideMd} download>guia-de-escrita.md</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="prose howto-section">
+          <h3>{copy.installTitle}</h3>
+          <ul>
+            {copy.installItemsHtml.map((item) => <li set:html={item} />)}
+          </ul>
+          <h3>{copy.requestTitle}</h3>
+          <p>{copy.requestIntro}</p>
+          <pre class="howto-tree howto-example"><code>{copy.requestExample}</code></pre>
+          <p set:html={copy.requestAfterHtml} />
+        </div>
+      </section>
+
+      <section class="courses-cta" aria-labelledby="enviar">
+        <h2 id="enviar">{copy.sendTitle}</h2>
+        <p>{copy.sendText}</p>
+        <a class="course-btn" href={submitHref}>{copy.sendButton}</a>
+        <p class="courses-cta-note">{SUBMIT_EMAIL}</p>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
