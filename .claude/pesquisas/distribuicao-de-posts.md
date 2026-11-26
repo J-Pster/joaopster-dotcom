@@ -51,6 +51,8 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 ## Third class (manual)
 
+- Hacker News (decidido em 26/11/2026): o João passa a submeter todo post, em inglês, com title igual ao título EN, url do post EN no blog e text em branco. Regras oficiais em https://news.ycombinator.com/newsguidelines.html e https://news.ycombinator.com/newsfaq.html: título original sem editorializar, sem nome do site, sem caixa alta ou exclamação, "Please don't put generated text in HN posts" e nada de comentário gerado ou editado por IA, não automatizar a postagem, não usar o HN principalmente para promoção ("It's ok to post your own stuff part of the time"), não pedir voto nem comentário. Texto em submissão com URL é opcional, e submissão só de texto não aceita link. Show HN não serve para post de blog.
+
 - Medium: API descontinuada, a Medium não emite tokens novos (https://help.medium.com/hc/en-us/articles/213480228). A ferramenta de importar story puxa o post pela URL e marca o original (de memória, não conferido).
 - Reddit: desde nov/2025 a API exige pedir acesso e esperar aprovação manual (Responsible Builder Policy). Subreddits costumam punir autopromoção automatizada. Manual com texto adaptado.
 - Hacker News: API oficial só de leitura. Manual.
