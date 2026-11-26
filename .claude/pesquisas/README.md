@@ -5,6 +5,7 @@ Pesquisas feitas com o Claude Code neste repositório, guardadas para consulta e
 | Arquivo | Assunto |
 |---|---|
 | `anthropic-ipo-e-uso-de-dados.md` | O S-1 do IPO da Anthropic (estratégia de "top of funnel", NRR de 900%, fatores de risco), as políticas de dados por plano, ZDR, processos e incidentes, comparação com OpenAI e Google, e passos para limitar exposição |
+| `o-que-a-anthropic-pega-planos-pessoais.md` | Tabela do que a Anthropic recebe e guarda nos planos Free, Pro, Max e Ultra, com a chave de treino ligada e desligada, e como reduzir |
 | `planos-claude-e-limites.md` | Preços e limites de Pro, Max, Ultra, Team Standard e Premium e Enterprise |
 | `distribuicao-de-posts.md` | Onde publicar os posts do blog (first, second e third class), API do Dev.to e do TabNews, LinkedIn, X, Threads e as decisões do João |
 | `blog-site-e-pendencias.md` | Como o blog funciona, deploy, SEO que o site já faz, posts publicados e o que falta fazer |
