@@ -29,3 +29,6 @@ pnpm-debug.log*
 # agent state & cache (machine/session-specific)
 .omc/
 .serena/
+
+# generated LinkedIn article covers (npm run cover)
+linkedin-covers/
