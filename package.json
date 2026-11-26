@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "cover": "node scripts/generate-linkedin-cover.mjs"
+    "cover": "node scripts/generate-linkedin-cover.mjs",
+    "newsletter:draft": "node --env-file-if-exists=.env scripts/newsletter-draft.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",

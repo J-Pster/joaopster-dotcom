@@ -4,6 +4,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
@@ -180,6 +181,7 @@ const allYears = [...new Set(posts.map(p => p.data.pubDate.getFullYear()))].sort
           </div>
         </div>
 
+        <NewsletterSignup />
       </div>
     </section>
 

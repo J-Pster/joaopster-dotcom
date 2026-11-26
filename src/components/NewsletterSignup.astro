@@ -1,0 +1,154 @@
+---
+// Newsletter signup card. Posts to the Pages Function at /api/subscribe,
+// which forwards the address to Buttondown with the page language.
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const messages = {
+  subscribed: t('newsletter.subscribed'),
+  already_subscribed: t('newsletter.already'),
+  invalid_email: t('newsletter.invalid'),
+  try_later: t('newsletter.error'),
+};
+---
+
+<section class="newsletter" aria-labelledby="newsletter-title">
+  <h2 class="newsletter-title" id="newsletter-title">{t('newsletter.title')}</h2>
+  <p class="newsletter-desc">{t('newsletter.description')}</p>
+  <form class="newsletter-form" data-lang={lang} data-messages={JSON.stringify(messages)} data-sending={t('newsletter.sending')}>
+    <label class="visually-hidden" for="newsletter-email">E-mail</label>
+    <input
+      id="newsletter-email"
+      class="newsletter-input"
+      type="email"
+      name="email"
+      required
+      autocomplete="email"
+      placeholder={t('newsletter.placeholder')}
+    />
+    <input class="newsletter-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button class="newsletter-button" type="submit">{t('newsletter.submit')}</button>
+  </form>
+  <p class="newsletter-status" role="status" aria-live="polite"></p>
+</section>
+
+<style>
+  .newsletter {
+    margin: var(--space-xxl) 0;
+    padding: var(--space-lg);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+  }
+  .newsletter-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-xxs);
+  }
+  .newsletter-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-body);
+    margin: 0 0 var(--space-base);
+  }
+  .newsletter-form {
+    display: flex;
+    gap: var(--space-xs);
+  }
+  .newsletter-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 44px;
+    padding: 0 var(--space-base);
+    font: inherit;
+    font-size: 15px;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+  }
+  .newsletter-input:focus {
+    outline: none;
+    border: 2px solid var(--color-ink);
+    padding: 0 calc(var(--space-base) - 1px);
+  }
+  .newsletter-button {
+    height: 44px;
+    padding: 0 18px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-on-primary);
+    background: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .newsletter-button:active { background: var(--color-primary-active); }
+  .newsletter-button:disabled { opacity: 0.6; cursor: wait; }
+  .newsletter-status {
+    min-height: 1.5em;
+    margin: var(--space-xs) 0 0;
+    font-size: 14px;
+    color: var(--color-body);
+  }
+  .newsletter-status[data-tone='ok'] { color: #16a34a; }
+  .newsletter-honeypot,
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .newsletter-form { flex-direction: column; }
+  }
+</style>
+
+<script>
+  type Outcome = 'subscribed' | 'already_subscribed' | 'invalid_email' | 'try_later';
+
+  document.querySelectorAll<HTMLFormElement>('.newsletter-form').forEach((form) => {
+    const status = form.parentElement?.querySelector<HTMLElement>('.newsletter-status');
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (!status || !button) throw new Error('Newsletter form is missing its status line or button');
+    const messages = JSON.parse(form.dataset.messages ?? '{}') as Record<Outcome, string>;
+    const idleLabel = button.textContent ?? '';
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      button.disabled = true;
+      button.textContent = form.dataset.sending ?? idleLabel;
+      status.removeAttribute('data-tone');
+      status.textContent = '';
+
+      let outcome: Outcome;
+      try {
+        const response = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: data.get('email'), website: data.get('website'), lang: form.dataset.lang }),
+        });
+        outcome = ((await response.json()) as { outcome: Outcome }).outcome;
+      } catch {
+        // Network failure or a non-JSON error page: ask the reader to retry.
+        outcome = 'try_later';
+      }
+
+      status.textContent = messages[outcome];
+      if (outcome === 'subscribed' || outcome === 'already_subscribed') {
+        status.dataset.tone = 'ok';
+        form.reset();
+      }
+      button.disabled = false;
+      button.textContent = idleLabel;
+    });
+  });
+</script>
