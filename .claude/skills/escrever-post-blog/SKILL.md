@@ -115,6 +115,17 @@ Espere ele revisar. Ele itera várias vezes, e cada pedido dele vale para esta e
 3. Rode `npm run build` e confirme que saiu sem erro.
 4. Faça o commit e o push para o `master`, e só com a aprovação do João. O deploy é automático: o Cloudflare Pages publica a cada push no `master`.
 
+## Versões para outras plataformas
+
+Quando o João pedir as versões para Reddit ou LinkedIn, entregue arquivos `.md` separados, fora do repositório (no scratchpad da sessão), e mande pelo chat com a ferramenta de enviar arquivo para ele abrir e copiar. Use o idioma que ele pedir, e PT se ele não disser.
+
+- **Reddit.** Um arquivo só, com o `.md` cru do próprio post. É o corpo do post igual ao do blog, sem frontmatter, sem rótulo, sem título separado e sem nada em volta. Os links internos viram URLs completas do joaopster.com.
+- **LinkedIn.** Dois arquivos separados.
+  - **Post curto**, para o feed do perfil, no padrão do LinkedIn. É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
+  - **Artigo**, para a função de artigos do LinkedIn. É o post completo, igual ao do blog, com os links internos como URLs completas.
+
+Antes de entregar, rode nos textos novos (principalmente no post curto do LinkedIn, que é escrito do zero) a mesma revisão do passo 6.
+
 ## Arquivos
 
 - Caminho: `src/content/blog/pt/<slug>.md`, `src/content/blog/en/<slug>.md` e `src/content/blog/es/<slug>.md`, sempre com o mesmo slug. O slug vira a URL (`/blog/<slug>/`, `/en/blog/<slug>/`, `/es/blog/<slug>/`) e o site liga as três versões por hreflang.
