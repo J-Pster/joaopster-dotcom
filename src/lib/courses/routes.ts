@@ -2,7 +2,9 @@
 // src/pages/en/courses, src/pages/es/cursos). Each route file only says which language it serves.
 import { readFileSync } from 'node:fs';
 import type { Lang } from '../../i18n/ui';
-import { courseBySlug, courseFilesUrl, coursesIn } from './catalog';
+import { courseBySlug, courseFilesUrl, coursesIn, hasStudyPages } from './catalog';
+import { getRenderer } from './render';
+import type { StudyIndex, StudyNote, StudyQuestion, StudyTerm } from './studyModel';
 import { getVault } from './vault';
 import { zipFolder, zipResponse } from './zip';
 
@@ -48,6 +50,47 @@ export function outlineResponse(slug: string): Response {
     })),
   };
   return new Response(JSON.stringify(outline), { headers: { 'Content-Type': 'application/json' } });
+}
+
+export const studyPaths = (lang: Lang) =>
+  coursesIn(lang)
+    .filter(hasStudyPages)
+    .map((course) => ({ params: { course: course.slug } }));
+
+/** Every quiz question and glossary term of a course, for the study pages. */
+export async function studyResponse(slug: string): Promise<Response> {
+  const vault = getVault(slug);
+  const renderer = await getRenderer(vault);
+  const moduleNumber = new Map(vault.modules.map((m) => [m.id, m.number]));
+  const notes: StudyNote[] = [];
+  const noteIndex = new Map<string, number>();
+  const questions: StudyQuestion[] = [];
+  for (const note of vault.notes) {
+    if (note.kind === 'glossary') continue;
+    const { quiz } = await renderer.render(note);
+    noteIndex.set(note.id, notes.length);
+    notes.push({ url: note.url, title: note.title, module: note.moduleId === undefined ? undefined : moduleNumber.get(note.moduleId) });
+    for (const q of quiz) {
+      questions.push({
+        note: note.url,
+        id: q.id,
+        number: q.number,
+        text: q.text,
+        options: q.options.map((o) => [o.letter, o.box] as const),
+        correct: q.correct,
+      });
+    }
+  }
+  const terms: StudyTerm[] = vault.glossary.map((term) => ({
+    title: term.title,
+    url: term.url,
+    lessons: (vault.backlinks.get(term.id) ?? []).flatMap((source) => {
+      const index = noteIndex.get(source.id);
+      return source.kind === 'lesson' && index !== undefined ? [index] : [];
+    }),
+  }));
+  const index: StudyIndex = { notes, questions, terms };
+  return new Response(JSON.stringify(index), { headers: { 'Content-Type': 'application/json' } });
 }
 
 /** The whole course as a zip, ready to open as an Obsidian vault (or read in any Markdown editor). */

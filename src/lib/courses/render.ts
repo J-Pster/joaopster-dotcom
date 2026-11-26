@@ -13,11 +13,14 @@ import { pathToFileURL } from 'node:url';
 import { SKIP, visit } from 'unist-util-visit';
 import { rehypePostLinks } from '../markdown/rehypePostLinks';
 import { courseText } from './i18n';
+import { extractQuizzes, type QuizQuestion } from './quiz';
 import type { Note, Vault } from './vault';
 
 export interface RenderedNote {
   readonly html: string;
   readonly headings: readonly MarkdownHeading[];
+  /** The note's quiz questions (empty when it has none). */
+  readonly quiz: readonly QuizQuestion[];
 }
 
 const WIKILINK = /(!?)\[\[([^\]\n]+?)\]\]/g;
@@ -218,7 +221,7 @@ function blockPass(tree: Root, calloutTitles: Readonly<Record<string, string>>):
   });
 }
 
-function remarkObsidian(options: { vault: Vault; missing: Map<string, Set<string>> }) {
+function remarkObsidian(options: { vault: Vault; missing: Map<string, Set<string>>; quizzes: Map<string, readonly QuizQuestion[]> }) {
   const { vault } = options;
   const byPath = new Map(vault.notes.map((n) => [n.absPath, n]));
   const calloutTitles = courseText(vault.course.lang).calloutTitles;
@@ -226,6 +229,10 @@ function remarkObsidian(options: { vault: Vault; missing: Map<string, Set<string
     const note = file.path ? byPath.get(file.path) : undefined;
     if (!note) throw new Error(`Course note not found for ${file.path}`);
     const missing = new Set<string>();
+    // Quizzes first: they read the answer key before it becomes a callout.
+    const quiz = extractQuizzes(tree);
+    for (const problem of quiz.problems) console.warn(`[courses] ${vault.course.slug}/${note.id}: quiz ${problem}`);
+    options.quizzes.set(note.id, quiz.questions);
     blockPass(tree, calloutTitles);
     visit(tree, (node, index, parent) => {
       if (node.type === 'link') {
@@ -252,16 +259,28 @@ const renderers = new Map<string, Promise<CourseRenderer>>();
 
 async function createRenderer(vault: Vault): Promise<CourseRenderer> {
   const missing = new Map<string, Set<string>>();
+  const quizzes = new Map<string, readonly QuizQuestion[]>();
   const processor = await createMarkdownProcessor({
-    remarkPlugins: [[remarkObsidian, { vault, missing }]],
+    remarkPlugins: [[remarkObsidian, { vault, missing, quizzes }]],
     rehypePlugins: [rehypeHeadingIds, rehypePostLinks],
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
   });
+  // A note is rendered once per build: its page and the course's study index both need it.
+  const rendered = new Map<string, Promise<RenderedNote>>();
+  const renderOnce = async (note: Note): Promise<RenderedNote> => {
+    const result = await processor.render(note.body, { fileURL: pathToFileURL(note.absPath), frontmatter: note.frontmatter });
+    const quiz = quizzes.get(note.id);
+    if (!quiz) throw new Error(`Quiz pass did not run for ${note.id}`);
+    return { html: result.code, headings: result.metadata.headings, quiz };
+  };
   return {
     missing,
-    async render(note) {
-      const result = await processor.render(note.body, { fileURL: pathToFileURL(note.absPath), frontmatter: note.frontmatter });
-      return { html: result.code, headings: result.metadata.headings };
+    render(note) {
+      const existing = rendered.get(note.id);
+      if (existing) return existing;
+      const created = renderOnce(note);
+      rendered.set(note.id, created);
+      return created;
     },
   };
 }

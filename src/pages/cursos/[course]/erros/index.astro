@@ -1,0 +1,8 @@
+---
+import MistakesNotebook from '../../../../components/courses/MistakesNotebook.astro';
+import { studyPaths } from '../../../../lib/courses/routes';
+
+export const getStaticPaths = () => studyPaths('pt');
+---
+
+<MistakesNotebook slug={Astro.params.course as string} />

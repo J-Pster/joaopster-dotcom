@@ -1,8 +1,9 @@
 ---
 // One note of a course, rendered from its Markdown. Used by the [...note] route of every language.
+// A note tagged "simulado" with a quiz, in a course with exam rules, runs as a timed exam.
 import CourseNote from '../../layouts/CourseNote.astro';
 import { getRenderer } from '../../lib/courses/render';
-import { getVault } from '../../lib/courses/vault';
+import { getVault, type Note } from '../../lib/courses/vault';
 
 interface Props {
   slug: string;
@@ -13,7 +14,10 @@ const vault = getVault(Astro.props.slug);
 const note = vault.byId(Astro.props.noteId);
 if (!note) throw new Error(`Unknown note ${Astro.props.noteId}`);
 const renderer = await getRenderer(vault);
-const { html, headings } = await renderer.render(note);
+const { html, headings, quiz } = await renderer.render(note);
+
+const isSimulatedExam = (n: Note) => Array.isArray(n.frontmatter.tags) && n.frontmatter.tags.includes('simulado');
+const exam = vault.course.exam && quiz.length > 0 && isSimulatedExam(note) ? vault.course.exam : undefined;
 ---
 
-<CourseNote vault={vault} note={note} html={html} headings={headings} />
+<CourseNote vault={vault} note={note} html={html} headings={headings} exam={exam} />

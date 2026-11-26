@@ -4,8 +4,9 @@
 // the ones already read and count them per module.
 // Glossary pages list the modules only: the course has thousands of terms and those pages
 // would otherwise carry the whole lesson tree each.
-import { glossaryUrl as glossaryUrlOf } from '../../lib/courses/catalog';
+import { glossaryUrl as glossaryUrlOf, hasStudyPages, mistakesUrl, reviewUrl } from '../../lib/courses/catalog';
 import { courseText } from '../../lib/courses/i18n';
+import { studyText } from '../../lib/courses/studyText';
 import type { Note, Vault } from '../../lib/courses/vault';
 
 interface Props {
@@ -17,6 +18,7 @@ const { vault, note } = Astro.props;
 const withLessons = note.kind !== 'glossary';
 const glossaryUrl = glossaryUrlOf(vault.course);
 const text = courseText(vault.course.lang);
+const study = studyText(vault.course.lang);
 // "Aula 3.2: Title" in the sidebar reads as "Title": the module and the position already say the rest.
 const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
 ---
@@ -34,6 +36,12 @@ const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
       <a class="course-nav-glossary" href={glossaryUrl} aria-current={note.kind === 'glossary' ? 'page' : undefined}>
         {text.glossary} <span>{text.glossaryTerms(vault.glossary.length)}</span>
       </a>
+    )}
+    {hasStudyPages(vault.course) && (
+      <div class="course-nav-study">
+        <a href={mistakesUrl(vault.course)} aria-current={note.url === mistakesUrl(vault.course) ? 'page' : undefined}>{study.mistakesLink}</a>
+        <a href={reviewUrl(vault.course)} aria-current={note.url === reviewUrl(vault.course) ? 'page' : undefined}>{study.reviewLink}</a>
+      </div>
     )}
     <ol class="course-nav-modules">
       {vault.modules.map((module) => {

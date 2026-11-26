@@ -17,6 +17,15 @@ export interface CourseInfo {
   readonly vaultName: string;
   /** Whether the vault uses the Obsidian format (frontmatter, wikilinks, glossary with hover). */
   readonly format: 'obsidian' | 'markdown';
+  /** For courses that prepare for an exam: how its simulated exams (notes tagged "simulado") run. */
+  readonly exam?: ExamRules;
+}
+
+export interface ExamRules {
+  /** Time allowed per question, in minutes. */
+  readonly minutesPerQuestion: number;
+  /** Score the course sets as the study target, per domain and overall, in percent. */
+  readonly targetPercent: number;
 }
 
 export const COURSES: readonly CourseInfo[] = [
@@ -28,6 +37,8 @@ export const COURSES: readonly CourseInfo[] = [
     home: 'SAA-C03/SAA-C03 - Inicio.md',
     vaultName: 'Aprendendo Certificacoes AWS',
     format: 'obsidian',
+    // From the instructions of the course's simulated exams: 130 minutes for 65 questions, 72% per domain.
+    exam: { minutesPerQuestion: 2, targetPercent: 72 },
   },
   {
     slug: 'primeiros-socorros',
@@ -68,12 +79,27 @@ export function courseBySlug(slug: string): CourseInfo {
 
 export const coursesIn = (lang: Lang): readonly CourseInfo[] => COURSES.filter((c) => c.lang === lang);
 
+/**
+ * Courses with study pages (mistakes notebook, spaced review): the ones made with the course-making
+ * skill, whose lessons end in quizzes and link a glossary.
+ */
+export const hasStudyPages = (course: CourseInfo) => course.format === 'obsidian';
+
 // URL segments of the courses section in each language. The route files under src/pages use the
 // same names: cursos/, en/courses/, es/cursos/.
-const SECTION: Record<Lang, { readonly root: string; readonly howTo: string; readonly glossary: string; readonly files: string }> = {
-  pt: { root: '/cursos', howTo: 'como-criar', glossary: 'glossario', files: 'arquivos' },
-  en: { root: '/en/courses', howTo: 'how-i-make-them', glossary: 'glossary', files: 'files' },
-  es: { root: '/es/cursos', howTo: 'como-los-creo', glossary: 'glosario', files: 'archivos' },
+interface SectionSegments {
+  readonly root: string;
+  readonly howTo: string;
+  readonly glossary: string;
+  readonly files: string;
+  readonly mistakes: string;
+  readonly review: string;
+}
+
+const SECTION: Record<Lang, SectionSegments> = {
+  pt: { root: '/cursos', howTo: 'como-criar', glossary: 'glossario', files: 'arquivos', mistakes: 'erros', review: 'revisao' },
+  en: { root: '/en/courses', howTo: 'how-i-make-them', glossary: 'glossary', files: 'files', mistakes: 'mistakes', review: 'review' },
+  es: { root: '/es/cursos', howTo: 'como-los-creo', glossary: 'glosario', files: 'archivos', mistakes: 'errores', review: 'repaso' },
 };
 
 /** The courses landing of a language, without the trailing slash (the form the header links use). */
@@ -87,6 +113,10 @@ export const glossaryUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTIO
 export const courseFilesUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTION[course.lang].files}/`;
 /** Modules and lessons of a course, for the client-side progress widget. */
 export const courseOutlineUrl = (course: CourseInfo) => `${courseUrl(course)}outline.json`;
+/** Questions and glossary terms of a course, for the mistakes notebook and the review. */
+export const studyIndexUrl = (course: CourseInfo) => `${courseUrl(course)}study.json`;
+export const mistakesUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTION[course.lang].mistakes}/`;
+export const reviewUrl = (course: CourseInfo) => `${courseUrl(course)}${SECTION[course.lang].review}/`;
 
 /** The same page in every language, for pages that exist in all three (landing and method). */
 export const sectionAlternates = (page: (lang: Lang) => string): Record<Lang, string> =>

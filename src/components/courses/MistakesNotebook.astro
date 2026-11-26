@@ -1,0 +1,49 @@
+---
+// Mistakes notebook of a course: the quiz questions the reader got wrong, listed by note, each linking
+// back to the question in its lesson. Built in the browser from the ticks and the course's study.json.
+import CourseNote from '../../layouts/CourseNote.astro';
+import { mistakesUrl, reviewUrl, studyIndexUrl } from '../../lib/courses/catalog';
+import { studyText } from '../../lib/courses/studyText';
+import { getVault, type Note } from '../../lib/courses/vault';
+
+interface Props {
+  slug: string;
+}
+
+const vault = getVault(Astro.props.slug);
+const text = studyText(vault.course.lang);
+
+// The page reuses the reader layout with a synthetic note, like the glossary index.
+const pageNote: Note = {
+  id: 'Caderno de erros',
+  name: text.mistakesLink,
+  absPath: '',
+  url: mistakesUrl(vault.course),
+  title: text.mistakesTitle(vault.course.title),
+  kind: 'page',
+  moduleId: undefined,
+  frontmatter: {},
+  body: '',
+};
+---
+
+<CourseNote vault={vault} note={pageNote} html="" headings={[]}>
+  <section class="study-page" data-mistakes data-study-index={studyIndexUrl(vault.course)}>
+    <h1>{text.mistakesLink}</h1>
+    <p class="study-lead">{text.mistakesLead}</p>
+    <div class="study-toolbar">
+      <p class="study-count" data-mistakes-count aria-live="polite"></p>
+      <a class="study-action" href={reviewUrl(vault.course)}>{text.reviewMistakes}</a>
+    </div>
+    <div data-mistakes-list>
+      <div class="study-skeleton" aria-label={text.loading}></div>
+      <div class="study-skeleton"></div>
+    </div>
+  </section>
+</CourseNote>
+
+<script>
+  import { initMistakes } from '../../lib/courses/client/mistakes';
+
+  void initMistakes();
+</script>

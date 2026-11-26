@@ -2,6 +2,7 @@
 // synced with the reader's other devices when they set a sync code (client/sync.ts).
 import { courseText, pageLang } from '../i18n';
 import { loadProgress, setChecks, setLast, setRead, type CourseProgress } from '../progress';
+import { initStudy } from './study';
 import { startAutoSync } from './sync';
 import { initSyncCards } from './syncCard';
 
@@ -203,6 +204,7 @@ export function initReader(): void {
     () => paintSidebar(loadProgress(slug)),
     initReadToggle(slug, url),
     initTaskChecks(slug, url),
+    initStudy(slug, url),
   ];
   void initProgressWidget(slug, requireData(main, 'outline')).then((repaint) => {
     repaints.push(repaint);

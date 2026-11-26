@@ -1,0 +1,8 @@
+---
+import ReviewDeck from '../../../../components/courses/ReviewDeck.astro';
+import { studyPaths } from '../../../../lib/courses/routes';
+
+export const getStaticPaths = () => studyPaths('pt');
+---
+
+<ReviewDeck slug={Astro.params.course as string} />
