@@ -1,17 +1,13 @@
 ---
 title: "Claude Code's harness made my AI workflow obsolete (and most others too)"
-description: 'I built a workflow with 20 commands and 45 agents and once wrote "long live OMC". Today Claude Code does almost all of it on its own. What changed and what I still add on top.'
+description: 'I built a workflow with 20 commands and 45 agents. Today Claude Code does almost all of it on its own. What changed in the harness and what I still add on top.'
 pubDate: 'Nov 26 2026'
 tags: ['AI', 'Claude Code', 'My Opinion', 'Setup']
 ---
 
 In March I shipped version 1.0 of [Pster's AI Workflow](https://github.com/J-Pster/Psters_AI_Workflow), a plugin with 20 commands, 45 agents, 17 skills, 4 hooks and 8 rules to organize how AI works on a project. In May, in my [post about moving from Cursor to Claude Code](/en/blog/migrei-cursor-para-claude-code/), I ended with "long live OMC", the agent orchestrator I had installed on top of Claude Code.
 
-Today I use neither.
-
-Both still work. What changed is Claude Code itself, its harness has improved so much that it now does almost everything those workflows did, and in some cases does it better. In my opinion this applies to most of the workflows we used to install on top of it. Mine is just the example I know best.
-
-In this post I explain what the harness is, what my workflow did, what Claude Code already does with no plugin at all, and the two things I still add on top.
+Today I use neither, and both still work. What changed is Claude Code itself, its harness has improved so much that it now does almost everything those workflows did, and in some cases does it better. In my opinion this applies to most of the workflows we used to install on top of it. Mine is just the example I know best.
 
 ## What is the Claude Code harness?
 
@@ -19,7 +15,7 @@ The harness is everything that runs around the model. The model (Opus, Sonnet) d
 
 A useful way to think about it is that the model is the engine and the harness is the rest of the car. A good engine in a bad car doesn't get you far.
 
-For a long time the engine was ahead of the car. The model could already do a lot, but the harness didn't give it the structure to organize itself on large tasks. That gap is what workflows were built to fill.
+For a long time the engine was better than the car. The model could already do a lot, but the harness didn't give it the structure to organize itself on large tasks. That gap is what workflows were built to fill.
 
 ## What my workflow did (and why it made sense)
 
@@ -38,7 +34,7 @@ It rested on two ideas. The first was **predictability**, the README itself said
 
 When I moved to Claude Code, another piece was missing, which was running several agents at once. For that I installed OMC ([oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)), which added commands like `/team`, `/ralph` and `/ultrawork` to orchestrate agents in parallel.
 
-Back then all of this made sense. The model didn't organize itself well on long tasks, so I gave it rails.
+The model didn't organize itself well on long tasks, so I gave it rails.
 
 ## What Claude Code does on its own today
 
@@ -52,8 +48,6 @@ Here is how it compares to what I had built:
 | Multi-agent review | `/pwf-review` | `/code-review` |
 | Instructions I keep repeating | The plugin's rules and skills | Native skills and plugins |
 | Project memory | Docs maintained by the workflow | Claude's memory (still weak) + ai-memory |
-
-Some of these changes deserve more detail.
 
 ### Agent orchestration is now built in
 
@@ -75,11 +69,9 @@ That took away the core idea of my workflow. I chose every step because the mode
 
 ### Projects replaced my workspace
 
-My workflow had a whole command just to create a workspace with all of a project's repositories and keep the plan and docs together. Claude Code's projects do this natively, with one central session that orchestrates subsessions, called topics. It's what I used to build by hand.
+My workflow had a whole command just to create a workspace with all of a project's repositories and keep the plan and docs together. Claude Code's projects do this natively, with one central session that orchestrates subsessions, called topics.
 
 ## What the harness still lacks
-
-There are two things I still add on top.
 
 ### Serena, for searching and editing code
 
@@ -97,21 +89,21 @@ It stores memory as markdown files on a server you run yourself, versioned in gi
 
 It's much smaller than the one in my May post:
 
-- Claude Code, with its harness;
-- Serena;
-- ai-memory;
-- my skills.
+- Claude Code, with its harness
+- Serena
+- ai-memory
+- my skills
 
 I uninstalled or stopped using everything else.
 
-## Explained it twice? Make it a skill
+## If you explained it twice, make it a skill
 
-If there's one tip I'd give anyone using Claude Code today, it's that anything you have to explain twice should become a skill.
+The tip I'd give anyone using Claude Code today is to turn anything you have to explain twice into a skill.
 
 A **skill** is a bundle of instructions Claude loads when a task calls for it. You write down once how to do something, and it follows that whenever the topic comes up. I have skills for deploying, for my commit convention and for writing in my voice.
 
 This post is an example. On the first draft, Claude used a skill I had made for chat messages, and the text came out too short for a blog. Instead of explaining again how I wanted the post, I asked it to create a skill just for blog posts, with structure, SEO and my site's rules. This post was written with it.
 
-And skills keep growing. They're now merging with connectors, which are integrations with external services, into a single thing, **plugins**. A skill used to be one `.md` file. Today a plugin can have several skills, several `.md` files, scripts, commands, connectors and other support files. It's exactly what I tried to build by hand in Pster's AI Workflow, except now it's a native format.
+And skills keep growing. They're now merging with connectors, which are integrations with external services, into a single thing, **plugins**. A skill used to be one `.md` file. Today a plugin can have several skills, several `.md` files, scripts, commands, connectors and other support files. It's what I tried to build by hand in Pster's AI Workflow, except now it's a native format.
 
-If you have a workflow installed on top of Claude Code, my advice is to try a few weeks without it. See what you actually miss, and add only that back, ideally as a skill. Tell me in the comments what's left in your setup.
+If you have a workflow installed on top of Claude Code, my advice is to try a few weeks without it. See what you miss and add only that back, ideally as a skill. Tell me in the comments what's left in your setup.
