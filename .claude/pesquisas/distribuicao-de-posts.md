@@ -58,6 +58,8 @@ Pesquisa de 26/11/2026. Classes combinadas com o João: first class é API ofici
 
 ## Limites de caracteres usados
 
+- TabNews: 20.000 caracteres por publicação (informado pelo João em 26/11/2026). A skill gera um `tabnews.md` resumido com link para o post completo.
+
 - X sem assinatura: 280 caracteres. Link conta 23 no X (encurtado), mas a skill conta o link inteiro para servir também no Threads.
 - Threads: 500 caracteres.
 - LinkedIn post curto: a skill usa 1.200 a 1.800 caracteres.

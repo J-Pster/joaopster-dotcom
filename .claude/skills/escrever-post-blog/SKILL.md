@@ -117,11 +117,12 @@ Espere ele revisar. Ele itera várias vezes, e cada pedido dele vale para esta e
 
 ## Versões para outras plataformas
 
-Quando o João pedir as versões para outras plataformas, entregue arquivos `.md` separados, fora do repositório (no scratchpad da sessão), e mande pelo chat com a ferramenta de enviar arquivo para ele abrir e copiar. Use o idioma que ele pedir, e PT se ele não disser. São três arquivos:
+Quando o João pedir as versões para outras plataformas, entregue arquivos `.md` separados, fora do repositório (no scratchpad da sessão), e mande pelo chat com a ferramenta de enviar arquivo para ele abrir e copiar. Use o idioma que ele pedir, e PT se ele não disser. São quatro arquivos:
 
-1. **`post-completo.md`, que serve para Reddit, artigo do LinkedIn e TabNews.** É o `.md` cru do próprio post, igual ao do blog, sem frontmatter, sem título, sem rótulo e sem nada em volta. Os links internos viram URLs completas do joaopster.com.
-2. **`linkedin-post.md`, o post curto para o feed do LinkedIn.** É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
-3. **`x-threads.md`, um post só para X e Threads.** É texto puro com o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Valem as mesmas regras do post curto do LinkedIn.
+1. **`post-completo.md`, que serve para Reddit e artigo do LinkedIn.** É o `.md` cru do próprio post, igual ao do blog, sem frontmatter, sem título, sem rótulo e sem nada em volta. Os links internos viram URLs completas do joaopster.com.
+2. **`tabnews.md`, a versão para o TabNews.** O TabNews aceita no máximo 20.000 caracteres por publicação, então essa versão é o post resumido. Mantenha a abertura, a tese, a estrutura de seções e os links principais, e encurte o resto: corte citações longas, junte parágrafos, troque listas grandes por uma frase com os links e tire detalhe secundário. Nunca tire fato que muda o sentido nem a opinião do João. No fim, depois de uma linha `---`, uma frase avisando que é uma versão resumida e que o post completo, com todas as fontes, está no blog, e o link do post no blog na última linha. Conte os caracteres do arquivo inteiro com script e confirme que fica em até 20.000. Se o post completo já couber, a versão do TabNews é o próprio post com o aviso e o link no fim.
+3. **`linkedin-post.md`, o post curto para o feed do LinkedIn.** É texto puro, sem markdown, de 1.200 a 1.800 caracteres, com a tese, um caso concreto do João, um ou dois números dele, a dica prática e o link do post no blog no fim. Passe as regras de `references/padroes-ia.md` (seção LinkedIn e redes), ou seja, sem hashtag empilhada, sem emoji de marcador, sem uma frase por parágrafo, sem gancho vazio e sem fecho do tipo "E você, o que acha?".
+4. **`x-threads.md`, um post só para X e Threads.** É texto puro com o link do post no blog na última linha. O total, contando o link inteiro, fica em até 280 caracteres, que é o limite do X sem assinatura e cabe com folga nos 500 do Threads. Conte com script antes de entregar. Valem as mesmas regras do post curto do LinkedIn.
 
 Na mesma mensagem, mande o título do post e o link do post no blog, cada um num bloco de código próprio, para o João copiar com um clique. Faça isso também sempre que ele pedir só o título ou só o link. Exemplo:
 
@@ -135,7 +136,7 @@ https://joaopster.com/blog/claude-code-harness-workflows-obsoletos/
 ```
 ````
 
-Antes de entregar, rode nos textos escritos do zero (o post curto do LinkedIn e o do X/Threads) a mesma revisão do passo 6.
+Antes de entregar, rode nos textos escritos do zero ou resumidos (o do TabNews, o post curto do LinkedIn e o do X/Threads) a mesma revisão do passo 6.
 
 ## Arquivos
 
