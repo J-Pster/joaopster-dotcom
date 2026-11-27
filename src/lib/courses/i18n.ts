@@ -39,6 +39,8 @@ export interface CourseText {
   readonly courseHomeTitle: (course: string) => string;
   readonly noteDescription: (note: string, course: string) => string;
   readonly navToggle: string;
+  readonly navShort: string;
+  readonly close: string;
   readonly lessonsReadOf: (total: number) => string;
   readonly glossaryTerms: (count: number) => string;
   readonly hideNav: string;
@@ -123,6 +125,8 @@ const pt: CourseText = {
   courseHomeTitle: (course) => `${course}: curso gratuito`,
   noteDescription: (note, course) => `${note}. Do curso ${course}, gratuito e aberto.`,
   navToggle: 'Módulos do curso',
+  navShort: 'Módulos',
+  close: 'Fechar',
   lessonsReadOf: (total) => ` de ${total} aulas lidas`,
   glossaryTerms: (count) => `${count} termos`,
   hideNav: 'Ocultar o menu do curso',
@@ -209,6 +213,8 @@ const en: CourseText = {
   courseHomeTitle: (course) => `${course}: free course`,
   noteDescription: (note, course) => `${note}. From the free and open course ${course}.`,
   navToggle: 'Course modules',
+  navShort: 'Modules',
+  close: 'Close',
   lessonsReadOf: (total) => ` of ${total} lessons read`,
   glossaryTerms: (count) => `${count} terms`,
   hideNav: 'Hide the course menu',
@@ -295,6 +301,8 @@ const es: CourseText = {
   courseHomeTitle: (course) => `${course}: curso gratuito`,
   noteDescription: (note, course) => `${note}. Del curso ${course}, gratuito y abierto.`,
   navToggle: 'Módulos del curso',
+  navShort: 'Módulos',
+  close: 'Cerrar',
   lessonsReadOf: (total) => ` de ${total} clases leídas`,
   glossaryTerms: (count) => `${count} términos`,
   hideNav: 'Ocultar el menú del curso',

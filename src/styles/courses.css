@@ -972,3 +972,171 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   border-radius: var(--radius-xs);
 }
 
+/* ---------- Phone and tablet reading (components/courses/ReaderBar.astro) ----------
+   Below 1024px the side columns are gone: a bar sticks under the header (to the top while the header
+   hides) with the course modules, the section being read and search. Modules and contents open as
+   bottom sheets. */
+.reader-bar { display: none; }
+@media (max-width: 1023px) {
+  .reader-bar {
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xxs);
+    height: 52px;
+    padding: 0 var(--space-xs);
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-hairline);
+    transition: top 0.25s ease;
+  }
+  :root.header-hidden .reader-bar { top: 0; }
+
+  /* The bar replaces the blocks that sat above the note. */
+  .course-rail--nav, .course-article .toc--inline, .course-toolbar .course-search-open { display: none; }
+  .course-main { padding-top: var(--space-lg); }
+  /* A section reached from the contents lands below the bar and the header (64 + 52), and above the
+     line where the table of contents counts it as the one being read (READ_LINE in TableOfContents). */
+  .prose h2, .prose h3, .prose h4, .prose [id^='bloco-'] { scroll-margin-top: 118px; }
+  /* :root outranks the 88px of courses-study.css, which loads after this file. */
+  :root .note-content [data-quiz-question], :root .exam-bar { scroll-margin-top: 118px; }
+}
+.reader-bar button {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  font: inherit;
+  color: var(--color-ink);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.reader-bar button:active { background: var(--color-surface-strong); }
+.reader-bar-nav { flex: none; gap: 6px; padding: 0 10px; font-size: 14px; font-weight: 500; }
+.reader-bar-toc { display: none; flex: 1; min-width: 0; gap: var(--space-xs); padding: 0 10px; text-align: left; }
+.reader-bar-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+body:has(.toc--inline) .reader-bar-toc { display: flex; }
+body:has(.toc--inline) .reader-bar-title { display: none; }
+.reader-bar-toc-text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.reader-bar-toc-label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.reader-bar-toc-current {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.reader-bar-toc svg { flex: none; color: var(--color-muted); }
+.reader-bar-search { flex: none; justify-content: center; width: 44px; }
+.reader-bar-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.course-sheet {
+  position: fixed;
+  inset: auto 0 0;
+  width: min(100%, 640px);
+  max-width: none;
+  max-height: 85dvh;
+  margin: 0 auto;
+  padding: 0;
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+}
+.course-sheet[open] { display: flex; flex-direction: column; }
+.course-sheet:focus { outline: none; }
+.course-sheet::backdrop { background: rgba(23, 23, 23, 0.4); }
+:root:has(.course-sheet[open]) { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .course-sheet { transform: translateY(100%); transition: transform 0.25s ease, overlay 0.25s allow-discrete, display 0.25s allow-discrete; }
+  .course-sheet[open] { transform: translateY(0); }
+  @starting-style { .course-sheet[open] { transform: translateY(100%); } }
+  .course-sheet.is-dragging { transition: none; }
+}
+.course-sheet-head {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 22px 8px 10px 20px;
+  border-bottom: 1px solid var(--color-hairline);
+  touch-action: none;
+  cursor: grab;
+}
+.course-sheet-handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  background: var(--color-hairline-strong);
+  border-radius: var(--radius-pill);
+}
+.course-sheet-title { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--color-ink); }
+.course-sheet-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--color-body);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.course-sheet-close:active { background: var(--color-surface-strong); }
+.course-sheet-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-sm) var(--space-base) calc(var(--space-base) + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* Finger-sized rows inside the sheets. */
+.course-sheet .course-nav-inner { padding: 0; }
+.course-sheet .course-nav-module summary { padding: 9px 6px; }
+.course-sheet .course-nav-title { font-size: 14.5px; }
+.course-sheet .course-nav-lessons a { padding-top: 9px; padding-bottom: 9px; font-size: 14px; }
+.course-sheet .course-nav-glossary, .course-sheet .course-nav-study a { padding-top: 10px; padding-bottom: 10px; font-size: 14px; }
+.course-sheet .course-sheet-body .toc-list .toc-item a { padding-top: 10px; padding-bottom: 10px; font-size: 15px; }
+.course-sheet .course-sheet-body .toc-list .toc-item--h3 a { font-size: 14px; }
