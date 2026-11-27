@@ -17,7 +17,8 @@ import ListenButton from '../components/courses/ListenButton.astro';
 import ListenPlayer from '../components/courses/ListenPlayer.astro';
 import AssistantPanel from '../components/courses/AssistantPanel.astro';
 import KeysDialog from '../components/courses/KeysDialog.astro';
-import { courseOutlineUrl, coursesHome, glossaryUrl, hasStudyPages, mistakesUrl, studyIndexUrl, type ExamRules } from '../lib/courses/catalog';
+import CourseTour from '../components/courses/CourseTour.astro';
+import { courseOutlineUrl, coursesHome, glossaryUrl, hasStudyPages, mistakesUrl, reviewUrl, studyIndexUrl, type ExamRules } from '../lib/courses/catalog';
 import { courseText } from '../lib/courses/i18n';
 import type { Note, Vault } from '../lib/courses/vault';
 import { searchText } from '../lib/courses/searchText';
@@ -266,6 +267,7 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
     <ListenPlayer lang={course.lang} />
     <ShortcutsDialog lang={course.lang} />
     <KeysDialog lang={course.lang} />
+    <CourseTour lang={course.lang} glossaryUrl={glossaryUrl(course)} mistakesUrl={mistakesUrl(course)} reviewUrl={reviewUrl(course)} />
     <Footer />
   </body>
 </html>

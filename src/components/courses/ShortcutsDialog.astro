@@ -3,6 +3,7 @@
 // sync card, or in the toolbar while the right column is hidden) or the "?" key (lib/courses/client/shortcuts.ts).
 import type { Lang } from '../../i18n/ui';
 import { shortcutsText, type Key } from '../../lib/courses/shortcutsText';
+import { tourText } from '../../lib/courses/tourText';
 
 interface Props {
   lang: Lang;
@@ -10,6 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const text = shortcutsText(lang);
+const tour = tourText(lang);
 const keyLabel = (key: Key): string => (key === 'Space' ? text.keyNames.Space : key === 'Mod' ? 'Ctrl' : key);
 ---
 
@@ -45,5 +47,8 @@ const keyLabel = (key: Key): string => (key === 'Space' ? text.keyNames.Space : 
         </dl>
       </section>
     ))}
+  </div>
+  <div class="course-shortcuts-foot">
+    <button type="button" class="course-btn course-btn--secondary course-shortcuts-tour" data-tour-restart>{tour.restart}</button>
   </div>
 </dialog>

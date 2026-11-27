@@ -1,0 +1,105 @@
+---
+// The course tour: on a reader's first course page, a guided walk (Driver.js) that lights up each part of
+// the reader (navigation, glossary, mistakes notebook, spaced review, search, listening, reading comfort,
+// highlights, the AI assistant, sync, "mark as read" and shortcuts) with a card explaining it. It can be
+// skipped, and replayed from the shortcuts window. Behaviour in lib/courses/client/tour.ts.
+import type { Lang } from '../../i18n/ui';
+import type { TourConfig } from '../../lib/courses/client/tour';
+import { tourText, type TourStepId } from '../../lib/courses/tourText';
+
+interface Props {
+  lang: Lang;
+  glossaryUrl: string;
+  mistakesUrl: string;
+  reviewUrl: string;
+}
+
+const { lang, glossaryUrl, mistakesUrl, reviewUrl } = Astro.props;
+const text = tourText(lang);
+
+// Toolbar buttons fold into the "more" menu on narrow screens: the menu button stands in for them there.
+const MORE = '[data-toolbar-more-open]';
+/** Where each step points, best first. A step with no target is a card in the middle of the screen. */
+const PLAN: readonly { id: TourStepId; targets: readonly string[]; optional?: true; hover?: true }[] = [
+  { id: 'welcome', targets: [] },
+  // On a phone the course menu is a sheet behind the reader bar's menu button.
+  { id: 'nav', targets: ['[data-course-nav]', '[data-sheet-open="nav"]'] },
+  // The term stays live, so the reader can hover it and see the definition during the tour.
+  { id: 'glossary', targets: [`.note-content a.wikilink[href^="${glossaryUrl}"]`, '.course-nav-glossary'], optional: true, hover: true },
+  { id: 'mistakes', targets: [`.course-nav a[href="${mistakesUrl}"]`], optional: true },
+  { id: 'review', targets: [`.course-nav a[href="${reviewUrl}"]`], optional: true },
+  { id: 'search', targets: ['[data-search-open]', MORE] },
+  { id: 'listen', targets: ['[data-listen-open]', MORE], optional: true },
+  { id: 'tools', targets: ['[data-reader-tools-open]', MORE], optional: true },
+  { id: 'highlights', targets: [] },
+  { id: 'assistant', targets: ['[data-assistant-open]', MORE], optional: true },
+  { id: 'sync', targets: ['[data-sync-card]'], optional: true },
+  { id: 'read', targets: ['[data-read-toggle]'], optional: true },
+  { id: 'shortcuts', targets: ['[data-shortcuts-open]', MORE] },
+  { id: 'done', targets: [] },
+];
+
+const config: TourConfig = {
+  next: text.next,
+  back: text.back,
+  skip: text.skip,
+  finish: text.finish,
+  steps: PLAN.map(({ id, targets, optional, hover }) => ({
+    ...text.steps[id],
+    targets: [...targets],
+    optional: optional === true,
+    live: hover === true,
+  })),
+};
+---
+
+<div hidden data-tour={JSON.stringify(config)}></div>
+
+<style is:global>
+  /* Driver.js popover in the site's look: white card, ink text, black primary button, 8px buttons. */
+  .driver-popover.course-tour {
+    max-width: min(360px, calc(100vw - 32px));
+    padding: var(--space-lg);
+    font-family: inherit;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .course-tour .driver-popover-title { font-family: inherit; font-size: 18px; font-weight: 600; line-height: 1.35; letter-spacing: -0.2px; color: var(--color-ink); }
+  .course-tour .driver-popover-description { margin-top: var(--space-xs); font-family: inherit; font-size: 15px; line-height: 1.6; color: var(--color-body); }
+  .course-tour .driver-popover-footer { flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-lg); }
+  .course-tour .driver-popover-progress-text { font-size: 12px; font-weight: 600; color: var(--color-body); font-variant-numeric: tabular-nums; }
+  .course-tour .driver-popover-navigation-btns { gap: var(--space-xs); }
+  .course-tour .driver-popover-footer-btn {
+    height: 36px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: none;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+  }
+  .course-tour .driver-popover-footer-btn:hover { background: var(--color-surface-card); border-color: var(--color-ink); }
+  .course-tour .driver-popover-next-btn,
+  .course-tour .driver-popover-done-btn { color: var(--color-on-primary); background: var(--color-primary); border-color: var(--color-primary); }
+  .course-tour .driver-popover-next-btn:hover,
+  .course-tour .driver-popover-done-btn:hover { background: var(--color-primary-active); border-color: var(--color-primary-active); }
+  .course-tour .driver-popover-footer-btn:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  .course-tour .course-tour-skip { margin-right: auto; padding: 0; height: 36px; color: var(--color-body); background: none; border: 0; }
+  .course-tour .course-tour-skip:hover { color: var(--color-ink); background: none; text-decoration: underline; }
+  .course-tour .driver-popover-arrow-side-top { border-top-color: var(--color-surface-card); }
+  .course-tour .driver-popover-arrow-side-bottom { border-bottom-color: var(--color-surface-card); }
+  .course-tour .driver-popover-arrow-side-left { border-left-color: var(--color-surface-card); }
+  .course-tour .driver-popover-arrow-side-right { border-right-color: var(--color-surface-card); }
+</style>
+
+<script>
+  import { initTour } from '../../lib/courses/client/tour';
+
+  initTour();
+</script>
