@@ -1,15 +1,19 @@
 ---
-// Courses landing of one language: the courses written in it (with a search box) and a closing call
-// to create your own. With no course in the language yet, it points to the languages that have some.
+// Courses landing of one language, laid out as a catalog: a short header with the totals, then the
+// course list right away, with search (courses, modules and lessons), topic and progress filters,
+// sorting, and each course's syllabus one click away. Filtering runs on the page
+// (lib/courses/client/catalog.ts). With no course in the language yet, it points to the languages
+// that have some.
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SyncCard from '../components/courses/SyncCard.astro';
 import type { Lang } from '../i18n/ui';
-import { coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
+import { COURSE_TOPICS, coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
+import { catalogCourses } from '../lib/courses/catalogView';
 import { courseText } from '../lib/courses/i18n';
-import { getVault } from '../lib/courses/vault';
 import '../styles/courses.css';
+import '../styles/courses-catalog.css';
 
 interface Props {
   lang: Lang;
@@ -17,20 +21,20 @@ interface Props {
 
 const { lang } = Astro.props;
 const text = courseText(lang);
-const courses = coursesIn(lang).map((course) => {
-  const vault = getVault(course.slug);
-  return {
-    course,
-    url: vault.home.url,
-    firstLesson: vault.lessons[0].url,
-    modules: vault.modules.length,
-    lessons: vault.lessons.length,
-    terms: vault.glossary.length,
-    // What the search box matches: title, goal and every module title.
-    search: [course.title, course.goal, ...vault.modules.map((m) => m.title)].join(' '),
-  };
-});
+const courses = catalogCourses(lang);
 const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0);
+const totalLessons = courses.reduce((sum, c) => sum + c.lessons, 0);
+const totalHours = Math.round(courses.reduce((sum, c) => sum + c.minutes, 0) / 60);
+const topics = COURSE_TOPICS.map((topic) => ({
+  topic,
+  count: courses.filter((c) => c.course.topic === topic).length,
+})).filter(({ count }) => count > 0);
+const pad = (number: number) => String(number).padStart(2, '0');
+// Lessons for the search, by course. "<" is escaped so no title can close the script tag.
+const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.course.slug, c.searchLessons]))).replace(
+  /</g,
+  '\\u003c',
+);
 ---
 
 <html lang={lang}>
@@ -41,7 +45,7 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
       alternates={sectionAlternates(coursesHome)}
     />
     <!-- With a sync code saved, the sync cards start collapsed (lib/courses/client/syncCard.ts),
-         so the right column does not jump. Same key as CODE_KEY in lib/courses/client/sync.ts. -->
+         so the side column does not jump. Same key as CODE_KEY in lib/courses/client/sync.ts. -->
     <script is:inline>
       try {
         if (localStorage.getItem('jp-courses:sync-code')) document.documentElement.classList.add('sync-linked');
@@ -52,70 +56,183 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
   </head>
   <body>
     <Header />
-    <main class="courses-landing">
-      <section class="courses-hero">
+    <main class="catalog">
+      <header class="catalog-head">
         <p class="courses-eyebrow">{text.section}</p>
-        <h1>{text.heroTitle}</h1>
-        <div class="courses-hero-actions">
-          <a class="course-btn" href="#cursos">{text.seeCourses}</a>
-          <a class="course-btn course-btn--secondary" href={howToUrl(lang)}>{text.howToLink}</a>
-        </div>
-      </section>
+        <h1 class="catalog-title">{text.catalogTitle}</h1>
+        <p class="catalog-lead">{text.catalogLead}</p>
+        {courses.length > 0 && <p class="catalog-facts">{text.catalogFacts(courses.length, totalLessons, totalHours)}</p>}
+      </header>
 
-      <section class="courses-grid-section" id="cursos" aria-labelledby="cursos-title">
-        <div class="courses-list-head">
-          <h2 class="courses-section-title" id="cursos-title">{text.published}</h2>
-          {courses.length > 0 && (
-            <label class="courses-search">
-              <span class="visually-hidden">{text.searchLabel}</span>
-              <input type="search" placeholder={text.searchPlaceholder} autocomplete="off" data-course-search />
-            </label>
+      {courses.length === 0 ? (
+        <div class="courses-none">
+          <p class="courses-none-title">{text.noCourses}</p>
+          {otherLanguages.length > 0 && (
+            <>
+              <p>{text.otherLanguagesIntro}</p>
+              <ul class="courses-none-links">
+                {otherLanguages.map((other) => (
+                  <li>
+                    <a class="course-btn course-btn--secondary" href={coursesHome(other)} hreflang={other}>
+                      {text.coursesInLanguage(text.languageNames[other], coursesIn(other).length)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </div>
+      ) : (
+        <div class="catalog-layout">
+          <aside class="catalog-side">
+            <form class="catalog-filters" id="catalog-filters" role="search" data-catalog-filters>
+              <label class="catalog-search">
+                <span class="visually-hidden">{text.searchLabel}</span>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="search" name="q" placeholder={text.searchPlaceholder} autocomplete="off" enterkeyhint="search" aria-keyshortcuts="/" data-catalog-search />
+                <kbd aria-hidden="true">/</kbd>
+              </label>
 
-        {courses.length === 0 ? (
-          <div class="courses-none">
-            <p class="courses-none-title">{text.noCourses}</p>
-            {otherLanguages.length > 0 && (
-              <>
-                <p>{text.otherLanguagesIntro}</p>
-                <ul class="courses-none-links">
-                  {otherLanguages.map((other) => (
-                    <li>
-                      <a class="course-btn course-btn--secondary" href={coursesHome(other)} hreflang={other}>
-                        {text.coursesInLanguage(text.languageNames[other], coursesIn(other).length)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
-        ) : (
-          <>
-            <SyncCard lang={lang} layout="bar" />
-            <p class="courses-empty" data-course-empty hidden>{text.searchEmpty}</p>
-            <ul class="courses-grid">
-              {courses.map(({ course, url, firstLesson, modules, lessons, terms, search }) => (
-                <li class="course-card" data-course-card={course.slug} data-lessons={lessons} data-first-lesson={firstLesson} data-search={search}>
-                  <h3 class="course-card-title"><a href={url}>{course.title}</a></h3>
-                  <p class="course-card-goal">{course.goal}</p>
-                  <p class="course-card-stats">{text.cardStats(modules, lessons, terms)}</p>
-                  <div class="course-card-progress" data-card-progress hidden>
-                    <span class="progress-bar"><span data-card-bar></span></span>
-                    <span class="progress-count" data-card-count></span>
+              {topics.length > 1 && (
+                <fieldset class="catalog-facet">
+                  <legend>{text.filterTopic}</legend>
+                  <div class="catalog-chips">
+                    <label class="catalog-chip">
+                      <input type="radio" name="topic" value="" checked />
+                      <span>{text.filterAll} <span class="catalog-chip-count">{courses.length}</span></span>
+                    </label>
+                    {topics.map(({ topic, count }) => (
+                      <label class="catalog-chip">
+                        <input type="radio" name="topic" value={topic} />
+                        <span>{text.topicNames[topic]} <span class="catalog-chip-count">{count}</span></span>
+                      </label>
+                    ))}
                   </div>
-                  <div class="course-card-actions">
-                    <a class="course-btn" href={url} data-card-start>{text.start}</a>
-                    <a class="course-btn course-btn--secondary" href={courseZipUrl(course)} download>{text.downloadZip}</a>
+                </fieldset>
+              )}
+
+              <fieldset class="catalog-facet" data-status-facet hidden>
+                <legend>{text.filterStatus}</legend>
+                <div class="catalog-chips">
+                  <label class="catalog-chip">
+                    <input type="radio" name="progress" value="" checked />
+                    <span>{text.filterAll} <span class="catalog-chip-count">{courses.length}</span></span>
+                  </label>
+                  <label class="catalog-chip">
+                    <input type="radio" name="progress" value="started" />
+                    <span>{text.statusStarted} <span class="catalog-chip-count" data-status-count="started"></span></span>
+                  </label>
+                  <label class="catalog-chip">
+                    <input type="radio" name="progress" value="not-started" />
+                    <span>{text.statusNotStarted} <span class="catalog-chip-count" data-status-count="not-started"></span></span>
+                  </label>
+                </div>
+              </fieldset>
+            </form>
+
+            <a class="catalog-howto" href={howToUrl(lang)}>
+              {text.howToLink}
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </aside>
+
+          <section class="catalog-results" aria-labelledby="catalog-count">
+            <div class="catalog-results-head">
+              <h2 class="catalog-count" id="catalog-count" aria-live="polite" data-catalog-count>{text.resultCount(courses.length)}</h2>
+              <label class="catalog-sort">
+                <span>{text.sortLabel}</span>
+                <select name="sort" form="catalog-filters" data-catalog-sort>
+                  <option value="recommended">{text.sortRecommended}</option>
+                  <option value="title">{text.sortTitle}</option>
+                  <option value="shortest">{text.sortShortest}</option>
+                  <option value="longest">{text.sortLongest}</option>
+                </select>
+              </label>
+            </div>
+
+            <ol class="catalog-list" data-catalog-list>
+              {courses.map(({ course, url, firstLesson, modules, lessons, minutes, terms }, index) => (
+                <li
+                  class="catalog-course"
+                  data-course-card={course.slug}
+                  data-topic={course.topic}
+                  data-order={index}
+                  data-minutes={minutes}
+                  data-title={course.title}
+                  data-lessons={lessons}
+                  data-first-lesson={firstLesson}
+                  data-search={[course.title, course.goal, text.topicNames[course.topic]].join(' ')}
+                >
+                  <div class="catalog-course-main">
+                    <div class="catalog-course-body">
+                      <p class="catalog-course-tags">
+                        <span class="catalog-badge">{text.topicNames[course.topic]}</span>
+                        {course.exam && <span class="catalog-badge catalog-badge--outline">{text.examBadge}</span>}
+                      </p>
+                      <h3 class="catalog-course-title" id={`course-${course.slug}`}><a href={url}>{course.title}</a></h3>
+                      <p class="catalog-course-goal">{course.goal}</p>
+                      <ul class="catalog-course-meta">
+                        <li>{text.modulesCount(modules.length)}</li>
+                        <li>{text.lessonsCount(lessons)}</li>
+                        <li>{text.duration(minutes)}</li>
+                        {terms > 0 && <li>{text.termsCount(terms)}</li>}
+                      </ul>
+                      <div class="catalog-course-progress" data-card-progress hidden>
+                        <span class="progress-bar"><span data-card-bar></span></span>
+                        <span class="progress-count" data-card-count></span>
+                      </div>
+                    </div>
+                    <div class="catalog-course-actions">
+                      <a class="course-btn" href={url} aria-describedby={`course-${course.slug}`} data-card-start>{text.start}</a>
+                      <button
+                        type="button"
+                        class="course-btn course-btn--secondary"
+                        aria-expanded="false"
+                        aria-controls={`syllabus-${course.slug}`}
+                        aria-describedby={`course-${course.slug}`}
+                        data-syllabus-toggle
+                      >
+                        {text.syllabusShow}
+                      </button>
+                      <a class="catalog-download" href={courseZipUrl(course)} aria-describedby={`course-${course.slug}`} download>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+                        {text.downloadZip}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="catalog-matches" data-card-matches hidden></div>
+
+                  <div class="catalog-syllabus" id={`syllabus-${course.slug}`} data-syllabus hidden>
+                    <ol class="catalog-modules">
+                      {modules.map((module) => (
+                        <li data-module={module.number} data-module-url={module.url} data-module-lessons={module.lessons}>
+                          <a href={module.url}>
+                            <span class="catalog-module-number">{pad(module.number)}</span>
+                            <span class="catalog-module-title">{module.title}</span>
+                            <span class="catalog-module-meta">
+                              <span data-module-done>{text.lessonsCount(module.lessons)}</span> · {text.duration(module.minutes)}
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 </li>
               ))}
-            </ul>
-          </>
-        )}
-      </section>
+            </ol>
 
+            <div class="catalog-empty" data-catalog-empty hidden>
+              <p>{text.searchEmpty}</p>
+              <button type="button" class="course-btn course-btn--secondary" data-catalog-clear>{text.clearFilters}</button>
+            </div>
+          </section>
+
+          <div class="catalog-sync">
+            <SyncCard lang={lang} layout="rail" />
+          </div>
+        </div>
+      )}
     </main>
     <section class="courses-cta-band" aria-labelledby="crie-title">
       <div class="courses-cta">
@@ -125,60 +242,12 @@ const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0
       </div>
     </section>
     <Footer />
+    {courses.length > 0 && <script is:inline type="application/json" id="catalog-lessons" set:html={searchIndex} />}
   </body>
 </html>
 
 <script>
-  import { startAutoSync } from '../lib/courses/client/sync';
-  import { initSyncCards } from '../lib/courses/client/syncCard';
-  import { courseText, pageLang } from '../lib/courses/i18n';
-  import { loadProgress } from '../lib/courses/progress';
+  import { initCatalog } from '../lib/courses/client/catalog';
 
-  const text = courseText(pageLang());
-
-  // Search: every word typed must appear in the course's title, goal or module titles (accents ignored).
-  // Pages with no course in their language have no search box.
-  const search = document.querySelector<HTMLInputElement>('[data-course-search]');
-  const empty = document.querySelector<HTMLElement>('[data-course-empty]');
-  if (search) {
-    if (!empty) throw new Error('Course search has no empty-state message');
-    const fold = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-    const cards = [...document.querySelectorAll<HTMLElement>('[data-course-card]')].map((card) => ({
-      card,
-      words: fold(card.dataset.search ?? ''),
-    }));
-    search.addEventListener('input', () => {
-      const query = fold(search.value).split(/\s+/).filter(Boolean);
-      for (const { card, words } of cards) card.hidden = !query.every((w) => words.includes(w));
-      empty.hidden = cards.some(({ card }) => !card.hidden);
-    });
-  }
-
-  function paintCards(): void {
-    document.querySelectorAll<HTMLElement>('[data-course-card]').forEach(paintCard);
-  }
-
-  function paintCard(card: HTMLElement): void {
-    const slug = card.dataset.courseCard ?? '';
-    const total = Number(card.dataset.lessons);
-    const progress = loadProgress(slug);
-    if (progress.read.length === 0 && !progress.last) return;
-    const done = Math.min(progress.read.length, total);
-    const percent = Math.round((done / total) * 100);
-    const box = card.querySelector<HTMLElement>('[data-card-progress]');
-    const bar = card.querySelector<HTMLElement>('[data-card-bar]');
-    const count = card.querySelector<HTMLElement>('[data-card-count]');
-    const start = card.querySelector<HTMLAnchorElement>('[data-card-start]');
-    if (!box || !bar || !count || !start) throw new Error(`Course card ${slug} is missing its progress markup`);
-    box.hidden = false;
-    bar.style.width = `${percent}%`;
-    count.textContent = text.lessonsDone(done, total);
-    start.textContent = text.continue;
-    start.href = progress.last ?? card.dataset.firstLesson ?? start.href;
-  }
-
-  paintCards();
-  startAutoSync(paintCards);
-
-  initSyncCards(text, paintCards);
+  initCatalog();
 </script>

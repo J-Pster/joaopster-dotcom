@@ -2,6 +2,7 @@
 // translated: a course is written in one language and shown only in that language's section.
 // Imported by the client scripts too, so it holds only short labels.
 import type { Lang } from '../../i18n/ui';
+import type { CourseTopic } from './catalog';
 
 export interface CourseText {
   /** BCP 47 tag for sorting and number formatting. */
@@ -13,17 +14,41 @@ export interface CourseText {
   readonly landingMetaTitle: string;
   readonly landingMetaDescription: string;
   readonly section: string;
-  readonly heroTitle: string;
-  readonly seeCourses: string;
+  readonly catalogTitle: string;
+  readonly catalogLead: string;
+  /** Totals under the catalog title: courses, lessons and hours of reading. */
+  readonly catalogFacts: (courses: number, lessons: number, hours: number) => string;
   readonly howToLink: string;
-  readonly published: string;
   readonly searchLabel: string;
   readonly searchPlaceholder: string;
   readonly searchEmpty: string;
+  readonly clearFilters: string;
+  readonly filterTopic: string;
+  readonly filterAll: string;
+  readonly topicNames: Readonly<Record<CourseTopic, string>>;
+  readonly filterStatus: string;
+  readonly statusStarted: string;
+  readonly statusNotStarted: string;
+  readonly sortLabel: string;
+  readonly sortRecommended: string;
+  readonly sortTitle: string;
+  readonly sortShortest: string;
+  readonly sortLongest: string;
+  readonly resultCount: (count: number) => string;
+  readonly modulesCount: (count: number) => string;
+  readonly lessonsCount: (count: number) => string;
+  readonly termsCount: (count: number) => string;
+  /** Reading time of a course or module, from its minutes. */
+  readonly duration: (minutes: number) => string;
+  readonly examBadge: string;
+  readonly syllabusShow: string;
+  readonly syllabusHide: string;
+  /** Heading of the modules and lessons that match the search, inside a course card. */
+  readonly searchMatches: (count: number) => string;
+  readonly moreMatches: (count: number) => string;
   readonly noCourses: string;
   readonly otherLanguagesIntro: string;
   readonly coursesInLanguage: (language: string, count: number) => string;
-  readonly cardStats: (modules: number, lessons: number, terms: number) => string;
   readonly start: string;
   readonly continue: string;
   readonly downloadZip: string;
@@ -91,6 +116,15 @@ export interface CourseText {
   readonly calloutTitles: Readonly<Record<string, string>>;
 }
 
+/** "45 min", "1 h 10 min", or whole hours from 10 h up (a course's total). Same units in every language. */
+function formatDuration(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`;
+  if (minutes >= 600) return `${Math.round(minutes / 60)} h`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
+}
+
 const pt: CourseText = {
   locale: 'pt-BR',
   languageNames: { pt: 'português', en: 'inglês', es: 'espanhol' },
@@ -99,18 +133,40 @@ const pt: CourseText = {
   landingMetaDescription:
     'Cursos autodidatas em português que eu crio com IA para estudar e publico para qualquer pessoa ler no site ou no Obsidian.',
   section: 'Cursos',
-  heroTitle: 'Cursos que eu crio com IA para estudar, abertos para você',
-  seeCourses: 'Ver os cursos',
+  catalogTitle: 'Catálogo de cursos',
+  catalogLead:
+    'Cursos gratuitos que eu crio com IA para estudar. Leia aqui no site, salve o progresso entre dispositivos ou baixe para o Obsidian.',
+  catalogFacts: (courses, lessons, hours) =>
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · ${hours} h de leitura · grátis`,
   howToLink: 'Como eu crio os cursos',
-  published: 'Cursos publicados',
-  searchLabel: 'Buscar curso',
-  searchPlaceholder: 'Buscar por tema ou assunto',
-  searchEmpty: 'Nenhum curso sobre isso ainda.',
+  searchLabel: 'Buscar nos cursos',
+  searchPlaceholder: 'Buscar curso ou aula',
+  searchEmpty: 'Nenhum curso, módulo ou aula com esses filtros.',
+  clearFilters: 'Limpar filtros',
+  filterTopic: 'Tema',
+  filterAll: 'Todos',
+  topicNames: { technology: 'Tecnologia', health: 'Saúde e emergência', home: 'Casa e projeto' },
+  filterStatus: 'Seu progresso',
+  statusStarted: 'Em andamento',
+  statusNotStarted: 'Não iniciados',
+  sortLabel: 'Ordenar',
+  sortRecommended: 'Recomendados',
+  sortTitle: 'A a Z',
+  sortShortest: 'Mais curtos',
+  sortLongest: 'Mais longos',
+  resultCount: (count) => `${count} ${count === 1 ? 'curso' : 'cursos'}`,
+  modulesCount: (count) => `${count} ${count === 1 ? 'módulo' : 'módulos'}`,
+  lessonsCount: (count) => `${count} ${count === 1 ? 'aula' : 'aulas'}`,
+  termsCount: (count) => `${count} termos no glossário`,
+  duration: formatDuration,
+  examBadge: 'Com simulados de prova',
+  syllabusShow: 'Ver ementa',
+  syllabusHide: 'Fechar ementa',
+  searchMatches: (count) => `${count} ${count === 1 ? 'resultado' : 'resultados'} neste curso`,
+  moreMatches: (count) => `e mais ${count}`,
   noCourses: 'Ainda não há cursos em português.',
   otherLanguagesIntro: 'Por enquanto, os cursos estão em:',
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'curso' : 'cursos'} em ${language}`,
-  cardStats: (modules, lessons, terms) =>
-    `${modules} módulos · ${lessons} aulas${terms > 0 ? ` · ${terms} termos no glossário` : ''}`,
   start: 'Começar',
   continue: 'Continuar',
   downloadZip: 'Baixar para o Obsidian (.zip)',
@@ -188,18 +244,40 @@ const en: CourseText = {
   landingMetaDescription:
     'Self-study courses I create with AI for my own learning and publish for anyone to read on the site or in Obsidian.',
   section: 'Courses',
-  heroTitle: 'Courses I create with AI to study, open to you',
-  seeCourses: 'See the courses',
+  catalogTitle: 'Course catalog',
+  catalogLead:
+    'Free courses I create with AI to study. Read them here, sync your progress across devices or download them for Obsidian.',
+  catalogFacts: (courses, lessons, hours) =>
+    `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · ${hours} h of reading · free`,
   howToLink: 'How I make the courses',
-  published: 'Published courses',
-  searchLabel: 'Search courses',
-  searchPlaceholder: 'Search by topic or subject',
-  searchEmpty: 'No course about that yet.',
+  searchLabel: 'Search the courses',
+  searchPlaceholder: 'Search courses and lessons',
+  searchEmpty: 'No course, module or lesson matches these filters.',
+  clearFilters: 'Clear filters',
+  filterTopic: 'Topic',
+  filterAll: 'All',
+  topicNames: { technology: 'Technology', health: 'Health and emergency', home: 'Home and design' },
+  filterStatus: 'Your progress',
+  statusStarted: 'In progress',
+  statusNotStarted: 'Not started',
+  sortLabel: 'Sort',
+  sortRecommended: 'Recommended',
+  sortTitle: 'A to Z',
+  sortShortest: 'Shortest',
+  sortLongest: 'Longest',
+  resultCount: (count) => `${count} ${count === 1 ? 'course' : 'courses'}`,
+  modulesCount: (count) => `${count} ${count === 1 ? 'module' : 'modules'}`,
+  lessonsCount: (count) => `${count} ${count === 1 ? 'lesson' : 'lessons'}`,
+  termsCount: (count) => `${count} glossary terms`,
+  duration: formatDuration,
+  examBadge: 'With practice exams',
+  syllabusShow: 'See syllabus',
+  syllabusHide: 'Hide syllabus',
+  searchMatches: (count) => `${count} ${count === 1 ? 'match' : 'matches'} in this course`,
+  moreMatches: (count) => `and ${count} more`,
   noCourses: 'There are no courses in English yet.',
   otherLanguagesIntro: 'For now, the courses are in:',
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'course' : 'courses'} in ${language}`,
-  cardStats: (modules, lessons, terms) =>
-    `${modules} modules · ${lessons} lessons${terms > 0 ? ` · ${terms} glossary terms` : ''}`,
   start: 'Start',
   continue: 'Continue',
   downloadZip: 'Download for Obsidian (.zip)',
@@ -277,18 +355,40 @@ const es: CourseText = {
   landingMetaDescription:
     'Cursos autodidactas que creo con IA para estudiar y publico para que cualquiera los lea en el sitio o en Obsidian.',
   section: 'Cursos',
-  heroTitle: 'Cursos que creo con IA para estudiar, abiertos para ti',
-  seeCourses: 'Ver los cursos',
+  catalogTitle: 'Catálogo de cursos',
+  catalogLead:
+    'Cursos gratuitos que creo con IA para estudiar. Léelos aquí, sincroniza tu progreso entre dispositivos o descárgalos para Obsidian.',
+  catalogFacts: (courses, lessons, hours) =>
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · ${hours} h de lectura · gratis`,
   howToLink: 'Cómo creo los cursos',
-  published: 'Cursos publicados',
-  searchLabel: 'Buscar curso',
-  searchPlaceholder: 'Buscar por tema o asunto',
-  searchEmpty: 'Todavía no hay ningún curso sobre eso.',
+  searchLabel: 'Buscar en los cursos',
+  searchPlaceholder: 'Buscar curso o clase',
+  searchEmpty: 'Ningún curso, módulo o clase coincide con estos filtros.',
+  clearFilters: 'Borrar filtros',
+  filterTopic: 'Tema',
+  filterAll: 'Todos',
+  topicNames: { technology: 'Tecnología', health: 'Salud y emergencias', home: 'Casa y proyecto' },
+  filterStatus: 'Tu progreso',
+  statusStarted: 'En curso',
+  statusNotStarted: 'Sin empezar',
+  sortLabel: 'Ordenar',
+  sortRecommended: 'Recomendados',
+  sortTitle: 'De la A a la Z',
+  sortShortest: 'Más cortos',
+  sortLongest: 'Más largos',
+  resultCount: (count) => `${count} ${count === 1 ? 'curso' : 'cursos'}`,
+  modulesCount: (count) => `${count} ${count === 1 ? 'módulo' : 'módulos'}`,
+  lessonsCount: (count) => `${count} ${count === 1 ? 'clase' : 'clases'}`,
+  termsCount: (count) => `${count} términos en el glosario`,
+  duration: formatDuration,
+  examBadge: 'Con exámenes de práctica',
+  syllabusShow: 'Ver temario',
+  syllabusHide: 'Cerrar temario',
+  searchMatches: (count) => `${count} ${count === 1 ? 'resultado' : 'resultados'} en este curso`,
+  moreMatches: (count) => `y ${count} más`,
   noCourses: 'Todavía no hay cursos en español.',
   otherLanguagesIntro: 'Por ahora, los cursos están en:',
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'curso' : 'cursos'} en ${language}`,
-  cardStats: (modules, lessons, terms) =>
-    `${modules} módulos · ${lessons} clases${terms > 0 ? ` · ${terms} términos en el glosario` : ''}`,
   start: 'Empezar',
   continue: 'Continuar',
   downloadZip: 'Descargar para Obsidian (.zip)',

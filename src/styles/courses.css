@@ -773,7 +773,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 
 .courses-landing { max-width: 1200px; margin: 0 auto; padding: var(--space-xxl) var(--space-base) 0; }
 .courses-hero { max-width: 760px; margin: 0 auto var(--space-section); text-align: center; }
-.courses-hero h1 + .courses-hero-actions { margin-top: var(--space-lg); }
 .courses-hero--left { margin: 0 0 var(--space-xxl); text-align: left; }
 .courses-eyebrow {
   margin: 0 0 var(--space-sm);
@@ -792,7 +791,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   color: var(--color-ink);
 }
 .courses-lead { margin: 0; font-size: 17px; line-height: 1.65; color: var(--color-body); }
-.courses-hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center; margin-top: var(--space-xl); }
 .courses-section-title {
   margin: 0 0 var(--space-lg);
   font-size: 28px;
@@ -801,32 +799,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   letter-spacing: -0.84px;
   color: var(--color-ink);
 }
-.courses-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-lg);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.course-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  padding: var(--space-lg);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--radius-lg);
-  transition: box-shadow 0.15s ease;
-}
-.course-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); }
-.course-card-title { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.25; letter-spacing: -0.5px; }
-.course-card-title a { color: var(--color-ink); text-decoration: none; }
-.course-card-goal { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-body); }
-.course-card-stats { margin: 0; font-size: 13px; color: var(--color-muted); }
-.course-card-progress { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-sm); align-items: center; }
-.course-card-progress[hidden] { display: none; }
-.course-card-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: auto; padding-top: var(--space-xs); }
 .courses-how { margin-bottom: var(--space-section); }
 .courses-how-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); }
 .course-feature {
@@ -853,30 +825,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .course-btn--inverse { color: var(--color-ink); background: var(--color-on-dark); border-color: var(--color-on-dark); }
 .course-btn--inverse:active { background: var(--color-surface-strong); }
 
-.courses-list-head {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-base);
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-lg);
-}
-.courses-list-head .courses-section-title { margin: 0; }
-.courses-search { flex: 0 1 360px; }
-.courses-search input {
-  width: 100%;
-  height: 44px;
-  padding: 0 var(--space-base);
-  font: inherit;
-  font-size: 15px;
-  color: var(--color-ink);
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--radius-md);
-}
-.courses-search input:focus { outline: none; border: 2px solid var(--color-ink); padding: 0 calc(var(--space-base) - 1px); }
-.courses-empty { margin: 0 0 var(--space-lg); color: var(--color-muted); }
-.course-card[hidden] { display: none; }
 .courses-none {
   padding: var(--space-xl);
   border: 1px solid var(--color-hairline-strong);
@@ -1006,9 +954,6 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .howto-file-links { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
 .prose pre.howto-tree, pre.howto-tree { font-size: 13px; line-height: 1.6; }
 
-@media (max-width: 1024px) {
-  .courses-grid { grid-template-columns: minmax(0, 1fr); }
-}
 @media (max-width: 640px) {
   .courses-hero h1 { font-size: 32px; letter-spacing: -0.9px; }
   .courses-how-grid { grid-template-columns: minmax(0, 1fr); }

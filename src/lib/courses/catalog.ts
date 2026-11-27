@@ -11,6 +11,8 @@ export interface CourseInfo {
   readonly title: string;
   /** One sentence: where the course takes you. */
   readonly goal: string;
+  /** What the course is about, for the catalog's topic filter. */
+  readonly topic: CourseTopic;
   /** Home note, relative to the vault root. */
   readonly home: string;
   /** Folder name inside the downloaded zip (the vault name in Obsidian). */
@@ -20,6 +22,10 @@ export interface CourseInfo {
   /** For courses that prepare for an exam: how its simulated exams (notes tagged "simulado") run. */
   readonly exam?: ExamRules;
 }
+
+/** Topics of the catalog's filter, in the order they are listed. Labels live in lib/courses/i18n.ts. */
+export const COURSE_TOPICS = ['technology', 'health', 'home'] as const;
+export type CourseTopic = (typeof COURSE_TOPICS)[number];
 
 export interface ExamRules {
   /** Time allowed per question, in minutes. */
@@ -34,6 +40,7 @@ export const COURSES: readonly CourseInfo[] = [
     lang: 'pt',
     title: 'AWS Solutions Architect Associate (SAA-C03)',
     goal: 'Passar na certificação AWS SAA-C03 entendendo o porquê de cada decisão de arquitetura, com dois simulados completos.',
+    topic: 'technology',
     home: 'SAA-C03/SAA-C03 - Inicio.md',
     vaultName: 'Aprendendo Certificacoes AWS',
     format: 'obsidian',
@@ -45,6 +52,7 @@ export const COURSES: readonly CourseInfo[] = [
     lang: 'pt',
     title: 'Primeiros Socorros',
     goal: 'Agir em qualquer emergência até o socorro chegar (PHTLS, TCCC, TECC) e saber examinar, medir e raciocinar só com um kit e as mãos.',
+    topic: 'health',
     home: 'Primeiros Socorros - Inicio.md',
     vaultName: 'Aprendendo Primeiros Socorros',
     format: 'obsidian',
@@ -54,6 +62,7 @@ export const COURSES: readonly CourseInfo[] = [
     lang: 'pt',
     title: 'Rádio, LoRa e Redes Mesh',
     goal: 'Entender rádio, RF, LoRa, mesh e Reticulum para montar uma rede de comunicação privada própria.',
+    topic: 'technology',
     home: 'README.md',
     vaultName: 'Aprendendo Radio',
     format: 'markdown',
@@ -63,6 +72,7 @@ export const COURSES: readonly CourseInfo[] = [
     lang: 'pt',
     title: 'Modelagem de Casas',
     goal: 'Entender os princípios de projeto residencial e dominar Sweet Home 3D, SketchUp, BIM e Blender para modelar a sua própria casa.',
+    topic: 'home',
     home: 'README.md',
     vaultName: 'Aprendendo Modelagem de Casas',
     format: 'markdown',
