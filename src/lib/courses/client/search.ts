@@ -20,6 +20,7 @@ interface PagefindResponse {
   readonly results: readonly PagefindResult[];
 }
 interface Pagefind {
+  options(options: { noWorker: boolean }): Promise<void>;
   debouncedSearch(
     term: string,
     options: { filters: Record<string, string> },
@@ -31,13 +32,19 @@ type IndexState = { readonly status: 'ready'; readonly pagefind: Pagefind } | { 
 
 /** `npm run dev` has no index (it is generated after the build): that is the only expected failure. */
 async function loadPagefind(): Promise<IndexState> {
+  let pagefind: Pagefind;
   try {
-    const pagefind = (await import(/* @vite-ignore */ PAGEFIND_URL)) as Pagefind;
-    return { status: 'ready', pagefind };
+    pagefind = (await import(/* @vite-ignore */ PAGEFIND_URL)) as Pagefind;
   } catch (error) {
     if (error instanceof TypeError) return { status: 'missing' };
     throw error;
   }
+  // Run the index on this page, not in Pagefind's Web Worker. A worker compiles the WebAssembly under the
+  // CSP of its own script (pagefind-worker.js), and Cloudflare's edge cache keeps that file's old headers
+  // while its content does not change, so a CSP change in public/_headers never reaches it. The page's
+  // HTML is not edge cached, so its CSP is always the current one.
+  await pagefind.options({ noWorker: true });
+  return { status: 'ready', pagefind };
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {
