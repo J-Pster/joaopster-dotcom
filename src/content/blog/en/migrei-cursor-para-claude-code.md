@@ -1,4 +1,5 @@
 ---
+slug: i-migrated-from-cursor-to-claude-code
 title: 'I migrated from Cursor to Claude Code and saved $400'
 description: 'My honest take after a week with Claude Code, OMC, and Serena. The full setup with MCPs, workflows, and what actually works.'
 pubDate: 'May 25 2026'

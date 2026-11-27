@@ -1,0 +1,34 @@
+# Cloudflare Pages redirects (301). Format: <from> <to> <status>.
+# Old en/es blog addresses (before localized slugs) and the unpublished hello-world post.
+/en/blog/anthropic-evil-corp/ /en/blog/is-anthropic-evil-corp/ 301
+/en/blog/anthropic-evil-corp /en/blog/is-anthropic-evil-corp/ 301
+/en/blog/claude-code-harness-workflows-obsoletos/ /en/blog/claude-code-harness-made-my-workflow-obsolete/ 301
+/en/blog/claude-code-harness-workflows-obsoletos /en/blog/claude-code-harness-made-my-workflow-obsolete/ 301
+/en/blog/cursos-criados-com-ia/ /en/blog/how-i-use-ai-to-build-courses/ 301
+/en/blog/cursos-criados-com-ia /en/blog/how-i-use-ai-to-build-courses/ 301
+/en/blog/migrei-cursor-para-claude-code/ /en/blog/i-migrated-from-cursor-to-claude-code/ 301
+/en/blog/migrei-cursor-para-claude-code /en/blog/i-migrated-from-cursor-to-claude-code/ 301
+/es/blog/anthropic-evil-corp/ /es/blog/anthropic-es-evil-corp/ 301
+/es/blog/anthropic-evil-corp /es/blog/anthropic-es-evil-corp/ 301
+/es/blog/claude-code-harness-workflows-obsoletos/ /es/blog/harness-claude-code-workflow-obsoleto/ 301
+/es/blog/claude-code-harness-workflows-obsoletos /es/blog/harness-claude-code-workflow-obsoleto/ 301
+/es/blog/cursos-criados-com-ia/ /es/blog/como-uso-la-ia-para-crear-cursos/ 301
+/es/blog/cursos-criados-com-ia /es/blog/como-uso-la-ia-para-crear-cursos/ 301
+/es/blog/migrei-cursor-para-claude-code/ /es/blog/migre-de-cursor-a-claude-code/ 301
+/es/blog/migrei-cursor-para-claude-code /es/blog/migre-de-cursor-a-claude-code/ 301
+/blog/hello-world/ /blog/ 301
+/blog/hello-world /blog/ 301
+/en/blog/hello-world/ /en/blog/ 301
+/en/blog/hello-world /en/blog/ 301
+/es/blog/hello-world/ /es/blog/ 301
+/es/blog/hello-world /es/blog/ 301
+
+# Share images of en/es posts, already cached by social networks under the old slug.
+/og/en/anthropic-evil-corp.png /og/en/is-anthropic-evil-corp.png 301
+/og/en/claude-code-harness-workflows-obsoletos.png /og/en/claude-code-harness-made-my-workflow-obsolete.png 301
+/og/en/cursos-criados-com-ia.png /og/en/how-i-use-ai-to-build-courses.png 301
+/og/en/migrei-cursor-para-claude-code.png /og/en/i-migrated-from-cursor-to-claude-code.png 301
+/og/es/anthropic-evil-corp.png /og/es/anthropic-es-evil-corp.png 301
+/og/es/claude-code-harness-workflows-obsoletos.png /og/es/harness-claude-code-workflow-obsoleto.png 301
+/og/es/cursos-criados-com-ia.png /og/es/como-uso-la-ia-para-crear-cursos.png 301
+/og/es/migrei-cursor-para-claude-code.png /og/es/migre-de-cursor-a-claude-code.png 301

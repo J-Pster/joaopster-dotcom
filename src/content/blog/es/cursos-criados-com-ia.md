@@ -1,4 +1,5 @@
 ---
+slug: como-uso-la-ia-para-crear-cursos
 title: 'Cómo uso la IA para crear cursos a mi manera de aprender'
 description: 'Le pido a Claude que me arme cursos completos, con módulos, clases, glosario y cuestionarios, y ahora los cuatro que hice están abiertos en mi sitio, aquí cuento cómo funciona y cómo puedes crear el tuyo'
 pubDate: 'Nov 26 2026'
@@ -48,7 +49,7 @@ Uso solo Claude Code, con Opus 5.5 y una skill que escribí, `criar-curso`. Una 
 4. Juntar todo, revisar que los datos coincidan entre módulos y enlazar cada término al glosario.
 5. Verificar con scripts, sin enlaces rotos, sin términos sin enlace y con respuestas sin sesgo (la respuesta correcta no puede ser siempre la más larga).
 
-Lo corro con el `/workflow` de Claude Code, que lanza varios subagentes (otras instancias de Claude, cada una con su tarea) y junta lo que devuelven, y hablé más de eso en el [post sobre el harness de Claude Code](/es/blog/claude-code-harness-workflows-obsoletos/). Solo el curso de AWS usó unos 483 agentes, repartidos en varios workflows.
+Lo corro con el `/workflow` de Claude Code, que lanza varios subagentes (otras instancias de Claude, cada una con su tarea) y junta lo que devuelven, y hablé más de eso en el [post sobre el harness de Claude Code](/es/blog/harness-claude-code-workflow-obsoleto/). Solo el curso de AWS usó unos 483 agentes, repartidos en varios workflows.
 
 Un curso tarda de 2 a 3 horas en estar listo, depende del tamaño, y es básicamente one shot, porque los propios workflows investigan, escriben y revisan, así que las idas y vueltas la IA las hace sola, sin que yo toque nada. Uso el plan Ultra, y cada curso se come más o menos del 1 al 2% de mi uso semanal, es muy poco.
 

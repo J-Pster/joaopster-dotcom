@@ -1,15 +1,15 @@
-// One share image per blog post, emitted at build time as /og/<lang>/<slug>.png.
+// One share image per blog post, emitted at build time as /og/<lang>/<slug>.png (the slug of the post in that language).
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { useTranslations, type Lang } from '../../i18n/ui';
-import { langOf, readTime } from '../../lib/getLatestPost';
+import { langOf, readTime, slugOf } from '../../lib/getLatestPost';
 import { renderPostOgImage } from '../../lib/og/renderPostOgImage';
 
 const dateLocale: Record<Lang, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-ES' };
 
 export const getStaticPaths = (async () => {
 	const posts = await getCollection('blog');
-	return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+	return posts.map((post) => ({ params: { slug: `${langOf(post)}/${slugOf(post)}` }, props: { post } }));
 }) satisfies GetStaticPaths;
 
 export const GET: APIRoute<{ post: CollectionEntry<'blog'> }> = async ({ props: { post } }) => {

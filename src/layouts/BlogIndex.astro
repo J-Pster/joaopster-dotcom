@@ -14,16 +14,15 @@ import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { coursesHome } from '../lib/courses/catalog';
 import { catalogCourses } from '../lib/courses/catalogView';
 import { courseText } from '../lib/courses/i18n';
-import { getPostsForLang, readTime, slugOf } from '../lib/getLatestPost';
+import { blogPostPath, getPostsForLang, readTime, slugOf } from '../lib/getLatestPost';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const localePrefix = lang === defaultLang ? '' : '/' + lang;
-const blogBase = localePrefix + '/blog';
 
 const posts = await getPostsForLang(lang);
 const [featured] = posts;
-const hrefOf = (post: (typeof posts)[number]) => `${blogBase}/${slugOf(post)}/`;
+const hrefOf = (post: (typeof posts)[number]) => blogPostPath(lang, post);
 
 // The featured terminal lists the post's sections, so it previews what's inside instead of repeating the description.
 const TOC_LINES = 6;
@@ -46,8 +45,8 @@ const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))].ma
 const courses = catalogCourses(lang);
 const courseLessons = courses.reduce((sum, c) => sum + c.lessons, 0);
 const courseCopy = courseText(lang);
-// The RSS feed carries the Portuguese posts only (pages/rss.xml.js).
-const hasFeed = lang === 'pt';
+// One feed per language (pages/rss.xml.js, pages/en/rss.xml.js, pages/es/rss.xml.js).
+const feedHref = `${localePrefix}/rss.xml`;
 ---
 
 <!doctype html>
@@ -66,7 +65,7 @@ const hasFeed = lang === 'pt';
           <span>{posts.length} {posts.length === 1 ? 'post' : 'posts'} · {totalMinutes} {t('blog.totalRead')}</span>
           <span class="blog-facts-links">
             <button type="button" class="blog-text-link" data-newsletter-open>{t('blog.subscribe')}</button>
-            {hasFeed && <a class="blog-text-link" href="/rss.xml">RSS</a>}
+            <a class="blog-text-link" href={feedHref}>RSS</a>
           </span>
         </p>
       </header>

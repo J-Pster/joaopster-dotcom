@@ -82,13 +82,16 @@ async function postsOf(lang) {
       const slug = file.replace(/\.mdx?$/, '');
       const pubDate = new Date(frontmatterValue(source, 'pubDate'));
       if (Number.isNaN(pubDate.getTime())) throw new Error(`${lang}/${file} has an invalid pubDate`);
+      // en/es posts may set a localized URL slug; the file name stays the id shared by every language.
+      const urlSlug = /^---\r?\n(?:(?!---)[^\n]*\n)*?slug:/.test(source) ? frontmatterValue(source, 'slug') : slug;
       return {
         id: `${lang}/${slug}`,
         slug,
+        ogImage: `${SITE}/og/${lang}/${urlSlug}.png`,
         title: frontmatterValue(source, 'title'),
         description: frontmatterValue(source, 'description'),
         pubDate,
-        url: `${SITE}${EDITIONS[lang].urlPrefix}/blog/${slug}/`,
+        url: `${SITE}${EDITIONS[lang].urlPrefix}/blog/${urlSlug}/`,
       };
     })
   );
@@ -151,7 +154,7 @@ function digestBody(edition, posts, campaign) {
   const sections = posts.map((post) => {
     const tracked = `${post.url}?utm_source=newsletter&utm_medium=email&utm_campaign=${campaign}`;
     return [
-      `[![${post.title}](${SITE}/og/${post.id}.png)](${tracked})`,
+      `[![${post.title}](${post.ogImage})](${tracked})`,
       '',
       `## [${post.title}](${tracked})`,
       '',

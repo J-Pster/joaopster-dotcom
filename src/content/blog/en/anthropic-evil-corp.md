@@ -1,4 +1,5 @@
 ---
+slug: is-anthropic-evil-corp
 title: 'Is Anthropic the Evil Corp or not?'
 description: 'A LinkedIn article claims Anthropic uses Claude Code to copy your software, so I went through every single source to separate fact from fearmongering'
 pubDate: 'Nov 26 2026'
@@ -7,7 +8,7 @@ tags: ['AI', 'Claude Code', 'My Opinion']
 
 Anyone who watched Mr. Robot remembers E Corp, the biggest conglomerate in the world on the show, which Elliot only ever calls [Evil Corp](https://en.wikipedia.org/wiki/Mr._Robot). Well, an article that showed up on LinkedIn this month paints Anthropic in pretty much the same way, as a company that uses Claude Code to get into your repository, copy your business and throw you away afterwards.
 
-I found this article in a funny way. I published my [post about how Claude Code's harness made my workflow obsolete](/en/blog/claude-code-harness-workflows-obsoletos/) on LinkedIn, and the author of this article commented on it. I went to read it, and the title alone tells you the tone, ["Se você usa Claude Code, está lascado"](https://www.linkedin.com/pulse/se-voc%C3%AA-usa-claude-code-est%C3%A1-lascado-por-que-sua-de-com-maia-favero-9pqcf/) ("If you use Claude Code, you're screwed"), published on November 3, 2026.
+I found this article in a funny way. I published my [post about how Claude Code's harness made my workflow obsolete](/en/blog/claude-code-harness-made-my-workflow-obsolete/) on LinkedIn, and the author of this article commented on it. I went to read it, and the title alone tells you the tone, ["Se você usa Claude Code, está lascado"](https://www.linkedin.com/pulse/se-voc%C3%AA-usa-claude-code-est%C3%A1-lascado-por-que-sua-de-com-maia-favero-9pqcf/) ("If you use Claude Code, you're screwed"), published on November 3, 2026.
 
 Before anything else I want to make one thing clear. I'm not an Anthropic investor, I don't work there, I'm not a fan of any AI company and I'm not against any of them either. I'm in favor of everyone using whatever works best for them, safely. And one thing I hate is opinion dressed up as fact, which is exactly what this article does and what I see in a lot of writing about AI out there. You take a half-truth, mix it with a lot of sensationalism and deliver digital fearmongering of the "don't use AI, go back to the stone age" kind.
 

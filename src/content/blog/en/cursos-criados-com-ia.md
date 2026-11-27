@@ -1,4 +1,5 @@
 ---
+slug: how-i-use-ai-to-build-courses
 title: 'How I use AI to build courses the way I like to learn'
 description: 'I ask Claude to build full courses for me, with modules, lessons, a glossary and quizzes, and now the four I made are open on my site, here is how it works and how you can make your own'
 pubDate: 'Nov 26 2026'
@@ -48,7 +49,7 @@ I only use Claude Code, with Opus 5.5 and a skill I wrote called `criar-curso`. 
 4. Put it all together, check that facts match across modules and link every term to the glossary.
 5. Verify with scripts, no broken links, no unlinked terms and answer keys without bias (the right answer can't always be the longest one).
 
-I run this with Claude Code's `/workflow`, which launches several subagents (other Claude instances, each with its own task) and collects what they return, and I wrote more about it in the [post about the Claude Code harness](/en/blog/claude-code-harness-workflows-obsoletos/). The AWS course alone used around 483 agents, spread across several workflows.
+I run this with Claude Code's `/workflow`, which launches several subagents (other Claude instances, each with its own task) and collects what they return, and I wrote more about it in the [post about the Claude Code harness](/en/blog/claude-code-harness-made-my-workflow-obsolete/). The AWS course alone used around 483 agents, spread across several workflows.
 
 A course takes 2 to 3 hours to finish, depending on its size, and it's basically one shot, because the workflows themselves research, write and review, so the AI handles the back and forth on its own without me touching anything. I'm on the Ultra plan, and each course eats about 1 to 2% of my weekly usage, which is very little.
 

@@ -1,0 +1,111 @@
+---
+// The 404 page in one language; src/pages/{,en/,es/}404.astro only render this. The language comes
+// from the path: Cloudflare Pages serves the nearest 404.html up the tree, so /en/... misses land on
+// the English page. The page is out of search results and out of the sitemap.
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const COPY: Record<Lang, { title: string; heading: string; lead: string; home: string; blog: string; courses: string }> = {
+  pt: {
+    title: 'Página não encontrada · João Pster',
+    heading: 'Página não encontrada',
+    lead: 'Esse endereço não existe ou mudou de lugar. Vale começar por um destes:',
+    home: 'Início',
+    blog: 'Blog',
+    courses: 'Cursos',
+  },
+  en: {
+    title: 'Page not found · João Pster',
+    heading: 'Page not found',
+    lead: 'This address does not exist or has moved. Try one of these:',
+    home: 'Home',
+    blog: 'Blog',
+    courses: 'Courses',
+  },
+  es: {
+    title: 'Página no encontrada · João Pster',
+    heading: 'Página no encontrada',
+    lead: 'Esta dirección no existe o cambió de lugar. Prueba con una de estas:',
+    home: 'Inicio',
+    blog: 'Blog',
+    courses: 'Cursos',
+  },
+};
+const PATHS: Record<Lang, { home: string; blog: string; courses: string }> = {
+  pt: { home: '/', blog: '/blog/', courses: '/cursos/' },
+  en: { home: '/en/', blog: '/en/blog/', courses: '/en/courses/' },
+  es: { home: '/es/', blog: '/es/blog/', courses: '/es/cursos/' },
+};
+
+const { lang } = Astro.props;
+const copy = COPY[lang];
+const paths = PATHS[lang];
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead title={copy.title} description={copy.lead} alternates="none" indexing="noindex" />
+  </head>
+  <body>
+    <Header />
+    <main class="not-found">
+      <p class="code">404</p>
+      <h1>{copy.heading}</h1>
+      <p class="lead">{copy.lead}</p>
+      <nav class="links">
+        <a href={paths.home}>{copy.home}</a>
+        <a href={paths.blog}>{copy.blog}</a>
+        <a href={paths.courses}>{copy.courses}</a>
+      </nav>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .not-found {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: var(--space-section) var(--space-base);
+    text-align: center;
+  }
+  .code {
+    margin: 0 0 var(--space-xs);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  h1 {
+    margin: 0 0 var(--space-md);
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -1.08px;
+    line-height: 1.15;
+    color: var(--color-ink);
+  }
+  .lead { margin: 0 0 var(--space-xl); font-size: 16px; line-height: 1.5; }
+  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-sm); }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+  }
+  .links a:hover { border-color: var(--color-ink); }
+  @media (max-width: 640px) {
+    h1 { font-size: 28px; letter-spacing: -0.84px; }
+  }
+</style>

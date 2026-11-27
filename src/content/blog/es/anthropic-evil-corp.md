@@ -1,4 +1,5 @@
 ---
+slug: anthropic-es-evil-corp
 title: '¿Anthropic es o no es la Evil Corp?'
 description: 'Un artículo en LinkedIn dice que Anthropic usa Claude Code para copiar tu software, así que revisé cada fuente para separar los hechos del terrorismo'
 pubDate: 'Nov 26 2026'
@@ -7,7 +8,7 @@ tags: ['IA', 'Claude Code', 'Mi opinión']
 
 Quien vio Mr. Robot se acuerda de E Corp, el conglomerado más grande del mundo en la serie, al que Elliot solo llama [Evil Corp](https://en.wikipedia.org/wiki/Mr._Robot). Pues un artículo que apareció en LinkedIn este mes prácticamente pinta a Anthropic así, una empresa que usa Claude Code para meterse en tu repositorio, copiar tu negocio y desecharte después.
 
-Encontré este artículo de una forma curiosa. Publiqué en LinkedIn mi [post sobre cómo el harness de Claude Code dejó obsoleto mi workflow](/es/blog/claude-code-harness-workflows-obsoletos/), y el autor de este artículo lo comentó. Fui a leerlo, y el título ya dice el tono, ["Se você usa Claude Code, está lascado"](https://www.linkedin.com/pulse/se-voc%C3%AA-usa-claude-code-est%C3%A1-lascado-por-que-sua-de-com-maia-favero-9pqcf/) ("Si usas Claude Code, estás frito"), publicado el 3 de noviembre de 2026.
+Encontré este artículo de una forma curiosa. Publiqué en LinkedIn mi [post sobre cómo el harness de Claude Code dejó obsoleto mi workflow](/es/blog/harness-claude-code-workflow-obsoleto/), y el autor de este artículo lo comentó. Fui a leerlo, y el título ya dice el tono, ["Se você usa Claude Code, está lascado"](https://www.linkedin.com/pulse/se-voc%C3%AA-usa-claude-code-est%C3%A1-lascado-por-que-sua-de-com-maia-favero-9pqcf/) ("Si usas Claude Code, estás frito"), publicado el 3 de noviembre de 2026.
 
 Antes que nada quiero dejar algo claro. No soy inversionista de Anthropic, no trabajo ahí, no soy fan de ninguna empresa de IA y tampoco estoy en contra de ninguna. Estoy a favor de que cada uno use lo que mejor le sirva, con seguridad, y algo que detesto es la opinión disfrazada de hecho, que es justo lo que hace este artículo, y lo que veo en muchos textos sobre IA por ahí. Toman media verdad, la mezclan con mucho sensacionalismo y entregan un terrorismo digital del tipo "no uses IA, vuelve a la edad de piedra".
 

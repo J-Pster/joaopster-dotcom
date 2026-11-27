@@ -1,12 +1,12 @@
 ---
 import { type CollectionEntry, render } from 'astro:content';
 import BlogPost from '../../../layouts/BlogPost.astro';
-import { getPostsForLang, ogImagePathOf } from '../../../lib/getLatestPost';
+import { getPostsForLang, ogImagePathOf, slugOf } from '../../../lib/getLatestPost';
 
 export async function getStaticPaths() {
   const posts = await getPostsForLang('es');
   return posts.map((post) => ({
-    params: { slug: post.id.slice(post.id.indexOf('/') + 1) },
+    params: { slug: slugOf(post) },
     props: post,
   }));
 }

@@ -1,13 +1,13 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
-import { ogImagePathOf } from '../../lib/getLatestPost';
+import { ogImagePathOf, slugOf } from '../../lib/getLatestPost';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   const ptPosts = posts.filter(p => p.id.startsWith('pt/'));
   return ptPosts.map((post) => ({
-    params: { slug: post.id.slice('pt/'.length) },
+    params: { slug: slugOf(post) },
     props: post,
   }));
 }

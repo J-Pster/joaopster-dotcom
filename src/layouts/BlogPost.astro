@@ -13,6 +13,7 @@ import RelatedPosts from '../components/post/RelatedPosts.astro';
 import ShareLinks from '../components/post/ShareLinks.astro';
 import TableOfContents from '../components/post/TableOfContents.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { getBlogAlternates } from '../lib/getLatestPost';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	readingTime: number;
@@ -29,23 +30,28 @@ const blogPath = lang === 'pt' ? '/blog' : `/${lang}/blog`;
 
 const site = Astro.site ?? new URL('https://joaopster.com');
 const postUrl = new URL(Astro.url.pathname, site).href;
+const alternates = await getBlogAlternates(post);
+const PERSON_ID = new URL('/#person', site).href;
+const imageUrl = new URL(ogImage, site).href;
 const blogLd = {
 	'@context': 'https://schema.org',
 	'@type': 'BlogPosting',
 	headline: title,
 	description,
 	url: postUrl,
+	image: imageUrl,
 	datePublished: pubDate.toISOString(),
-	...(updatedDate && { dateModified: updatedDate.toISOString() }),
+	dateModified: (updatedDate ?? pubDate).toISOString(),
+	mainEntityOfPage: postUrl,
 	inLanguage: lang,
-	author: { '@type': 'Person', name: 'João Pster', url: site.href },
-	publisher: { '@type': 'Person', name: 'João Pster', url: site.href },
+	author: { '@id': PERSON_ID },
+	publisher: { '@id': PERSON_ID },
 };
 ---
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} image={ogImage} type="article" />
+    <BaseHead title={title} description={description} image={ogImage} type="article" alternates={alternates} />
     <script type="application/ld+json" set:html={JSON.stringify(blogLd)} />
   </head>
   <body>
