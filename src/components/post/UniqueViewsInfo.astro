@@ -1,0 +1,168 @@
+---
+// A small easter egg for curious readers: the view count at the top of a post opens this dialog,
+// which shows how unique views are counted as a short, simplified excerpt of the real code
+// (src/pages/api/views.ts and scripts/postViews.ts), commented in the page's language.
+// Any element with data-views-info opens it.
+import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+
+interface Props {
+  /** The key the post is counted under (shared by its translations). */
+  postKey: string;
+}
+
+const { postKey } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+// One line of code: tokens tagged for the syntax colors. An empty array is a blank line.
+type Token = readonly ['plain' | 'keyword' | 'string' | 'call' | 'number' | 'comment', string];
+type Line = readonly Token[];
+
+const comment = (text: string): Line => [['comment', `// ${text}`]];
+const lines: readonly Line[] = [
+  [['keyword', 'const '], ['plain', 'post = '], ['string', `'${postKey}'`], ['plain', '; '], ['comment', `// ${t('views.code.post')}`]],
+  [],
+  comment(`1. ${t('views.code.engaged')}`),
+  [['keyword', 'await '], ['call', 'visibleOnScreen'], ['plain', '('], ['number', '5_000'], ['plain', ');']],
+  [],
+  comment(`2. ${t('views.code.bots')}`),
+  [['keyword', 'if '], ['plain', '('], ['call', 'isBot'], ['plain', "(userAgent) || fetchSite !== "], ['string', "'same-origin'"], ['plain', ') '], ['keyword', 'return'], ['plain', ';']],
+  [],
+  comment(`3. ${t('views.code.dedupe')}`),
+  [['keyword', 'const '], ['plain', 'day = '], ['keyword', 'new '], ['call', 'Date'], ['plain', '().'], ['call', 'toISOString'], ['plain', '().'], ['call', 'slice'], ['plain', '('], ['number', '0'], ['plain', ', '], ['number', '10'], ['plain', ');']],
+  [['keyword', 'const '], ['plain', 'visitor = '], ['call', 'sha256'], ['plain', '('], ['string', '`${SALT}|${day}|${ip}|${post}`'], ['plain', ');']],
+  [],
+  comment(`4. ${t('views.code.count')}`),
+  [['keyword', 'if '], ['plain', '('], ['keyword', 'await '], ['plain', 'marks.'], ['call', 'insertIfNew'], ['plain', '(day, visitor)) views[post]++;']],
+  [],
+  comment(t('views.code.runtime')),
+];
+---
+
+<dialog class="views-info" id="views-info" aria-labelledby="views-info-title">
+  <form method="dialog">
+    <div class="views-info-bar">
+      <span class="views-info-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="views-info-file">src/pages/api/views.ts</span>
+      <button class="views-info-close" type="submit" aria-label={t('views.info.close')}>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <h2 class="views-info-title" id="views-info-title">{t('views.info.title')}</h2>
+    <pre class="views-info-code"><code>{lines.map((line, index) => (
+      <span class="views-info-line"><span class="views-info-gutter" aria-hidden="true">{index + 1}</span><span>{line.map(([kind, text]) => <span class={`tok-${kind}`}>{text}</span>)}</span></span>
+    ))}</code></pre>
+  </form>
+</dialog>
+
+<style>
+  .views-info {
+    width: min(680px, calc(100vw - 2 * var(--space-base)));
+    margin: auto;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    background: #0d0d0d;
+    color: #e0e0e0;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  }
+  .views-info::backdrop {
+    background: rgba(23, 23, 23, 0.55);
+  }
+
+  .views-info-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 10px var(--space-base);
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .views-info-dots { display: flex; gap: 6px; }
+  .views-info-dots span { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .views-info-dots span:nth-child(2) { background: #ffbd2e; }
+  .views-info-dots span:nth-child(3) { background: #28c840; }
+  .views-info-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #8a8a8a;
+  }
+  .views-info-close {
+    justify-self: end;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #8a8a8a;
+    cursor: pointer;
+  }
+  .views-info-close:hover { background: rgba(255, 255, 255, 0.08); color: #e0e0e0; }
+  .views-info-close:focus-visible { outline: 2px solid #47c2ff; outline-offset: 1px; }
+
+  .views-info-title {
+    margin: 0;
+    padding: var(--space-lg) var(--space-lg) var(--space-xs);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: #ffffff;
+  }
+
+  .views-info-code {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #e0e0e0;
+    /* Real characters, not ligatures: "!==" stays three characters. */
+    font-variant-ligatures: none;
+    padding: var(--space-xs) var(--space-lg) var(--space-lg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  /* global.css fixes code in pre at 13px; here the size follows the block, which shrinks on phones. */
+  .views-info-code code { font-size: inherit; }
+  .views-info-line {
+    display: grid;
+    grid-template-columns: 2.5ch 1fr;
+    gap: var(--space-base);
+    min-height: 1.7em;
+  }
+  .views-info-gutter { color: #4a4a4a; text-align: right; user-select: none; }
+
+  .tok-plain { color: #e0e0e0; }
+  .tok-keyword { color: #47c2ff; }
+  .tok-string { color: #28c840; }
+  .tok-call { color: #cfe7ff; }
+  .tok-number { color: #ffbd2e; }
+  .tok-comment { color: #8a8a8a; }
+
+  @media (max-width: 640px) {
+    .views-info-title { padding: var(--space-base) var(--space-base) var(--space-xxs); font-size: 16px; }
+    .views-info-code { padding: var(--space-xxs) var(--space-base) var(--space-base); font-size: 12px; }
+    .views-info-line { gap: var(--space-sm); }
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('views-info');
+  if (!(dialog instanceof HTMLDialogElement)) throw new Error('[views] the explainer dialog is missing');
+
+  for (const trigger of document.querySelectorAll<HTMLElement>('[data-views-info]')) {
+    trigger.addEventListener('click', () => dialog.showModal());
+  }
+  // A click on the backdrop lands on the dialog itself: close it like the X does.
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
