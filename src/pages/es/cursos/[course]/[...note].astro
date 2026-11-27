@@ -1,12 +1,12 @@
 ---
 import CourseNotePage from '../../../../components/courses/CourseNotePage.astro';
-import { notePaths } from '../../../../lib/courses/routes';
+import { notePage, notFound } from '../../../../lib/courses/requests';
 
-export const getStaticPaths = () => notePaths('es');
+export const prerender = false;
 
-interface Props {
-  noteId: string;
-}
+const lookup = await notePage('es', Astro.params, Astro.url);
+if (lookup.kind === 'missing') return notFound();
+if (lookup.kind === 'redirect') return Astro.redirect(lookup.to, 301);
 ---
 
-<CourseNotePage slug={Astro.params.course as string} noteId={Astro.props.noteId} />
+<CourseNotePage {...lookup.page} />

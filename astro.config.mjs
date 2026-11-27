@@ -1,5 +1,6 @@
 // @ts-check
 
+import cloudflare from '@astrojs/cloudflare';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
@@ -7,24 +8,13 @@ import { cpSync, existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import { rehypePostLinks } from './src/lib/markdown/rehypePostLinks.ts';
-import { COURSES, LANGS, courseUrl, coursesHome, coursesIn } from './src/lib/courses/catalog.ts';
+import { LANGS } from './src/lib/courses/catalog.ts';
 
-// Glossary term pages (/cursos/<course>/glossario/<term>/ and the en and es equivalents) are thin
-// pages kept out of search; the glossary index (.../glossario/) stays. The 404 pages are not content.
-const GLOSSARY_TERM = /\/(glossario|glossary|glosario)\/[^/]+\/?$/;
+// The 404 pages are not content. Course pages are rendered on demand, so this sitemap never lists them:
+// src/pages/sitemap-courses.xml.ts lists the published ones.
 const NOT_FOUND_PAGE = /\/404\/?$/;
-// A courses landing of a language with no course yet renders noindex (CoursesLanding), so it stays out too.
 const SITE = 'https://joaopster.com';
-const EMPTY_COURSE_LANDINGS = new Set(
-	LANGS.filter((lang) => coursesIn(lang).length === 0).map((lang) => new URL(coursesHome(lang), SITE).href),
-);
-// Every page of a course marked noindex in the catalog (CourseNote renders them noindex).
-const NOINDEX_COURSES = COURSES.filter((course) => course.indexing === 'noindex').map((course) => new URL(courseUrl(course), SITE).href);
-const isIndexablePage = (/** @type {string} */ page) =>
-	!GLOSSARY_TERM.test(page) &&
-	!NOT_FOUND_PAGE.test(page) &&
-	!EMPTY_COURSE_LANDINGS.has(page) &&
-	!NOINDEX_COURSES.some((course) => page.startsWith(course));
+const isIndexablePage = (/** @type {string} */ page) => !NOT_FOUND_PAGE.test(page);
 
 // Sitemap lastmod for blog posts: updatedDate, or pubDate, the same dates the post shows. Other pages get
 // none, since Google only trusts lastmod when it matches real changes and a build date would not.
@@ -70,6 +60,9 @@ const localizedNotFoundFiles = () => ({
 // https://astro.build/config
 export default defineConfig({
 	site: SITE,
+	// Pages are prerendered; the routes that export prerender = false (courses, API endpoints) run in the
+	// Worker. Prerendering stays in Node: the share images use sharp and some pages read the file system.
+	adapter: cloudflare({ prerenderEnvironment: 'node' }),
 	integrations: [
 		mdx(),
 		sitemap({

@@ -1,6 +1,6 @@
 // The sync code that links a reader's devices: 20 random Crockford base32 characters (100 bits),
 // shown in groups of four. It works like a password, so the server stores only its SHA-256.
-// Shared by the browser and the sync endpoint (functions/api/progress.ts).
+// Shared by the browser and the sync endpoint (src/pages/api/progress.ts).
 
 const ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 const LENGTH = 20;

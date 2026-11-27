@@ -99,7 +99,7 @@ async function saveCourse(studyIndexUrl: string, onProgress: (progress: SaveProg
     const html = await save(page);
     if (html === undefined) throw new Error(`${page.pathname}: empty page`);
     for (const path of matches(html, PAGE_ASSET)) {
-      if (!path.startsWith('/pagefind/')) wanted.add(path);
+      if (!path.startsWith('/course-search/')) wanted.add(path);
     }
     done += 1;
     onProgress({ phase: 'pages', done, total: pages.length });

@@ -1,4 +1,5 @@
-# Cloudflare Pages response headers for every static page.
+# Response headers for every page: the Workers assets layer applies this file to static files, and
+# src/worker.ts applies the "/*" block to on-demand responses (lib/security/siteHeaders.ts).
 #
 # The Content Security Policy limits where a page can load code from and send data to. The course
 # notes keep the reader's own API keys in localStorage (lib/courses/client/keys.ts), and localStorage

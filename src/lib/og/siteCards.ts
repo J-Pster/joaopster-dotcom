@@ -1,12 +1,10 @@
-// What the share image of each page says: the home, the about page, the blog index, the courses landing
-// and every course. Built from the same sources as the pages, so the numbers follow the site on every
-// deploy. Paths live here too, so the pages and the image routes agree on them.
+// What the share image of each page says: the home, the about page and the blog index, built from the
+// same sources as the pages, so the numbers follow the site on every deploy. The courses landing and
+// every course have theirs drawn at publish time (lib/og/courseCards.ts). Paths live here too, so the
+// pages and the image routes agree on them.
 import { SPOKEN_LANGUAGES } from '../../consts';
 import { countUniqueSkills } from '../../data/skills';
 import { useTranslations, type Lang } from '../../i18n/ui';
-import { LANGS, type CourseInfo } from '../courses/catalog';
-import { catalogCourses, type CatalogCourse } from '../courses/catalogView';
-import { courseText } from '../courses/i18n';
 import { topicColor, topicLabel, topicTint, type TopicId } from '../blog/topics';
 import { getPostsForLang } from '../getLatestPost';
 import { uptimeText } from '../lifeUptime';
@@ -14,9 +12,11 @@ import type { OgCard, OgPill } from './renderOgImage';
 
 export const SITE_PAGES = ['home', 'about', 'blog', 'courses'] as const;
 export type SitePage = (typeof SITE_PAGES)[number];
+/** The pages whose image is drawn at build time; the courses landing's is drawn on every publish. */
+export type StaticSitePage = Exclude<SitePage, 'courses'>;
+export const STATIC_SITE_PAGES = SITE_PAGES.filter((page): page is StaticSitePage => page !== 'courses');
 
 export const siteOgImage = (lang: Lang, page: SitePage) => `/og/site/${lang}/${page}.png`;
-export const courseOgImage = (course: CourseInfo) => `/og/courses/${course.slug}.png`;
 
 export const topicPill = (topic: TopicId, lang: Lang): OgPill => ({
 	label: topicLabel(topic, lang),
@@ -25,29 +25,24 @@ export const topicPill = (topic: TopicId, lang: Lang): OgPill => ({
 const plainPill = (label: string): OgPill => ({ label });
 
 const COPY: Readonly<
-	Record<Lang, { resume: string; posts: (count: number) => string; latest: string; coursesTitle: string }>
+	Record<Lang, { resume: string; posts: (count: number) => string; latest: string }>
 > = {
 	pt: {
 		resume: 'Currículo: experiência, skills, open source e publicações',
 		posts: (count) => `${count} ${count === 1 ? 'post' : 'posts'}`,
 		latest: 'Último post',
-		coursesTitle: 'Cursos gratuitos, do básico à prática',
 	},
 	en: {
 		resume: 'Résumé: experience, skills, open source and publications',
 		posts: (count) => `${count} ${count === 1 ? 'post' : 'posts'}`,
 		latest: 'Latest post',
-		coursesTitle: 'Free courses, from the basics to practice',
 	},
 	es: {
 		resume: 'Currículum: experiencia, skills, open source y publicaciones',
 		posts: (count) => `${count} ${count === 1 ? 'artículo' : 'artículos'}`,
 		latest: 'Último artículo',
-		coursesTitle: 'Cursos gratuitos, de lo básico a la práctica',
 	},
 };
-
-const allCatalogCourses = (): readonly CatalogCourse[] => LANGS.flatMap((lang) => catalogCourses(lang));
 
 function homeCard(lang: Lang): OgCard {
 	const t = useTranslations(lang);
@@ -98,20 +93,7 @@ async function blogCard(lang: Lang): Promise<OgCard> {
 	};
 }
 
-function coursesCard(lang: Lang): OgCard {
-	const text = courseText(lang);
-	const courses = allCatalogCourses();
-	const lessons = courses.reduce((sum, c) => sum + c.lessons, 0);
-	const hours = Math.round(courses.reduce((sum, c) => sum + c.minutes, 0) / 60);
-	const topics = [...new Set(courses.map((c) => c.course.topic))].map((topic) => plainPill(text.topicNames[topic]));
-	return {
-		section: text.section.toLocaleLowerCase(lang),
-		body: { kind: 'article', title: COPY[lang].coursesTitle, description: text.landingMetaDescription },
-		footer: { kind: 'byline', meta: text.catalogFacts(courses.length, lessons, hours), pills: topics },
-	};
-}
-
-export async function siteCard(lang: Lang, page: SitePage): Promise<OgCard> {
+export async function siteCard(lang: Lang, page: StaticSitePage): Promise<OgCard> {
 	switch (page) {
 		case 'home':
 			return homeCard(lang);
@@ -119,22 +101,5 @@ export async function siteCard(lang: Lang, page: SitePage): Promise<OgCard> {
 			return aboutCard(lang);
 		case 'blog':
 			return blogCard(lang);
-		case 'courses':
-			return coursesCard(lang);
 	}
-}
-
-export function courseCard(course: CourseInfo): OgCard {
-	const entry = allCatalogCourses().find((c) => c.course.slug === course.slug);
-	if (!entry) throw new Error(`Course ${course.slug} is missing from the catalog`);
-	const text = courseText(course.lang);
-	return {
-		section: text.section.toLocaleLowerCase(course.lang),
-		body: { kind: 'course', title: course.title, description: course.goal, look: course.look },
-		footer: {
-			kind: 'byline',
-			meta: `${text.lessonsCount(entry.lessons)} · ${text.minutesOfReading(entry.minutes)}`,
-			pills: [text.levelNames[course.level], text.topicNames[course.topic]].map(plainPill),
-		},
-	};
 }

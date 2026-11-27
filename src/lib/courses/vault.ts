@@ -1,12 +1,13 @@
-// Loads a course vault from courses/<slug>/ at build time: every note, its URL, its role in the
-// course (home, module, lesson, glossary term, other page) and the links between notes.
+// Loads a course vault from courses/<slug>/ for the publisher (scripts/courses/publish.ts): every note,
+// its URL, its role in the course (home, module, lesson, glossary term, other page) and the links
+// between notes. Node only: the site never reads the Markdown, it reads the published package.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseFrontmatter } from '@astrojs/markdown-remark';
-import { COURSES, courseBySlug, courseFilesUrl, courseUrl, type CourseInfo } from './catalog';
-
-export type NoteKind = 'home' | 'module' | 'lesson' | 'glossary' | 'page';
+import { courseBySlug } from '../../../course-catalog/courses';
+import { courseFilesUrl, courseUrl, type CourseInfo } from './catalog';
+import type { NoteKind } from './model';
 
 export interface Note {
   /** Vault-relative path with forward slashes, e.g. "05 - Hemorragia/05.01 - Reconhecer.md". */
@@ -260,7 +261,7 @@ function loadVault(course: CourseInfo): Vault {
 
 const vaults = new Map<string, Vault>();
 
-/** The vault of a course, loaded once per build. */
+/** The vault of a course, loaded once per run. */
 export function getVault(slug: string): Vault {
   const cached = vaults.get(slug);
   if (cached) return cached;
@@ -269,4 +270,3 @@ export function getVault(slug: string): Vault {
   return vault;
 }
 
-export const getAllVaults = (): Vault[] => COURSES.map((c) => getVault(c.slug));

@@ -1,6 +1,6 @@
 // Syncs this browser's course progress with the reader's other devices through a sync code.
 // The local copy stays the source the pages read and write; sync only merges it with the copy kept
-// under the code (functions/api/progress.ts), so the pages work the same offline or without a code.
+// under the code (src/pages/api/progress.ts), so the pages work the same offline or without a code.
 import { loadAllProgress, PROGRESS_CHANGED, storeAllProgress } from '../progress';
 import { mergeProgress, parseProgressRecord, ProgressFormatError, serializeProgress, type ProgressRecord } from '../progressModel';
 import { newSyncCode, parseSyncCode, type SyncCode } from '../syncCode';

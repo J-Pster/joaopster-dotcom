@@ -3,45 +3,42 @@
 import CourseNote from '../../layouts/CourseNote.astro';
 import { glossaryUrl } from '../../lib/courses/catalog';
 import { courseText } from '../../lib/courses/i18n';
-import { getVault, type Note } from '../../lib/courses/vault';
+import type { CourseView, NoteMeta } from '../../lib/courses/model';
 
 interface Props {
-  slug: string;
+  view: CourseView;
 }
 
-const vault = getVault(Astro.props.slug);
-const text = courseText(vault.course.lang);
+const { view } = Astro.props;
+const text = courseText(view.course.lang);
 const collator = new Intl.Collator(text.locale, { sensitivity: 'base' });
-const initialOf = (term: Note) => term.title.normalize('NFD').charAt(0).toUpperCase();
-const aliasesOf = (term: Note): string[] => {
-  const aliases = term.frontmatter.aliases;
-  return Array.isArray(aliases) ? aliases.filter((a): a is string => typeof a === 'string') : [];
-};
+const initialOf = (term: NoteMeta) => term.title.normalize('NFD').charAt(0).toUpperCase();
 
-const groups = new Map<string, Note[]>();
-for (const term of [...vault.glossary].sort((a, b) => collator.compare(a.title, b.title))) {
+const groups = new Map<string, NoteMeta[]>();
+for (const term of [...view.glossary].sort((a, b) => collator.compare(a.title, b.title))) {
   const initial = /[A-Z]/.test(initialOf(term)) ? initialOf(term) : '#';
   groups.set(initial, [...(groups.get(initial) ?? []), term]);
 }
 
 // The page reuses the reader layout with a synthetic note, so navigation and styles match.
-const indexNote: Note = {
+const indexNote: NoteMeta = {
   id: 'Glossario',
   name: text.glossary,
-  absPath: '',
-  url: glossaryUrl(vault.course),
-  title: text.glossaryTitle(vault.course.title),
+  url: glossaryUrl(view.course),
+  title: text.glossaryTitle(view.course.title),
   kind: 'glossary',
   moduleId: undefined,
-  frontmatter: {},
-  body: '',
+  tags: [],
+  aliases: [],
+  minutes: 0,
+  description: text.noteDescription(text.glossaryTitle(view.course.title), view.course.title),
 };
 ---
 
-<CourseNote vault={vault} note={indexNote} html="" headings={[]}>
+<CourseNote view={view} note={indexNote} html="" headings={[]}>
   <div class="glossary-index">
     <h1>{text.glossary}</h1>
-    <p class="glossary-lead">{text.glossaryLead(vault.glossary.length)}</p>
+    <p class="glossary-lead">{text.glossaryLead(view.glossary.length)}</p>
     <label class="glossary-filter">
       <span class="visually-hidden">{text.filterTerms}</span>
       <input type="search" placeholder={text.filterTerms} data-glossary-filter autocomplete="off" />
@@ -52,7 +49,7 @@ const indexNote: Note = {
         <h2 class="glossary-letter">{initial}</h2>
         <ul class="glossary-terms">
           {terms.map((term) => (
-            <li data-terms={[term.title, term.name, ...aliasesOf(term)].join(' | ').toLowerCase()}>
+            <li data-terms={[term.title, term.name, ...term.aliases].join(' | ').toLowerCase()}>
               <a class="wikilink" href={term.url}>{term.title}</a>
             </li>
           ))}

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://joaopster.com/sitemap-index.xml
+Sitemap: https://joaopster.com/sitemap-courses.xml

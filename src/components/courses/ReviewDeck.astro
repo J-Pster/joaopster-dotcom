@@ -4,30 +4,32 @@
 import CourseNote from '../../layouts/CourseNote.astro';
 import { reviewUrl, studyIndexUrl } from '../../lib/courses/catalog';
 import { studyText } from '../../lib/courses/studyText';
-import { getVault, type Note } from '../../lib/courses/vault';
+import { courseText } from '../../lib/courses/i18n';
+import type { CourseView, NoteMeta } from '../../lib/courses/model';
 
 interface Props {
-  slug: string;
+  view: CourseView;
 }
 
-const vault = getVault(Astro.props.slug);
-const text = studyText(vault.course.lang);
+const { view } = Astro.props;
+const text = studyText(view.course.lang);
 
-const pageNote: Note = {
+const pageNote: NoteMeta = {
   id: 'Revisao',
   name: text.reviewLink,
-  absPath: '',
-  url: reviewUrl(vault.course),
-  title: text.reviewTitle(vault.course.title),
+  url: reviewUrl(view.course),
+  title: text.reviewTitle(view.course.title),
   kind: 'page',
   moduleId: undefined,
-  frontmatter: {},
-  body: '',
+  tags: [],
+  aliases: [],
+  minutes: 0,
+  description: courseText(view.course.lang).noteDescription(text.reviewTitle(view.course.title), view.course.title),
 };
 ---
 
-<CourseNote vault={vault} note={pageNote} html="" headings={[]}>
-  <section class="study-page" data-review data-study-index={studyIndexUrl(vault.course)}>
+<CourseNote view={view} note={pageNote} html="" headings={[]}>
+  <section class="study-page" data-review data-study-index={studyIndexUrl(view.course)}>
     <h1>{text.reviewLink}</h1>
     <p class="study-lead">{text.reviewLead}</p>
     <div class="review-stats" data-review-count aria-live="polite"><div class="study-skeleton" aria-label={text.loading}></div></div>

@@ -1,4 +1,4 @@
-# Cloudflare Pages redirects (301). Format: <from> <to> <status>.
+# Redirects (301), applied by the Workers assets layer. Format: <from> <to> <status>.
 # Old en/es blog addresses (before localized slugs) and the unpublished hello-world post.
 /en/blog/anthropic-evil-corp/ /en/blog/is-anthropic-evil-corp/ 301
 /en/blog/anthropic-evil-corp /en/blog/is-anthropic-evil-corp/ 301

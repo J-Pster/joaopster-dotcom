@@ -1,9 +1,0 @@
-O programa de necessidades é uma forma de você definir o que você precisa ter em um projeto. A tabela apresentada na imagem acima é dividida em algumas colunas principais, sendo elas:
-- Subseções
-- Setores
-- Departamentos
-- Ambientes
-É onde você vai escrever o nome do setor, por exemplo, quarto.
-Atividades é a próxima coluna. Você tem que descrever quais serão as atividades exercidas naquele quarto ou, enfim, naquele setor, seção, departamento ou ambiente.
-Os comandos de dimensões mobiliários têm que ser criados a partir do módulo mínimo. O módulo mínimo nada mais é do que um desenho. Você faz um quadrado e coloca tudo que você quer dentro daquele ambiente. A partir disso, você vai tirar as medidas para entender o tamanho da área unitária mínima, que é uma outra coluna. Aí você vai, a partir do que você colocou dentro do módulo mínimo, escrever em comandos de dimensões mobiliários e equipamentos.
-O número de ambientes/cômodos é a quantidade de cômodos iguais àqueles que vão existir. A área total é a área unitária mínima multiplicada pelo número de ambientes/cômodos. Por fim, características ambientais de relacionamento é onde você guarda informações específicas, por exemplo, se é um banheiro para deficiente, seguir as normas 90/50; se é uma cozinha industrial, tem que seguir certas normas, usar, por exemplo, inox e outras coisas, e assim funciona.

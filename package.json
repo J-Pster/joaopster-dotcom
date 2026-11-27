@@ -7,15 +7,18 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "cover": "node --experimental-strip-types scripts/generate-linkedin-cover.mjs",
     "newsletter:digest": "node --env-file-if-exists=.env scripts/newsletter-digest.mjs",
-    "courses:sync": "node scripts/sync-courses.mjs"
+    "courses:sync": "node scripts/sync-courses.mjs",
+    "deploy": "astro build && wrangler deploy",
+    "courses:publish": "tsx scripts/courses/publish.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",
+    "@astrojs/cloudflare": "^13.7.0",
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
@@ -30,6 +33,8 @@
     "ts-fsrs": "^5.4.2"
   },
   "devDependencies": {
-    "pagefind": "^1.6.0"
+    "pagefind": "^1.6.0",
+    "tsx": "^4.23.15",
+    "wrangler": "^4.169.0"
   }
 }

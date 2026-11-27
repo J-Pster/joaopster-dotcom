@@ -1,10 +1,9 @@
-// Full-text search inside the current course, on the Pagefind index generated at build time.
-// The modal is a native <dialog> built on first use. Only the notes of the courses are indexed
-// (data-pagefind-body in CourseNote.astro); results are limited to the course being read.
+// Full-text search inside the current course, on the course's own Pagefind index, generated when the
+// course is published (scripts/courses/publish.ts) and served at data-search-index (CourseNote.astro).
+// The modal is a native <dialog> built on first use.
 import { pageLang } from '../i18n';
 import { searchText, type SearchText } from '../searchText';
 
-const PAGEFIND_URL = '/pagefind/pagefind.js';
 const DEBOUNCE_MS = 200;
 const MAX_RESULTS = 8;
 
@@ -30,11 +29,11 @@ interface Pagefind {
 
 type IndexState = { readonly status: 'ready'; readonly pagefind: Pagefind } | { readonly status: 'missing' };
 
-/** `npm run dev` has no index (it is generated after the build): that is the only expected failure. */
-async function loadPagefind(): Promise<IndexState> {
+/** A course published before it had a search index has none: that is the only expected failure. */
+async function loadPagefind(indexUrl: string): Promise<IndexState> {
   let pagefind: Pagefind;
   try {
-    pagefind = (await import(/* @vite-ignore */ PAGEFIND_URL)) as Pagefind;
+    pagefind = (await import(/* @vite-ignore */ `${indexUrl}pagefind.js`)) as Pagefind;
   } catch (error) {
     if (error instanceof TypeError) return { status: 'missing' };
     throw error;
@@ -149,8 +148,10 @@ function renderResult(data: PagefindResultData, text: SearchText, index: number)
 
 export function initSearch(): void {
   const openers = document.querySelectorAll<HTMLElement>('[data-search-open]');
-  const course = document.querySelector<HTMLElement>('.course-main[data-course]')?.dataset.course;
-  if (openers.length === 0 || course === undefined) return;
+  const main = document.querySelector<HTMLElement>('.course-main[data-course]');
+  const course = main?.dataset.course;
+  const indexUrl = main?.dataset.searchIndex;
+  if (openers.length === 0 || course === undefined || indexUrl === undefined) return;
 
   const text = searchText(pageLang());
   let modal: Modal | undefined;
@@ -189,7 +190,7 @@ export function initSearch(): void {
       showMessage('');
       return;
     }
-    index ??= loadPagefind();
+    index ??= loadPagefind(indexUrl);
     const state = await index;
     if (current !== searchRun) return;
     if (state.status === 'missing') {
@@ -262,7 +263,7 @@ export function initSearch(): void {
     input.focus();
     input.select();
     // Warm the index while the reader types the first letters.
-    index ??= loadPagefind();
+    index ??= loadPagefind(indexUrl);
   };
 
   openers.forEach((opener) => opener.addEventListener('click', open));

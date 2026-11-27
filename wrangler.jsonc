@@ -1,0 +1,39 @@
+// The site Worker: prerendered pages and assets from dist/client (served before the Worker runs) plus the
+// on-demand routes (courses, API endpoints) of @astrojs/cloudflare. Secrets are set with
+// `wrangler secret put <NAME>`: VIEWS_SALT, BUTTONDOWN_API_KEY, WAKATIME_ACCESS_TOKEN.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "joaopster-site",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-11-20",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist/client"
+  },
+  // joaopster.com is served by this Worker through a route on the zone (the DNS record still points at
+  // the old Pages project, which no longer receives the traffic). workers.dev stays off: one address only.
+  "routes": [{ "pattern": "joaopster.com/*", "zone_name": "joaopster.com" }],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true
+  },
+  // Course progress synced between a reader's devices (src/pages/api/progress.ts) and blog post views
+  // (src/pages/api/views.ts).
+  "d1_databases": [
+    {
+      "binding": "COURSES_DB",
+      "database_name": "joaopster-courses",
+      "database_id": "da99af96-741a-403f-96fe-9a2d5566a24f",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Published courses (scripts/courses/publish.ts writes, src/lib/courses/store.ts reads).
+  "r2_buckets": [
+    {
+      "binding": "COURSES_BUCKET",
+      "bucket_name": "joaopster-courses"
+    }
+  ]
+}

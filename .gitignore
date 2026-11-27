@@ -36,3 +36,8 @@ linkedin-covers/
 # wrangler local state (local D1 copy) and local secrets
 .wrangler/
 .dev.vars
+
+# course vaults: copied from the author's vaults (npm run courses:sync) and published to R2
+# (npm run courses:publish), never built nor kept in git. Only the course-writing skill stays.
+/courses/*
+!/courses/_skill/

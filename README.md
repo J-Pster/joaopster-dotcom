@@ -20,7 +20,8 @@ Software engineer and startup co-founder, building production systems since 2019
 - Astro i18n routing with PT as the default locale
 - Giscus for comments (GitHub Discussions-backed)
 - Atkinson Hyperlegible font (self-hosted)
-- Deployed to [joaopster.com](https://joaopster.com)
+- Runs as a Cloudflare Worker (`@astrojs/cloudflare`): pages are prerendered, course pages and API endpoints render on demand
+- Courses live in R2, published apart from the site build (see below)
 
 ## Project structure
 
@@ -54,6 +55,19 @@ npm install        # Install dependencies
 npm run dev        # Start dev server at localhost:4321
 npm run build      # Build for production → dist/
 npm run preview    # Preview production build locally
+npm run deploy     # Build and deploy the Worker
+```
+
+## Courses
+
+Courses are Markdown vaults (Obsidian), kept out of git and out of the build. Publishing a course renders
+it once and uploads a versioned package to the R2 bucket `joaopster-courses`; the site reads it on demand,
+so a course change needs no site deploy.
+
+```bash
+npm run courses:sync                              # copy the vaults into courses/<slug>/
+npm run courses:publish -- --remote radio         # publish one course (or --all) to production
+npm run courses:publish -- --local --all          # publish to the local copy that `npm run dev` reads
 ```
 
 ## Environment

@@ -33,6 +33,8 @@ Nunca resolva por intuição o que uma ferramenta responde com certeza. Use as f
 - `src/assets/` — imagens (importar via `import`)
 - `astro.config.mjs` — configuração do Astro
 - `src/content.config.ts` — schema das collections
+- `course-catalog/courses.ts`: catálogo dos cursos (só o publicador lê). Cursos ficam fora do build e do git: `npm run courses:sync` copia os vaults, `npm run courses:publish -- --remote <slug>|--all` publica no R2 (`joaopster-courses`); o site lê do R2 sob demanda (`src/lib/courses/store.ts`)
+- Deploy: Cloudflare Worker `joaopster-site` (`wrangler.jsonc`, `npm run deploy`)
 
 ## Convenções
 

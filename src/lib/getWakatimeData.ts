@@ -42,7 +42,7 @@ export async function fetchWakatimeData(accessToken: string): Promise<WakatimeDa
 }
 
 // Build-time snapshot baked into the static HTML; the page refreshes it live
-// from /api/wakatime (functions/api/wakatime.ts) once loaded.
+// from /api/wakatime (src/pages/api/wakatime.ts) once loaded.
 export function getWakatimeData(): Promise<WakatimeData | undefined> {
   // Every page's header and the three home pages render in parallel, so they share one API round trip per build.
   buildTimeData ??= loadBuildTimeData();

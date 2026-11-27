@@ -11,8 +11,8 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SyncCard from '../components/courses/SyncCard.astro';
 import type { Lang } from '../i18n/ui';
-import { COURSE_TOPICS, coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
-import { catalogCourses } from '../lib/courses/catalogView';
+import { COURSE_TOPICS, coursesHome, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
+import { coursesIn } from '../lib/courses/store';
 import { siteOgImage } from '../lib/og/siteCards';
 import { courseText } from '../lib/courses/i18n';
 import { catalogJsonLd, jsonLdScript } from '../lib/courses/seo';
@@ -25,11 +25,12 @@ interface Props {
 
 const { lang } = Astro.props;
 const text = courseText(lang);
-const courses = catalogCourses(lang);
+const courses = (await coursesIn(lang)).map(({ course, summary }) => ({ course, ...summary }));
 // A language with no course of its own has only this page to show: out of search results until it has some.
 const indexing = courses.length === 0 ? 'noindex' : 'index';
 const itemListLd = courses.length > 0 ? jsonLdScript(catalogJsonLd(courses.map((c) => c.course), Astro.site ?? new URL('https://joaopster.com'))) : undefined;
-const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0);
+const courseCounts = new Map(await Promise.all(LANGS.map(async (l) => [l, (await coursesIn(l)).length] as const)));
+const otherLanguages = LANGS.filter((l) => l !== lang && (courseCounts.get(l) ?? 0) > 0);
 const totalLessons = courses.reduce((sum, c) => sum + c.lessons, 0);
 const totalHours = Math.round(courses.reduce((sum, c) => sum + c.minutes, 0) / 60);
 const topics = COURSE_TOPICS.map((topic) => ({
@@ -50,7 +51,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       title={text.landingMetaTitle}
       description={text.landingMetaDescription}
       alternates={sectionAlternates(coursesHome)}
-      opensIn={LANGS.filter((other) => coursesIn(other).length > 0)}
+      opensIn={LANGS.filter((other) => (courseCounts.get(other) ?? 0) > 0)}
       image={siteOgImage(lang, 'courses')}
       indexing={indexing}
     />
@@ -85,7 +86,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                 {otherLanguages.map((other) => (
                   <li>
                     <a class="course-btn course-btn--secondary" href={coursesHome(other)} hreflang={other}>
-                      {text.coursesInLanguage(text.languageNames[other], coursesIn(other).length)}
+                      {text.coursesInLanguage(text.languageNames[other], courseCounts.get(other) ?? 0)}
                     </a>
                   </li>
                 ))}

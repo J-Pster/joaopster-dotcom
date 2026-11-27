@@ -1,14 +1,19 @@
 // /llms.txt: a Markdown map of the site for language models and AI agents (llmstxt.org). Built from
 // the same sources as the pages, so it never drifts: the about copy, the posts of every language and
-// the courses that are open to search.
+// the published courses that are open to search (read from R2, hence drawn on each request).
 import type { APIRoute } from 'astro';
 import { useTranslations, type Lang } from '../i18n/ui';
 import { ABOUT_PATHS, CV_PDF_PATH } from '../lib/aboutPath';
 import { blogPostPath, getPostsForLang } from '../lib/getLatestPost';
-import { COURSES, SKILL_DOWNLOADS, courseUrl, howToUrl } from '../lib/courses/catalog';
+import { SKILL_DOWNLOADS, courseUrl, howToUrl } from '../lib/courses/catalog';
+import { publishedCatalog } from '../lib/courses/store';
+
+export const prerender = false;
 
 const SITE = 'https://joaopster.com';
 const abs = (path: string) => new URL(path, SITE).href;
+
+const LANGUAGE_NAMES: Readonly<Record<Lang, string>> = { pt: 'Portuguese', en: 'English', es: 'Spanish' };
 
 const BLOG_SECTIONS: readonly { lang: Lang; heading: string; rss: string }[] = [
   { lang: 'en', heading: 'Blog (English)', rss: '/en/rss.xml' },
@@ -24,9 +29,11 @@ async function blogSection({ lang, heading, rss }: (typeof BLOG_SECTIONS)[number
 
 export const GET: APIRoute = async () => {
   const t = useTranslations('en');
-  const courses = COURSES.filter((course) => course.indexing === 'index').map(
-    (course) => `- [${course.title}](${abs(courseUrl(course))}) (written in Portuguese): ${course.goal}`,
-  );
+  const { courses: published } = await publishedCatalog();
+  const courses = published
+    .map((entry) => entry.course)
+    .filter((course) => course.indexing === 'index')
+    .map((course) => `- [${course.title}](${abs(courseUrl(course))}) (written in ${LANGUAGE_NAMES[course.lang]}): ${course.goal}`);
   const blogs = await Promise.all(BLOG_SECTIONS.map(blogSection));
 
   const body = [
@@ -59,6 +66,7 @@ export const GET: APIRoute = async () => {
     '## Optional',
     '',
     `- [Sitemap](${abs('/sitemap-index.xml')})`,
+    `- [Sitemap of the courses](${abs('/sitemap-courses.xml')})`,
     '',
   ].join('\n');
 

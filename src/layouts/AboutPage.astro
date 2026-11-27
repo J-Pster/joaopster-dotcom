@@ -16,7 +16,7 @@ import profilePhoto from '../assets/profile-photo.png';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { ABOUT_PATHS, CV_PDF_PATH } from '../lib/aboutPath';
 import { blogPostPath, getPostsForLang } from '../lib/getLatestPost';
-import { COURSES, courseUrl } from '../lib/courses/catalog';
+import PublishedCoursesList from '../components/courses/PublishedCoursesList.astro';
 import { siteOgImage } from '../lib/og/siteCards';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
@@ -84,12 +84,7 @@ const profileLd = {
             <div>
               <h3 class="pub-col-title">{t('aboutPage.publications.courses')}</h3>
               <ul class="pub-list">
-                {COURSES.map((course) => (
-                  <li>
-                    <a href={courseUrl(course)}>{course.title}</a>
-                    <span class="pub-meta">{t('aboutPage.publications.courseLang')}</span>
-                  </li>
-                ))}
+                <PublishedCoursesList server:defer lang={lang} />
               </ul>
             </div>
           </div>
@@ -136,10 +131,11 @@ const profileLd = {
   .pub-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xxl); }
   .pub-col-title { font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 0 0 var(--space-base); }
   .pub-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-base); }
-  .pub-list li { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--space-base); border-bottom: 1px solid var(--color-hairline); }
-  .pub-list a { font-size: 16px; font-weight: 500; color: var(--color-ink); text-decoration: none; }
-  .pub-list a:hover { text-decoration: underline; }
-  .pub-meta { font-size: 13px; color: var(--color-body); }
+  /* :global: the course items come from a server island, outside this file's scope. */
+  .pub-list :global(li) { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--space-base); border-bottom: 1px solid var(--color-hairline); }
+  .pub-list :global(a) { font-size: 16px; font-weight: 500; color: var(--color-ink); text-decoration: none; }
+  .pub-list :global(a:hover) { text-decoration: underline; }
+  .pub-list :global(.pub-meta) { font-size: 13px; color: var(--color-body); }
 
   @media (max-width: 768px) {
     .pub-cols { grid-template-columns: 1fr; }

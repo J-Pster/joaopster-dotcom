@@ -1,4 +1,4 @@
-// The contract between the course pages and the sync endpoint (functions/api/progress.ts).
+// The contract between the course pages and the sync endpoint (src/pages/api/progress.ts).
 import type { ProgressRecord } from './progressModel';
 
 export const SYNC_ENDPOINT = '/api/progress';

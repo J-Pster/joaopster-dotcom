@@ -1,5 +1,10 @@
 ---
 import CoursesLanding from '../../../layouts/CoursesLanding.astro';
+
+// The landing lists the published courses (lib/courses/store.ts), so it is drawn on each request.
+export const prerender = false;
+
+if (!Astro.url.pathname.endsWith('/')) return Astro.redirect(`${Astro.url.pathname}/${Astro.url.search}`, 301);
 ---
 
 <CoursesLanding lang="en" />

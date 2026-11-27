@@ -4,36 +4,38 @@
 import CourseNote from '../../layouts/CourseNote.astro';
 import { mistakesUrl, reviewUrl, studyIndexUrl } from '../../lib/courses/catalog';
 import { studyText } from '../../lib/courses/studyText';
-import { getVault, type Note } from '../../lib/courses/vault';
+import { courseText } from '../../lib/courses/i18n';
+import type { CourseView, NoteMeta } from '../../lib/courses/model';
 
 interface Props {
-  slug: string;
+  view: CourseView;
 }
 
-const vault = getVault(Astro.props.slug);
-const text = studyText(vault.course.lang);
+const { view } = Astro.props;
+const text = studyText(view.course.lang);
 
 // The page reuses the reader layout with a synthetic note, like the glossary index.
-const pageNote: Note = {
+const pageNote: NoteMeta = {
   id: 'Caderno de erros',
   name: text.mistakesLink,
-  absPath: '',
-  url: mistakesUrl(vault.course),
-  title: text.mistakesTitle(vault.course.title),
+  url: mistakesUrl(view.course),
+  title: text.mistakesTitle(view.course.title),
   kind: 'page',
   moduleId: undefined,
-  frontmatter: {},
-  body: '',
+  tags: [],
+  aliases: [],
+  minutes: 0,
+  description: courseText(view.course.lang).noteDescription(text.mistakesTitle(view.course.title), view.course.title),
 };
 ---
 
-<CourseNote vault={vault} note={pageNote} html="" headings={[]}>
-  <section class="study-page" data-mistakes data-study-index={studyIndexUrl(vault.course)}>
+<CourseNote view={view} note={pageNote} html="" headings={[]}>
+  <section class="study-page" data-mistakes data-study-index={studyIndexUrl(view.course)}>
     <h1>{text.mistakesLink}</h1>
     <p class="study-lead">{text.mistakesLead}</p>
     <div class="study-toolbar">
       <p class="study-count" data-mistakes-count aria-live="polite"></p>
-      <a class="study-action" href={reviewUrl(vault.course)}>{text.reviewMistakes}</a>
+      <a class="study-action" href={reviewUrl(view.course)}>{text.reviewMistakes}</a>
     </div>
     <div data-mistakes-list>
       <div class="study-skeleton" aria-label={text.loading}></div>

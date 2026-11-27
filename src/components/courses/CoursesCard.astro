@@ -1,0 +1,32 @@
+---
+// The blog index's card about the courses of a language, with how many courses and lessons it has, or
+// nothing where the language has no course yet. A server island (server:defer): the page is prerendered,
+// the courses come from the published catalog on each view. Its styles live in BlogIndex.astro.
+import { useTranslations, type Lang } from '../../i18n/ui';
+import { coursesHome } from '../../lib/courses/catalog';
+import { courseText } from '../../lib/courses/i18n';
+
+// Imported when the island renders: the store reads the Worker's bindings, which the prerendering
+// (in Node) does not have.
+const { coursesIn } = await import('../../lib/courses/store');
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const courses = await coursesIn(lang);
+const lessons = courses.reduce((sum, c) => sum + c.summary.lessons, 0);
+const text = courseText(lang);
+---
+
+{courses.length > 0 && (
+  <a class="blog-card blog-card--dark" href={coursesHome(lang)}>
+    <span class="blog-card-eyebrow">{t('nav.courses')}</span>
+    <span class="blog-card-title">{t('blog.coursesTitle')}</span>
+    <span class="blog-card-text">{t('blog.coursesText')}</span>
+    <span class="blog-card-facts">{text.resultCount(courses.length)} · {text.lessonsCount(lessons)}</span>
+    <span class="blog-card-cta">{t('blog.coursesCta')} →</span>
+  </a>
+)}

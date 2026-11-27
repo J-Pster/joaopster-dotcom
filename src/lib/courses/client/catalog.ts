@@ -2,7 +2,7 @@
 // topic and progress filters, sorting, the syllabus of each course, and the reader's progress
 // painted over the cards. The filters live in the URL (?q=, ?topic=, ?progress=, ?sort=) so a
 // filtered view can be shared and survives going back.
-import type { CatalogLesson } from '../catalogView';
+import type { CatalogLesson } from '../package';
 import { courseText, pageLang } from '../i18n';
 import { loadProgress } from '../progress';
 import { startAutoSync } from './sync';

@@ -1,8 +1,12 @@
 ---
 import ReviewDeck from '../../../../../components/courses/ReviewDeck.astro';
-import { studyPaths } from '../../../../../lib/courses/routes';
+import { coursePage, notFound } from '../../../../../lib/courses/requests';
 
-export const getStaticPaths = () => studyPaths('en');
+export const prerender = false;
+
+const lookup = await coursePage('en', Astro.params.course, Astro.url, 'study');
+if (lookup.kind === 'missing') return notFound();
+if (lookup.kind === 'redirect') return Astro.redirect(lookup.to, 301);
 ---
 
-<ReviewDeck slug={Astro.params.course as string} />
+<ReviewDeck view={lookup.page} />

@@ -1,6 +1,6 @@
 // Reading progress as a mergeable document. Every value carries the time it was set, so the
 // progress of two devices that studied apart merges by keeping the newest value of each item.
-// Shared by the browser (localStorage and sync) and the sync endpoint (functions/api/progress.ts).
+// Shared by the browser (localStorage and sync) and the sync endpoint (src/pages/api/progress.ts).
 
 export interface Stamped<T> {
   readonly v: T;

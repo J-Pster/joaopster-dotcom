@@ -11,9 +11,7 @@ import Header from '../components/Header.astro';
 import NewsletterModal from '../components/NewsletterModal.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
-import { coursesHome } from '../lib/courses/catalog';
-import { catalogCourses } from '../lib/courses/catalogView';
-import { courseText } from '../lib/courses/i18n';
+import CoursesCard from '../components/courses/CoursesCard.astro';
 import { siteOgImage } from '../lib/og/siteCards';
 import { blogPostPath, getPostsForLang, keyOf, readTime, slugOf } from '../lib/getLatestPost';
 import { TOPIC_IDS, topicColor, topicLabel } from '../lib/blog/topics';
@@ -45,10 +43,6 @@ const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))].ma
   posts: posts.filter((p) => p.data.pubDate.getUTCFullYear() === year),
 }));
 
-// Courses are written in one language; the card shows only where this language has some.
-const courses = catalogCourses(lang);
-const courseLessons = courses.reduce((sum, c) => sum + c.lessons, 0);
-const courseCopy = courseText(lang);
 // One feed per language (pages/rss.xml.js, pages/en/rss.xml.js, pages/es/rss.xml.js).
 const feedHref = `${localePrefix}/rss.xml`;
 ---
@@ -184,15 +178,8 @@ const feedHref = `${localePrefix}/rss.xml`;
         </section>
 
         <aside class="blog-aside">
-          {courses.length > 0 && (
-            <a class="blog-card blog-card--dark" href={coursesHome(lang)}>
-              <span class="blog-card-eyebrow">{t('nav.courses')}</span>
-              <span class="blog-card-title">{t('blog.coursesTitle')}</span>
-              <span class="blog-card-text">{t('blog.coursesText')}</span>
-              <span class="blog-card-facts">{courseCopy.resultCount(courses.length)} · {courseCopy.lessonsCount(courseLessons)}</span>
-              <span class="blog-card-cta">{t('blog.coursesCta')} →</span>
-            </a>
-          )}
+          <!-- The courses are published apart from the site: their card comes from a server island. -->
+          <CoursesCard server:defer lang={lang} />
           <div class="blog-card">
             <span class="blog-card-eyebrow">{t('blog.elsewhere')}</span>
             <ul class="blog-elsewhere">
@@ -489,7 +476,8 @@ const feedHref = `${localePrefix}/rss.xml`;
   .blog-clear:hover { border-color: var(--color-ink); }
 
   .blog-aside { position: sticky; top: calc(64px + var(--space-lg)); display: flex; flex-direction: column; gap: var(--space-base); }
-  .blog-card {
+  /* :global: the courses card comes from a server island (CoursesCard), outside this file's scope. */
+  .blog-aside :global(.blog-card) {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
@@ -500,15 +488,15 @@ const feedHref = `${localePrefix}/rss.xml`;
     border: 1px solid var(--color-hairline-strong);
     border-radius: var(--radius-lg);
   }
-  .blog-card--dark { color: var(--color-on-dark); background: var(--color-surface-dark); border-color: var(--color-surface-dark); transition: box-shadow 0.15s ease; }
-  .blog-card--dark:hover { text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
-  .blog-card-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); }
-  .blog-card--dark .blog-card-eyebrow { color: var(--color-on-dark-soft); }
-  .blog-card-title { font-size: 18px; font-weight: 600; line-height: 1.3; }
-  .blog-card-text { font-size: 14px; line-height: 1.55; color: var(--color-on-dark-soft); }
-  .blog-card-facts { font-size: 13px; color: var(--color-on-dark-soft); font-variant-numeric: tabular-nums; }
-  .blog-card-cta { margin-top: var(--space-xs); font-size: 14px; font-weight: 600; }
-  .blog-card--dark:hover .blog-card-cta { text-decoration: underline; text-underline-offset: 3px; }
+  .blog-aside :global(.blog-card--dark) { color: var(--color-on-dark); background: var(--color-surface-dark); border-color: var(--color-surface-dark); transition: box-shadow 0.15s ease; }
+  .blog-aside :global(.blog-card--dark:hover) { text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
+  .blog-aside :global(.blog-card-eyebrow) { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); }
+  .blog-aside :global(.blog-card--dark .blog-card-eyebrow) { color: var(--color-on-dark-soft); }
+  .blog-aside :global(.blog-card-title) { font-size: 18px; font-weight: 600; line-height: 1.3; }
+  .blog-aside :global(.blog-card-text) { font-size: 14px; line-height: 1.55; color: var(--color-on-dark-soft); }
+  .blog-aside :global(.blog-card-facts) { font-size: 13px; color: var(--color-on-dark-soft); font-variant-numeric: tabular-nums; }
+  .blog-aside :global(.blog-card-cta) { margin-top: var(--space-xs); font-size: 14px; font-weight: 600; }
+  .blog-aside :global(.blog-card--dark:hover .blog-card-cta) { text-decoration: underline; text-underline-offset: 3px; }
   .blog-elsewhere { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
   .blog-elsewhere a { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; color: var(--color-ink); text-decoration: none; }
   .blog-elsewhere a:hover { color: var(--color-text-link); }

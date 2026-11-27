@@ -1,8 +1,12 @@
 ---
 import GlossaryIndex from '../../../../../components/courses/GlossaryIndex.astro';
-import { glossaryPaths } from '../../../../../lib/courses/routes';
+import { coursePage, notFound } from '../../../../../lib/courses/requests';
 
-export const getStaticPaths = () => glossaryPaths('es');
+export const prerender = false;
+
+const lookup = await coursePage('es', Astro.params.course, Astro.url, 'glossary');
+if (lookup.kind === 'missing') return notFound();
+if (lookup.kind === 'redirect') return Astro.redirect(lookup.to, 301);
 ---
 
-<GlossaryIndex slug={Astro.params.course as string} />
+<GlossaryIndex view={lookup.page} />

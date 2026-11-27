@@ -8,18 +8,18 @@ import { glossaryUrl as glossaryUrlOf, hasStudyPages, mistakesUrl, reviewUrl } f
 import { courseText } from '../../lib/courses/i18n';
 import CourseEmblem from './CourseEmblem.astro';
 import { studyText } from '../../lib/courses/studyText';
-import type { Note, Vault } from '../../lib/courses/vault';
+import type { CourseView, NoteMeta } from '../../lib/courses/model';
 
 interface Props {
-  vault: Vault;
-  note: Note;
+  view: CourseView;
+  note: NoteMeta;
 }
 
-const { vault, note } = Astro.props;
+const { view, note } = Astro.props;
 const withLessons = note.kind !== 'glossary';
-const glossaryUrl = glossaryUrlOf(vault.course);
-const text = courseText(vault.course.lang);
-const study = studyText(vault.course.lang);
+const glossaryUrl = glossaryUrlOf(view.course);
+const text = courseText(view.course.lang);
+const study = studyText(view.course.lang);
 // "Aula 3.2: Title" in the sidebar reads as "Title": the module and the position already say the rest.
 const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
 ---
@@ -27,26 +27,26 @@ const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
 <details class="course-nav" data-course-nav>
   <summary class="course-nav-toggle">{text.navToggle}</summary>
   <nav class="course-nav-inner" aria-label={text.navToggle}>
-    <a class="course-nav-home" href={vault.home.url} aria-current={note.kind === 'home' ? 'page' : undefined}>
-      <CourseEmblem look={vault.course.look} />
-      <span>{vault.course.title}</span>
+    <a class="course-nav-home" href={view.home.url} aria-current={note.kind === 'home' ? 'page' : undefined}>
+      <CourseEmblem look={view.course.look} />
+      <span>{view.course.title}</span>
     </a>
-    <p class="course-nav-progress" data-course-total={vault.lessons.length}>
-      <span data-course-read>0</span>{text.lessonsReadOf(vault.lessons.length)}
+    <p class="course-nav-progress" data-course-total={view.lessons.length}>
+      <span data-course-read>0</span>{text.lessonsReadOf(view.lessons.length)}
     </p>
-    {vault.glossary.length > 0 && (
+    {view.glossary.length > 0 && (
       <a class="course-nav-glossary" href={glossaryUrl} aria-current={note.kind === 'glossary' ? 'page' : undefined}>
-        {text.glossary} <span>{text.glossaryTerms(vault.glossary.length)}</span>
+        {text.glossary} <span>{text.glossaryTerms(view.glossary.length)}</span>
       </a>
     )}
-    {hasStudyPages(vault.course) && (
+    {hasStudyPages(view.course) && (
       <div class="course-nav-study">
-        <a href={mistakesUrl(vault.course)} aria-current={note.url === mistakesUrl(vault.course) ? 'page' : undefined}>{study.mistakesLink}</a>
-        <a href={reviewUrl(vault.course)} aria-current={note.url === reviewUrl(vault.course) ? 'page' : undefined}>{study.reviewLink}</a>
+        <a href={mistakesUrl(view.course)} aria-current={note.url === mistakesUrl(view.course) ? 'page' : undefined}>{study.mistakesLink}</a>
+        <a href={reviewUrl(view.course)} aria-current={note.url === reviewUrl(view.course) ? 'page' : undefined}>{study.reviewLink}</a>
       </div>
     )}
     <ol class="course-nav-modules">
-      {vault.modules.map((module) => {
+      {view.modules.map((module) => {
         const current = module.id === note.moduleId;
         return (
           <li class="course-nav-module">

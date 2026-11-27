@@ -1,11 +1,11 @@
-// Search-engine facing text and structured data of the courses section, all derived at build time
-// from the catalog and the vaults: lesson titles and descriptions, the catalog's ItemList and each
-// course's schema.org Course. Only facts the catalog or the notes state go in.
+// Search-engine facing text and structured data of the courses section, derived from the catalog and
+// the notes: lesson titles and descriptions (the descriptions at publish time, from the Markdown), the
+// catalog's ItemList and each course's schema.org Course. Only facts the catalog or the notes state go in.
 import type { CourseInfo } from './catalog';
 import { courseUrl, coursesHome } from './catalog';
 import type { CourseText } from './i18n';
-import { readingMinutes } from './readingTime';
-import type { Note, Vault } from './vault';
+import type { CourseView, NoteMeta } from './model';
+import type { Note } from './vault';
 
 /** The site's Person node, defined in components/BaseHead.astro's own structured data. */
 const PERSON_ID = 'https://joaopster.com/#person';
@@ -19,7 +19,7 @@ const QUESTION_CALLOUT = /^>\s*\[!question\][-+]?[ \t]*(.*)$/im;
 const QUESTION_ITALIC = /^\*Pergunta que esta aula responde:\s*(.+?)\*\s*$/im;
 
 /** The lesson's own title, without the "Aula N:" prefix. Other notes keep their title. */
-export const seoTitle = (note: Note): string =>
+export const seoTitle = (note: Pick<NoteMeta, 'kind' | 'title'>): string =>
   note.kind === 'lesson' ? note.title.replace(LESSON_PREFIX, '') : note.title;
 
 /** Notes write wikilinks, emphasis and code marks that mean nothing in a meta description. */
@@ -69,8 +69,7 @@ export function noteMetaDescription(note: Note, course: CourseInfo, text: Course
 }
 
 /** Total reading time of a course, in minutes (the same figure the catalog shows). */
-export const courseReadingMinutes = (vault: Vault): number =>
-  vault.lessons.reduce((sum, lesson) => sum + readingMinutes(lesson), 0);
+export const courseReadingMinutes = (view: CourseView): number => view.lessons.reduce((sum, lesson) => sum + lesson.minutes, 0);
 
 /** ISO 8601 duration of a number of minutes: 3252 becomes "PT54H12M". */
 export function isoDuration(minutes: number): string {
@@ -82,8 +81,8 @@ export function isoDuration(minutes: number): string {
 const SCHEMA_LEVEL = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' } as const;
 
 /** schema.org Course of a course's home page. */
-export function courseJsonLd(vault: Vault, site: URL) {
-  const { course } = vault;
+export function courseJsonLd(view: CourseView, site: URL) {
+  const { course } = view;
   return {
     '@context': 'https://schema.org',
     '@type': 'Course',
@@ -95,7 +94,7 @@ export function courseJsonLd(vault: Vault, site: URL) {
     author: { '@id': PERSON_ID },
     isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: 0, priceCurrency: 'BRL', category: 'Free' },
-    timeRequired: isoDuration(courseReadingMinutes(vault)),
+    timeRequired: isoDuration(courseReadingMinutes(view)),
     educationalLevel: SCHEMA_LEVEL[course.level],
     teaches: [...course.objectives],
     ...(course.prerequisites.length > 0 && { coursePrerequisites: [...course.prerequisites] }),
@@ -117,7 +116,7 @@ export function catalogJsonLd(courses: readonly CourseInfo[], site: URL) {
 }
 
 /** schema.org BreadcrumbList of a course note: courses landing, course, then the note (the course home ends at the course). */
-export function noteBreadcrumbJsonLd(note: Note, course: CourseInfo, coursesLabel: string, site: URL) {
+export function noteBreadcrumbJsonLd(note: Pick<NoteMeta, 'kind' | 'title'>, course: CourseInfo, coursesLabel: string, site: URL) {
   const trail = [
     { name: coursesLabel, url: new URL(coursesHome(course.lang), site).href },
     { name: course.title, url: new URL(courseUrl(course), site).href },

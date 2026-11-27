@@ -1,6 +1,6 @@
-import type { APIRoute, GetStaticPaths } from 'astro';
-import { filePaths, fileResponse } from '../../../../lib/courses/routes';
+import type { APIRoute } from 'astro';
+import { fileResponse } from '../../../../lib/courses/requests';
 
-export const getStaticPaths: GetStaticPaths = () => filePaths('pt');
+export const prerender = false;
 
-export const GET: APIRoute = ({ props }) => fileResponse(props.absPath as string);
+export const GET: APIRoute = ({ params }) => fileResponse('pt', params.course, params.file);

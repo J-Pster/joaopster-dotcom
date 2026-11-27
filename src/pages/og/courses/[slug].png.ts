@@ -1,13 +1,8 @@
-// Share image of each course, used by its home and every lesson: /og/courses/<slug>.png.
-import type { APIRoute, GetStaticPaths } from 'astro';
-import { COURSES, type CourseInfo } from '../../../lib/courses/catalog';
-import { renderOgImage } from '../../../lib/og/renderOgImage';
-import { courseCard } from '../../../lib/og/siteCards';
+// Share image of each course, used by its home and every lesson: /og/courses/<slug>.png, drawn when the
+// course is published (scripts/courses/publish.ts).
+import type { APIRoute } from 'astro';
+import { courseOgResponse } from '../../../lib/courses/requests';
 
-export const getStaticPaths = (() =>
-	COURSES.map((course) => ({ params: { slug: course.slug }, props: { course } }))) satisfies GetStaticPaths;
+export const prerender = false;
 
-export const GET: APIRoute<{ course: CourseInfo }> = async ({ props: { course } }) => {
-	const png = await renderOgImage(courseCard(course));
-	return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
-};
+export const GET: APIRoute = ({ params }) => courseOgResponse(params.slug);

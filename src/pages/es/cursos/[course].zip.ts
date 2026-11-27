@@ -1,6 +1,6 @@
-import type { APIRoute, GetStaticPaths } from 'astro';
-import { courseZipResponse, coursePaths } from '../../../lib/courses/routes';
+import type { APIRoute } from 'astro';
+import { zipResponse } from '../../../lib/courses/requests';
 
-export const getStaticPaths: GetStaticPaths = () => coursePaths('es');
+export const prerender = false;
 
-export const GET: APIRoute = ({ params }) => courseZipResponse(params.course as string);
+export const GET: APIRoute = ({ params }) => zipResponse('es', params.course);

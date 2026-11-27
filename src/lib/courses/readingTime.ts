@@ -1,4 +1,4 @@
-// Estimated reading time of a note, computed at build time from its Markdown.
+// Estimated reading time of a note, computed at publish time from its Markdown.
 import type { Note } from './vault';
 
 /** Study text is read slower than leisure text: 200 words per minute is the usual figure for it. */

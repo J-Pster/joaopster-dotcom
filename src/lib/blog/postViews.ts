@@ -1,5 +1,5 @@
 // The blog's view counter, shared by the page script (scripts/postViews.ts) and the API
-// (functions/api/views.ts). A view counts when a browser keeps the post visible for a few seconds,
+// (src/pages/api/views.ts). A view counts when a browser keeps the post visible for a few seconds,
 // once a day per visitor and post. Crawlers, link previews and headless browsers are left out.
 
 /** Time the post must stay visible before the view counts. */

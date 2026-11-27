@@ -1,0 +1,24 @@
+---
+// The published courses as items of the about page's publications list. A server island
+// (server:defer): the page is prerendered, the courses come from R2 on each view.
+import { useTranslations, type Lang } from '../../i18n/ui';
+import { courseUrl } from '../../lib/courses/catalog';
+
+// Imported when the island renders: the store reads the Worker's bindings, which the prerendering
+// (in Node) does not have.
+const { publishedCatalog } = await import('../../lib/courses/store');
+
+interface Props {
+  lang: Lang;
+}
+
+const t = useTranslations(Astro.props.lang);
+const { courses } = await publishedCatalog();
+---
+
+{courses.map(({ course }) => (
+  <li>
+    <a href={courseUrl(course)}>{course.title}</a>
+    <span class="pub-meta">{t('aboutPage.publications.courseLang')}</span>
+  </li>
+))}

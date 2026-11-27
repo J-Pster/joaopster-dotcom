@@ -1,6 +1,6 @@
-import type { APIRoute, GetStaticPaths } from 'astro';
-import { coursePaths, outlineResponse } from '../../../../lib/courses/routes';
+import type { APIRoute } from 'astro';
+import { outlineResponse } from '../../../../lib/courses/requests';
 
-export const getStaticPaths: GetStaticPaths = () => coursePaths('es');
+export const prerender = false;
 
-export const GET: APIRoute = ({ params }) => outlineResponse(params.course as string);
+export const GET: APIRoute = ({ params }) => outlineResponse('es', params.course);

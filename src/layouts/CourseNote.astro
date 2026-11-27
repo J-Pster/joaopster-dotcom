@@ -18,17 +18,15 @@ import ListenPlayer from '../components/courses/ListenPlayer.astro';
 import AssistantPanel from '../components/courses/AssistantPanel.astro';
 import KeysDialog from '../components/courses/KeysDialog.astro';
 import CourseTour from '../components/courses/CourseTour.astro';
-import { courseOutlineUrl, coursesHome, glossaryUrl, hasStudyPages, mistakesUrl, reviewUrl, studyIndexUrl, type ExamRules } from '../lib/courses/catalog';
+import { courseOgImage, courseOutlineUrl, courseSearchUrl, coursesHome, glossaryUrl, hasStudyPages, mistakesUrl, reviewUrl, studyIndexUrl, type ExamRules } from '../lib/courses/catalog';
 import { courseText } from '../lib/courses/i18n';
-import type { Note, Vault } from '../lib/courses/vault';
+import type { CourseView, NoteMeta } from '../lib/courses/model';
 import { searchText } from '../lib/courses/searchText';
 import { shortcutsText } from '../lib/courses/shortcutsText';
-import { readingMinutes } from '../lib/courses/readingTime';
 import { readerText } from '../lib/courses/readerText';
-import { courseJsonLd, jsonLdScript, noteBreadcrumbJsonLd, noteMetaDescription, seoTitle } from '../lib/courses/seo';
+import { courseJsonLd, jsonLdScript, noteBreadcrumbJsonLd, seoTitle } from '../lib/courses/seo';
 import { useTranslations } from '../i18n/ui';
 import { assistantText } from '../lib/courses/assistantText';
-import { courseOgImage } from '../lib/og/siteCards';
 import '../styles/courses.css';
 import '../styles/courses-search.css';
 import '../styles/courses-study.css';
@@ -39,8 +37,8 @@ import '../styles/courses-listen.css';
 import '../styles/courses-print.css';
 
 interface Props {
-  vault: Vault;
-  note: Note;
+  view: CourseView;
+  note: NoteMeta;
   html: string;
   headings: readonly MarkdownHeading[];
   /** Set on simulated exams: the note's quiz runs as a timed exam. */
@@ -54,27 +52,27 @@ interface Props {
 
 const BACKLINKS_SHOWN = 24;
 
-const { vault, note, html, headings, exam, indexing: pageIndexing = 'index' } = Astro.props;
-const indexing = vault.course.indexing === 'noindex' ? 'noindex' : pageIndexing;
-const { course } = vault;
+const { view, note, html, headings, exam, indexing: pageIndexing = 'index' } = Astro.props;
+const indexing = view.course.indexing === 'noindex' ? 'noindex' : pageIndexing;
+const { course } = view;
 const text = courseText(course.lang);
 const search = searchText(course.lang);
 const shortcuts = shortcutsText(course.lang);
 const reader = readerText(course.lang);
 const assistant = assistantText(course.lang);
-const module = vault.modules.find((m) => m.id === note.moduleId);
-const lessonIndex = note.kind === 'lesson' ? vault.lessons.indexOf(note) : -1;
-const previous = lessonIndex > 0 ? vault.lessons[lessonIndex - 1] : undefined;
-const next = lessonIndex >= 0 ? vault.lessons[lessonIndex + 1] : undefined;
+const module = view.modules.find((m) => m.id === note.moduleId);
+const lessonIndex = note.kind === 'lesson' ? view.lessons.indexOf(note) : -1;
+const previous = lessonIndex > 0 ? view.lessons[lessonIndex - 1] : undefined;
+const next = lessonIndex >= 0 ? view.lessons[lessonIndex + 1] : undefined;
 
 // Lessons and module notes first, then the rest (glossary terms link to each other a lot).
 const kindRank = { lesson: 0, module: 1, home: 2, page: 3, glossary: 4 } as const;
-const backlinks = [...(vault.backlinks.get(note.id) ?? [])].sort((a, b) => kindRank[a.kind] - kindRank[b.kind]);
+const backlinks = [...(view.backlinks.get(note.id) ?? [])].sort((a, b) => kindRank[a.kind] - kindRank[b.kind]);
 
 const pageTitle = note.kind === 'home' ? text.courseHomeTitle(course.title) : `${seoTitle(note)} | ${course.title}`;
-const description = noteMetaDescription(note, course, text);
+const { description } = note;
 const site = Astro.site ?? new URL('https://joaopster.com');
-const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(vault, site)) : undefined;
+const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(view, site)) : undefined;
 // Breadcrumbs only where the page can show in search.
 const breadcrumbLd =
   indexing === 'index' ? jsonLdScript(noteBreadcrumbJsonLd(note, course, useTranslations(course.lang)('nav.courses'), site)) : undefined;
@@ -84,7 +82,7 @@ const breadcrumbLd =
 
 <html lang={course.lang} data-lang-pt={coursesHome('pt')} data-lang-en={coursesHome('en')} data-lang-es={coursesHome('es')}>
   <head>
-    <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} image={courseOgImage(vault.course)} />
+    <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} image={courseOgImage(course)} />
     {courseLd && <script type="application/ld+json" set:html={courseLd} />}
     {breadcrumbLd && <script type="application/ld+json" set:html={breadcrumbLd} />}
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -142,10 +140,11 @@ const breadcrumbLd =
       data-note-url={note.url}
       data-note-kind={note.kind}
       data-outline={courseOutlineUrl(course)}
+      data-search-index={courseSearchUrl(course)}
     >
       <div class="course-layout">
         <aside class="course-rail course-rail--nav" id="course-panel-nav">
-          <CourseSidebar vault={vault} note={note} />
+          <CourseSidebar view={view} note={note} />
         </aside>
 
         <aside class="course-rail course-rail--toc" id="course-panel-toc">
@@ -167,7 +166,7 @@ const breadcrumbLd =
             <nav class="course-breadcrumb" aria-label={text.youAreHere}>
               <a href={coursesHome(course.lang)}>{text.section}</a>
               <span aria-hidden="true">/</span>
-              <a href={vault.home.url}>{course.title}</a>
+              <a href={view.home.url}>{course.title}</a>
               {module && note.kind === 'lesson' && (
                 <>
                   <span aria-hidden="true">/</span>
@@ -214,7 +213,7 @@ const breadcrumbLd =
 
           {note.kind === 'lesson' && (
             <p class="lesson-time">
-              <span>{reader.readingTime(reader.duration(readingMinutes(note)))}</span><span data-lesson-left hidden></span>
+              <span>{reader.readingTime(reader.duration(note.minutes))}</span><span data-lesson-left hidden></span>
             </p>
           )}
 

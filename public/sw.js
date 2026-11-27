@@ -40,7 +40,8 @@ self.addEventListener('activate', (event) => {
 const isCourseUrl = (url) => COURSE_BASES.some((base) => url.pathname.startsWith(base)) && !url.pathname.endsWith('.zip');
 // Built files are named by content hash, so a cached copy is always the right one.
 const isImmutableAsset = (url) => url.pathname.startsWith('/_astro/') || /\.woff2?$/.test(url.pathname);
-const isSearchIndex = (url) => url.pathname.startsWith('/pagefind/');
+// Each course's Pagefind index (lib/courses/client/search.ts).
+const isSearchIndex = (url) => url.pathname.startsWith('/course-search/');
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -52,8 +53,8 @@ self.addEventListener('fetch', (event) => {
   if (isImmutableAsset(url)) {
     event.respondWith(cacheFirst(request, ASSETS_CACHE));
   } else if (isSearchIndex(url)) {
-    // Not hashed, and the entry file and its fragments change together on every build: network
-    // first keeps them from the same build online, the cached copy only answers offline.
+    // Not hashed, and the entry file and its fragments change together on every publish: network
+    // first keeps them from the same publish online, the cached copy only answers offline.
     event.respondWith(networkFirst(request, ASSETS_CACHE));
   } else if (isCourseUrl(url)) {
     event.respondWith(networkFirst(request, PAGES_CACHE));

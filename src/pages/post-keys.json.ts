@@ -1,4 +1,4 @@
-// The post keys the view counter accepts (functions/api/views.ts reads this file), one per post
+// The post keys the view counter accepts (src/pages/api/views.ts reads this file), one per post
 // whatever its languages: the file name shared by its translations.
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
