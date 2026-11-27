@@ -1,0 +1,210 @@
+/* Reading aids of the course notes: reading time, text size, focus mode and the status toast.
+   Behaviour in lib/courses/client/readerTools.ts, readingTime.ts, lessonKeys.ts and toast.ts. */
+
+/* ---------- Reading time ---------- */
+
+.lesson-time {
+  margin: 0 0 var(--space-base);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.course-progress .progress-time-left { margin: 2px 0 0; font-size: 13px; color: var(--color-muted); }
+/* One more column than courses.css draws (time left), so the selector is one step more specific. */
+.course-progress .progress-modules li { grid-template-columns: minmax(0, 1fr) 72px 90px 44px; }
+.progress-time { font-size: 12px; color: var(--color-muted); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 640px) {
+  .course-progress .progress-modules li { grid-template-columns: minmax(0, 1fr) 72px 44px; }
+}
+
+/* ---------- Text size ---------- */
+
+/* zoom scales every px size inside the note (headings, code, quiz, callouts) by the same factor. */
+.note-content { zoom: var(--reader-zoom, 1); }
+
+/* ---------- Settings button and panel ---------- */
+
+.reader-tools { position: relative; flex: none; }
+.reader-tools-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.reader-tools-open:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
+.reader-tools-open[aria-expanded='true'] { color: var(--color-ink); background: var(--color-surface-strong); }
+
+.reader-tools-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  width: 248px;
+  padding: var(--space-sm);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.reader-tools-panel[hidden] { display: none; }
+.reader-tools-label {
+  margin: 0 0 var(--space-xs);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.reader-tools-size {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.reader-tools-size button {
+  height: 36px;
+  padding: 0;
+  font: inherit;
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border: 0;
+  cursor: pointer;
+}
+.reader-tools-size button:hover:not(:disabled) { background: var(--color-canvas-soft); }
+.reader-tools-size button:disabled { color: var(--color-muted-soft); cursor: default; }
+.reader-tools-size output {
+  font-size: 13px;
+  text-align: center;
+  color: var(--color-body);
+  font-variant-numeric: tabular-nums;
+  border-inline: 1px solid var(--color-hairline);
+  line-height: 36px;
+}
+.reader-tools-a { font-size: 17px; font-weight: 600; }
+.reader-tools-a--small { font-size: 12px; }
+
+.reader-tools-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  width: 100%;
+  min-height: 40px;
+  padding: 6px var(--space-xs);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  color: var(--color-ink);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.reader-tools-row:hover { background: var(--color-canvas-soft); }
+.reader-tools-row-text { display: flex; flex-direction: column; }
+.reader-tools-hint { font-size: 12px; font-weight: 400; color: var(--color-muted); }
+.reader-tools-row kbd {
+  padding: 1px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--color-body);
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-xs);
+}
+/* On/off switch drawn after the label of the focus mode row. */
+.reader-tools-row[data-focus-toggle] kbd { margin-left: auto; }
+.reader-tools-row[data-focus-toggle]::after {
+  content: '';
+  flex: none;
+  width: 28px;
+  height: 16px;
+  background: var(--color-hairline-strong) radial-gradient(circle at 8px 50%, var(--color-surface-card) 5px, transparent 5.5px);
+  border-radius: var(--radius-pill);
+  transition: background 0.15s ease;
+}
+.reader-tools-row[data-focus-toggle][aria-pressed='true']::after {
+  background: var(--color-primary) radial-gradient(circle at 20px 50%, var(--color-on-primary) 5px, transparent 5.5px);
+}
+
+.reader-focus-exit {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.reader-focus-exit:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
+
+@media (pointer: coarse) {
+  .reader-tools-open { width: 40px; height: 40px; }
+  .reader-focus-exit { height: 40px; }
+  .reader-tools-size button, .reader-tools-size output { height: 44px; line-height: 44px; }
+}
+@media (hover: none) {
+  .reader-tools-row kbd { display: none; }
+}
+
+/* ---------- Focus mode ---------- */
+
+:root.course-focus #site-header,
+:root.course-focus body > footer,
+:root.course-focus .course-rail,
+:root.course-focus .toc--inline,
+:root.course-focus .sync-card,
+:root.course-focus .backlinks,
+:root.course-focus .course-toolbar > :not(.reader-tools, .reader-focus-exit) { display: none; }
+:root.course-focus .course-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'article'; }
+:root.course-focus .course-article { max-width: 700px; }
+:root.course-focus .course-toolbar { justify-content: flex-end; }
+:root.course-focus .reader-focus-exit { display: inline-flex; }
+:root.course-focus .course-main { padding-top: var(--space-base); }
+
+/* ---------- Status toast ---------- */
+
+.course-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  z-index: 200;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-dark);
+  background: var(--color-surface-dark);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.course-toast[data-shown='true'] { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) {
+  .course-toast { transition: none; }
+}

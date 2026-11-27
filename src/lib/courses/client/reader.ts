@@ -2,18 +2,14 @@
 // synced with the reader's other devices when they set a sync code (client/sync.ts).
 import { courseText, pageLang } from '../i18n';
 import { loadProgress, setChecks, setLast, setRead, type CourseProgress } from '../progress';
+import { minutesLeft, type CourseOutline } from '../outline';
+import { readerText } from '../readerText';
+import { initHighlights } from './highlights';
+import { courseTimeLeft, fetchOutline, initLessonTime } from './readingTime';
 import { initStudy } from './study';
 import { startAutoSync } from './sync';
 import { initSyncCards } from './syncCard';
 
-interface CourseOutline {
-  readonly modules: readonly {
-    readonly number: number;
-    readonly title: string;
-    readonly url: string;
-    readonly lessons: readonly { readonly url: string; readonly title: string }[];
-  }[];
-}
 
 const WIDE_SCREEN = '(min-width: 1024px)';
 const text = () => courseText(pageLang());
@@ -51,16 +47,14 @@ function paintReadToggle(button: HTMLButtonElement, isRead: boolean): void {
 
 type Repaint = () => void;
 
-function initReadToggle(slug: string, url: string): Repaint {
+function initReadToggle(slug: string, url: string, onChange: () => void): Repaint {
   const button = document.querySelector<HTMLButtonElement>('[data-read-toggle]');
   if (!button) return () => {};
   const repaint = () => paintReadToggle(button, loadProgress(slug).read.includes(url));
   repaint();
   button.addEventListener('click', () => {
-    const isRead = button.getAttribute('aria-pressed') !== 'true';
-    const progress = setRead(slug, url, isRead);
-    paintReadToggle(button, isRead);
-    paintSidebar(progress);
+    setRead(slug, url, button.getAttribute('aria-pressed') !== 'true');
+    onChange();
   });
   return repaint;
 }
@@ -156,9 +150,7 @@ const escapeText = (text: string) => text.replace(/[&<>"]/g, (c) => `&#${c.charC
 async function initProgressWidget(slug: string, outlineUrl: string): Promise<Repaint> {
   const widget = document.querySelector<HTMLElement>('[data-course-progress]');
   if (!widget) return () => {};
-  const response = await fetch(outlineUrl);
-  if (!response.ok) throw new Error(`Course outline request failed: ${response.status}`);
-  const outline = (await response.json()) as CourseOutline;
+  const outline = await fetchOutline(outlineUrl);
   const repaint = () => paintProgressWidget(widget, outline, loadProgress(slug));
   repaint();
   return repaint;
@@ -166,15 +158,18 @@ async function initProgressWidget(slug: string, outlineUrl: string): Promise<Rep
 
 function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progress: CourseProgress): void {
   const t = text();
+  const duration = readerText(pageLang()).duration;
   const read = new Set(progress.read);
   const lessons = outline.modules.flatMap((m) => m.lessons);
   const done = lessons.filter((l) => read.has(l.url)).length;
   const resume = lessons.find((l) => l.url === progress.last) ?? lessons.find((l) => !read.has(l.url));
+  const timeLeft = courseTimeLeft(minutesLeft(lessons, read));
 
   const rows = outline.modules
     .map((m) => {
       const moduleDone = m.lessons.filter((l) => read.has(l.url)).length;
-      return `<li><a href="${m.url}"><span class="course-nav-number">${m.number}</span>${escapeText(m.title)}</a>${progressBar(moduleDone, m.lessons.length)}<span class="progress-count">${moduleDone}/${m.lessons.length}</span></li>`;
+      const moduleLeft = minutesLeft(m.lessons, read);
+      return `<li><a href="${m.url}"><span class="course-nav-number">${m.number}</span>${escapeText(m.title)}</a><span class="progress-time">${moduleLeft === 0 ? '' : duration(moduleLeft)}</span>${progressBar(moduleDone, m.lessons.length)}<span class="progress-count">${moduleDone}/${m.lessons.length}</span></li>`;
     })
     .join('');
   widget.innerHTML = `
@@ -182,6 +177,7 @@ function paintProgressWidget(widget: HTMLElement, outline: CourseOutline, progre
       <div>
         <p class="progress-eyebrow">${t.progressEyebrow}</p>
         <p class="progress-total">${t.progressTotal(done, lessons.length)}</p>
+        ${timeLeft ? `<p class="progress-time-left">${timeLeft}</p>` : ''}
       </div>
       ${resume ? `<a class="progress-resume" href="${resume.url}">${progress.read.length === 0 && !progress.last ? t.startCourse : t.continue}: ${escapeText(resume.title)}</a>` : `<span class="progress-done">${t.courseDone}</span>`}
     </div>
@@ -195,21 +191,24 @@ export function initReader(): void {
   if (!main) throw new Error('Course reader script loaded outside a course page');
   const slug = requireData(main, 'course');
   const url = requireData(main, 'noteUrl');
+  const outlineUrl = requireData(main, 'outline');
   if (requireData(main, 'noteKind') === 'lesson') setLast(slug, url);
 
   openNavOnWideScreens();
   initPanelToggles();
   paintSidebar(loadProgress(slug));
+  // Called lazily, so it sees the repaints added once the outline arrives.
+  const repaintAll = () => repaints.forEach((repaint) => repaint());
   const repaints = [
     () => paintSidebar(loadProgress(slug)),
-    initReadToggle(slug, url),
+    initReadToggle(slug, url, repaintAll),
     initTaskChecks(slug, url),
     initStudy(slug, url),
+    initHighlights(slug, url),
   ];
-  void initProgressWidget(slug, requireData(main, 'outline')).then((repaint) => {
-    repaints.push(repaint);
-  });
-  const repaintAll = () => repaints.forEach((repaint) => repaint());
+  for (const pending of [initProgressWidget(slug, outlineUrl), initLessonTime(slug, url, outlineUrl)]) {
+    void pending.then((repaint) => repaints.push(repaint));
+  }
   startAutoSync(repaintAll);
   initSyncCards(text(), repaintAll);
 }

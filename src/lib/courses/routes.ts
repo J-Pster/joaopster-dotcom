@@ -3,6 +3,8 @@
 import { readFileSync } from 'node:fs';
 import type { Lang } from '../../i18n/ui';
 import { courseBySlug, courseFilesUrl, coursesIn, hasStudyPages } from './catalog';
+import type { CourseOutline } from './outline';
+import { readingMinutes } from './readingTime';
 import { getRenderer } from './render';
 import type { StudyIndex, StudyNote, StudyQuestion, StudyTerm } from './studyModel';
 import { getVault } from './vault';
@@ -41,12 +43,12 @@ export const fileResponse = (absPath: string) => new Response(readFileSync(absPa
 /** Modules and lessons with their URLs, for the client-side progress widget. */
 export function outlineResponse(slug: string): Response {
   const vault = getVault(slug);
-  const outline = {
+  const outline: CourseOutline = {
     modules: vault.modules.map((m) => ({
       number: m.number,
       title: m.title,
       url: m.note.url,
-      lessons: m.lessons.map((l) => ({ url: l.url, title: l.title })),
+      lessons: m.lessons.map((l) => ({ url: l.url, title: l.title, minutes: readingMinutes(l) })),
     })),
   };
   return new Response(JSON.stringify(outline), { headers: { 'Content-Type': 'application/json' } });

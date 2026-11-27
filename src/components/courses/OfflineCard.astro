@@ -1,0 +1,31 @@
+---
+// Card on the course home that saves the whole course for offline reading (lib/courses/client/offline.ts).
+// The server renders the idle state; the script sets the real one (saved, unsupported) on load.
+import type { Lang } from '../../i18n/ui';
+import { offlineText } from '../../lib/courses/offlineText';
+import '../../styles/courses-offline.css';
+
+interface Props {
+  lang: Lang;
+  /** URL of the course's study.json: the list of notes to download. */
+  studyIndexUrl: string;
+  course: string;
+}
+
+const { lang, studyIndexUrl, course } = Astro.props;
+const text = offlineText(lang);
+---
+
+<section class="offline-card" data-offline-card data-state="idle" data-course={course} data-study-index={studyIndexUrl} aria-labelledby="offline-title">
+  <h2 class="offline-title" id="offline-title">{text.title}</h2>
+  <p class="offline-lead">{text.lead}</p>
+  <div class="offline-bar" data-offline-bar role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label={text.title}>
+    <span class="offline-fill" data-offline-fill></span>
+  </div>
+  <p class="offline-status" data-offline-status role="status" aria-live="polite"></p>
+  <p class="offline-detail" data-offline-detail></p>
+  <div class="offline-actions">
+    <button type="button" class="offline-btn offline-btn--primary" data-offline-save>{text.save}</button>
+    <button type="button" class="offline-btn" data-offline-remove hidden>{text.remove}</button>
+  </div>
+</section>

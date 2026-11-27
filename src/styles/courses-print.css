@@ -1,0 +1,49 @@
+/* Paper copy of a course note: only the note, in black on white, with closed callouts opened
+   (client/print.ts). The quick-reference cards of the courses are code blocks: they print in a
+   light box with their lines kept, so a card can be cut out and laminated. */
+
+@media print {
+  @page { margin: 16mm 14mm; }
+
+  #site-header,
+  body > footer,
+  .course-rail,
+  .course-toolbar,
+  .reader-focus-exit,
+  .toc--inline,
+  .sync-card,
+  .exam-bar,
+  .lesson-time,
+  .lesson-footer,
+  .backlinks,
+  .offline-card,
+  .link-preview,
+  .course-toast,
+  .heading-anchor,
+  dialog { display: none !important; }
+
+  html, body { background: #fff; }
+  .course-main { padding: 0; }
+  .course-layout { display: block; max-width: none; }
+  .course-article { max-width: none; }
+
+  .prose.note-content { zoom: 1; font-size: 11pt; line-height: 1.55; color: #000; }
+  .prose h1, .prose h2, .prose h3, .prose h4 { color: #000; break-after: avoid; }
+  .prose p, .prose li { orphans: 3; widows: 3; }
+  .prose a { color: inherit; text-decoration: underline; }
+  /* External links show where they go; links between notes do not, they only make sense online. */
+  .prose a.external-link::after { content: ' (' attr(href) ')'; font-size: 0.85em; word-break: break-all; }
+
+  /* The syntax highlighter paints a dark theme with inline styles: only !important beats them. */
+  .prose pre {
+    overflow: visible;
+    color: #000 !important;
+    background: #fff !important;
+    border: 1px solid #999;
+    white-space: pre-wrap;
+  }
+  .prose pre span { color: #000 !important; }
+  .prose pre code { font-size: 9pt; line-height: 1.4; white-space: pre-wrap; }
+  .prose pre.mermaid, .prose img, .prose table, .prose figure, .callout { break-inside: avoid; }
+  .callout { border-color: #999; }
+}

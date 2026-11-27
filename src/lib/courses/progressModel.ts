@@ -8,11 +8,24 @@ export interface Stamped<T> {
   readonly t: number;
 }
 
+/**
+ * A passage the reader marked, stored as a W3C TextQuoteSelector: the text itself plus a little
+ * context on each side, so it can be found again (and told apart from repeats) when the page changes.
+ */
+export interface Highlight {
+  readonly id: string;
+  readonly exact: string;
+  readonly prefix: string;
+  readonly suffix: string;
+}
+
 export interface CourseRecord {
   /** Lesson URL: read or not, and since when. */
   readonly read: Readonly<Record<string, Stamped<boolean>>>;
   /** Note URL: positions of the ticked task checkboxes. */
   readonly checks: Readonly<Record<string, Stamped<readonly number[]>>>;
+  /** Note URL: the whole list of highlights of that note (the newest list wins on merge). */
+  readonly highlights: Readonly<Record<string, Stamped<readonly Highlight[]>>>;
   /** Last lesson opened, for "continue where you stopped". */
   readonly last: Stamped<string> | undefined;
 }
@@ -29,7 +42,7 @@ export interface CourseProgress {
   readonly last: string | undefined;
 }
 
-export const EMPTY_COURSE: CourseRecord = { read: {}, checks: {}, last: undefined };
+export const EMPTY_COURSE: CourseRecord = { read: {}, checks: {}, highlights: {}, last: undefined };
 
 export function courseView(record: CourseRecord): CourseProgress {
   const read = Object.entries(record.read).flatMap(([url, s]) => (s.v ? [url] : []));
@@ -46,6 +59,16 @@ export const markRead = (record: CourseRecord, url: string, read: boolean, now: 
 export const markChecks = (record: CourseRecord, url: string, indexes: readonly number[], now: number): CourseRecord => ({
   ...record,
   checks: { ...record.checks, [url]: { v: [...indexes], t: now } },
+});
+
+export const markHighlights = (
+  record: CourseRecord,
+  url: string,
+  highlights: readonly Highlight[],
+  now: number,
+): CourseRecord => ({
+  ...record,
+  highlights: { ...record.highlights, [url]: { v: [...highlights], t: now } },
 });
 
 export const markLast = (record: CourseRecord, url: string, now: number): CourseRecord => ({
@@ -73,6 +96,7 @@ function mergeMap<T>(
 export const mergeCourse = (a: CourseRecord, b: CourseRecord): CourseRecord => ({
   read: mergeMap(a.read, b.read),
   checks: mergeMap(a.checks, b.checks),
+  highlights: mergeMap(a.highlights, b.highlights),
   last: newer(a.last, b.last),
 });
 
@@ -98,7 +122,16 @@ export function serializeProgress(record: ProgressRecord): string {
 
 export class ProgressFormatError extends Error {}
 
-const LIMITS = { courses: 100, entriesPerMap: 5000, checksPerNote: 500, urlLength: 400 } as const;
+export const LIMITS = {
+  courses: 100,
+  entriesPerMap: 5000,
+  checksPerNote: 500,
+  urlLength: 400,
+  highlightsPerNote: 100,
+  highlightExact: 280,
+  highlightContext: 32,
+  highlightId: 24,
+} as const;
 const SLUG = /^[a-z0-9-]{1,100}$/;
 
 function fail(reason: string): never {
@@ -149,6 +182,26 @@ function parseIndexes(value: unknown): number[] {
   return value.map(parseIndex);
 }
 
+function parseText(value: unknown, max: number, minLength: number, what: string): string {
+  if (typeof value !== 'string' || value.length < minLength || value.length > max) fail(`bad highlight ${what}`);
+  return value;
+}
+
+function parseHighlight(value: unknown): Highlight {
+  if (!isObject(value)) fail('bad highlight');
+  return {
+    id: parseText(value.id, LIMITS.highlightId, 1, 'id'),
+    exact: parseText(value.exact, LIMITS.highlightExact, 1, 'text'),
+    prefix: parseText(value.prefix, LIMITS.highlightContext, 0, 'prefix'),
+    suffix: parseText(value.suffix, LIMITS.highlightContext, 0, 'suffix'),
+  };
+}
+
+function parseHighlights(value: unknown): Highlight[] {
+  if (!Array.isArray(value) || value.length > LIMITS.highlightsPerNote) fail('bad highlight list');
+  return value.map(parseHighlight);
+}
+
 function parseLastUrl(value: unknown): string {
   if (typeof value !== 'string') fail('bad last URL');
   return parseUrl(value);
@@ -159,6 +212,8 @@ export function parseCourseRecord(raw: unknown, now: number): CourseRecord {
   return {
     read: parseMap(raw.read, now, parseBoolean),
     checks: parseMap(raw.checks, now, parseIndexes),
+    // Records from before highlights existed (old devices, stored rows) have no such field.
+    highlights: raw.highlights === undefined ? {} : parseMap(raw.highlights, now, parseHighlights),
     last: raw.last === undefined ? undefined : parseStamped(raw.last, now, parseLastUrl),
   };
 }

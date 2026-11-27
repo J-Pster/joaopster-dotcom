@@ -1,0 +1,41 @@
+---
+// Reading settings button of the note toolbar (text size, focus mode, print), and the button that
+// leaves focus mode. Behaviour in lib/courses/client/readerTools.ts.
+import type { Lang } from '../../i18n/ui';
+import { readerText } from '../../lib/courses/readerText';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = readerText(Astro.props.lang);
+---
+
+<button type="button" class="reader-focus-exit" data-focus-exit>
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  {t.exitFocus}
+</button>
+<div class="reader-tools" data-reader-tools>
+  <button type="button" class="reader-tools-open" data-reader-tools-open aria-expanded="false" aria-controls="reader-tools-panel" aria-label={t.toolsOpen} title={t.toolsOpen}>
+    <span aria-hidden="true">Aa</span>
+  </button>
+  <div class="reader-tools-panel" id="reader-tools-panel" data-reader-tools-panel role="group" aria-label={t.toolsOpen} hidden>
+    <p class="reader-tools-label" id="reader-tools-size">{t.textSize}</p>
+    <div class="reader-tools-size" role="group" aria-labelledby="reader-tools-size">
+      <button type="button" data-text-step="-1" aria-label={t.smaller} title={t.smaller}><span aria-hidden="true" class="reader-tools-a reader-tools-a--small">A</span></button>
+      <output data-text-value aria-live="polite">100%</output>
+      <button type="button" data-text-step="1" aria-label={t.larger} title={t.larger}><span aria-hidden="true" class="reader-tools-a">A</span></button>
+    </div>
+    <button type="button" class="reader-tools-row" data-focus-toggle aria-pressed="false">
+      <span class="reader-tools-row-text">
+        <span>{t.focus}</span>
+        <span class="reader-tools-hint">{t.focusHint}</span>
+      </span>
+      <kbd>F</kbd>
+    </button>
+    <button type="button" class="reader-tools-row" data-print>
+      <span class="reader-tools-row-text"><span>{t.print}</span></span>
+      <kbd>Ctrl P</kbd>
+    </button>
+  </div>
+</div>

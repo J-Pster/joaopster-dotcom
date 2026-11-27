@@ -5,11 +5,14 @@ import {
   courseView,
   EMPTY_COURSE,
   markChecks,
+  markHighlights,
   markLast,
   markRead,
   parseCourseRecord,
+  serializeProgress,
   type CourseProgress,
   type CourseRecord,
+  type Highlight,
   type ProgressRecord,
 } from './progressModel';
 
@@ -17,6 +20,13 @@ export type { CourseProgress } from './progressModel';
 
 /** Fired on window when the reader changes progress on this page (not when a sync rewrites it). */
 export const PROGRESS_CHANGED = 'courses:progress-changed';
+
+/**
+ * Highlights are refused past this size of the serialized progress. Half of MAX_SYNC_BYTES: two
+ * devices that each filled their budget with different highlights still merge under the server
+ * limit, so progress sync never stops because of highlights.
+ */
+const HIGHLIGHT_BUDGET_BYTES = 256 * 1024;
 
 const PREFIX = 'jp-courses:v2:';
 const storageKey = (slug: string) => `${PREFIX}${slug}`;
@@ -79,6 +89,29 @@ export const setRead = (slug: string, url: string, read: boolean): CourseProgres
 export const setChecks = (slug: string, url: string, indexes: readonly number[]): void => {
   change(slug, (record, now) => markChecks(record, url, indexes, now));
 };
+
+export const loadHighlights = (slug: string, url: string): readonly Highlight[] =>
+  loadRecord(slug).highlights[url]?.v ?? [];
+
+/** Removing or keeping highlights never grows the progress, so it needs no budget check. */
+export const setHighlights = (slug: string, url: string, highlights: readonly Highlight[]): void => {
+  change(slug, (record, now) => markHighlights(record, url, highlights, now));
+};
+
+/**
+ * Saves a list that has more highlights than before, unless the whole progress (all courses, as
+ * synced) would pass the highlight budget. The sync endpoint stops syncing everything above
+ * MAX_SYNC_BYTES, so highlights stop earlier and leave room for the rest of the progress.
+ */
+export function addHighlights(slug: string, url: string, highlights: readonly Highlight[]): 'saved' | 'limit' {
+  const now = Date.now();
+  const next = markHighlights(loadRecord(slug), url, highlights, now);
+  const all: ProgressRecord = { ...loadAllProgress(), [slug]: next };
+  if (new TextEncoder().encode(serializeProgress(all)).length > HIGHLIGHT_BUDGET_BYTES) return 'limit';
+  writeRecord(slug, next);
+  window.dispatchEvent(new Event(PROGRESS_CHANGED));
+  return 'saved';
+}
 
 export const setLast = (slug: string, url: string): void => {
   change(slug, (record, now) => markLast(record, url, now));

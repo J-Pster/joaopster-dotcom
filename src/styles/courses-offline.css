@@ -1,0 +1,62 @@
+/* Offline card on the course home (components/courses/OfflineCard.astro). */
+
+.offline-card {
+  margin: var(--space-xl) 0;
+  padding: var(--space-lg);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+}
+.offline-title { margin: 0 0 var(--space-xs); font-size: 18px; font-weight: 600; line-height: 1.4; color: var(--color-ink); }
+.offline-lead { margin: 0 0 var(--space-base); font-size: 14px; line-height: 1.5; color: var(--color-body); }
+
+/* The bar and both text lines always take their space, so the card keeps its height in every state. */
+.offline-bar {
+  height: 8px;
+  overflow: hidden;
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-pill);
+  visibility: hidden;
+}
+.offline-card[data-state='saving'] .offline-bar { visibility: visible; }
+.offline-fill {
+  display: block;
+  height: 100%;
+  background: var(--color-ink);
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.15s ease-out;
+}
+.offline-status { min-height: 21px; margin: var(--space-xs) 0 0; font-size: 14px; line-height: 1.5; color: var(--color-ink); }
+.offline-detail { min-height: 21px; margin: 0 0 var(--space-base); font-size: 13px; line-height: 1.6; color: var(--color-muted); }
+.offline-card[data-state='failed'] .offline-status { color: #b42318; }
+
+.offline-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.offline-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.offline-btn:hover { border-color: var(--color-ink); }
+.offline-btn:focus-visible { outline: 2px solid var(--color-text-link); outline-offset: 2px; }
+.offline-btn:disabled { cursor: default; opacity: 0.5; }
+.offline-btn[hidden] { display: none; }
+.offline-btn--primary { color: var(--color-on-primary); background: var(--color-primary); border-color: var(--color-primary); }
+.offline-btn--primary:active:not(:disabled) { background: var(--color-primary-active); }
+.offline-card[data-state='unsupported'] .offline-actions { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .offline-fill { transition: none; }
+}
