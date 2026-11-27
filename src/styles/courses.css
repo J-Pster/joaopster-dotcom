@@ -76,6 +76,111 @@
 .course-panel-toggle:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
 .course-panel-toggle[aria-expanded='false'] { color: var(--color-ink); background: var(--color-surface-strong); }
 
+/* On wide screens the toolbar follows the reader down the note, as one thin row under the site
+   header (which slides away on scroll; then the toolbar goes up to the top). Below 1024px the
+   reading bar (ReaderBar.astro) plays this part. */
+@media (min-width: 1024px) {
+  .course-toolbar {
+    position: sticky;
+    top: 64px;
+    z-index: 40;
+    align-items: center;
+    padding: 6px 0;
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-hairline);
+    transition: top 0.25s ease;
+  }
+  :root.header-hidden .course-toolbar { top: 0; }
+  .course-toolbar .course-breadcrumb { flex-wrap: nowrap; padding-top: 0; white-space: nowrap; }
+  /* Only the course title, the long part, gives way. */
+  .course-toolbar .course-breadcrumb > * { flex: none; }
+  .course-toolbar .course-breadcrumb > a:nth-of-type(2) { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* Buttons that do not fit in the toolbar move into this menu (client/toolbar.ts). */
+.course-toolbar .is-collapsed { display: none !important; }
+.course-toolbar.is-compact .course-search-open { padding: 0 8px; }
+.course-toolbar.is-compact .course-search-open-label,
+.course-toolbar.is-compact .course-search-open kbd { display: none; }
+.course-more { position: relative; flex: none; }
+.course-more[hidden] { display: none; }
+/* The reading settings keep their wrapper, so their panel still opens, now from the toolbar's
+   right edge, under the "More options" button. */
+@media (max-width: 1023px) {
+  .course-toolbar { position: relative; }
+  /* The reading bar already has these two, so the toolbar keeps room for the breadcrumb. */
+  :root:not(.course-focus) .course-toolbar .assistant-open-btn--toolbar,
+  :root:not(.course-focus) .course-toolbar .listen-open { display: none; }
+}
+.course-toolbar .reader-tools.is-collapsed {
+  display: block !important;
+  position: static;
+  width: 0;
+  margin-left: calc(-1 * var(--space-sm));
+}
+.course-toolbar .reader-tools.is-collapsed > .reader-tools-open { display: none; }
+.course-more-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.course-more-open:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
+.course-more-open[aria-expanded='true'] { color: var(--color-ink); background: var(--color-surface-strong); }
+.course-more-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.course-more-menu[hidden] { display: none; }
+.course-more-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-ink);
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.course-more-item:hover, .course-more-item:focus-visible { background: var(--color-canvas-soft); outline: none; }
+.course-more-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; flex: none; font-size: 13px; font-weight: 600; color: var(--color-body); }
+.course-more-icon svg { width: 16px; height: 16px; }
+.course-more-open:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+
+/* Touch: every toolbar control at the same 40px. */
+@media (pointer: coarse) {
+  .course-toolbar .course-panel-toggle,
+  .course-toolbar .course-shortcuts-open--toolbar,
+  .course-more-open { width: 40px; height: 40px; }
+  .course-toolbar .course-search-open { height: 40px; min-width: 40px; }
+  .course-more-item { min-height: 44px; }
+}
+
 .progress-bar {
   display: block;
   position: relative;
@@ -124,7 +229,7 @@
   color: var(--color-ink);
 }
 .prose h4 { margin: 1.5em 0 0.4em; font-size: 16px; font-weight: 600; color: var(--color-ink); }
-.prose h2, .prose h3, .prose h4, .prose [id^='bloco-'] { scroll-margin-top: 88px; }
+.prose h2, .prose h3, .prose h4, .prose [id^='bloco-'] { scroll-margin-top: 118px; }
 .prose strong { color: var(--color-ink); font-weight: 600; }
 .prose code {
   padding: 2px 6px;
@@ -290,7 +395,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
     grid-area: nav;
     position: sticky;
     top: var(--course-rail-top);
-    max-height: calc(100vh - var(--course-rail-top) - 20px);
+    max-height: calc(100dvh - var(--course-rail-top) - 20px);
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
@@ -314,7 +419,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
     top: var(--course-rail-top);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - var(--course-rail-top) - 20px);
+    max-height: calc(100dvh - var(--course-rail-top) - 20px);
     transition: top 0.25s ease, max-height 0.25s ease;
   }
   .course-article .toc--inline { display: none; }

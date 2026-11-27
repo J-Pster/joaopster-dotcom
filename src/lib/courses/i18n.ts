@@ -46,6 +46,7 @@ export interface CourseText {
   readonly hideNav: string;
   readonly showNav: string;
   readonly hideToc: string;
+  readonly moreTools: string;
   readonly showToc: string;
   readonly markRead: string;
   readonly lessonRead: string;
@@ -132,6 +133,7 @@ const pt: CourseText = {
   hideNav: 'Ocultar o menu do curso',
   showNav: 'Mostrar o menu do curso',
   hideToc: 'Ocultar o índice da nota',
+  moreTools: 'Mais opções',
   showToc: 'Mostrar o índice da nota',
   markRead: 'Marcar aula como lida',
   lessonRead: 'Aula lida',
@@ -220,6 +222,7 @@ const en: CourseText = {
   hideNav: 'Hide the course menu',
   showNav: 'Show the course menu',
   hideToc: 'Hide the note outline',
+  moreTools: 'More options',
   showToc: 'Show the note outline',
   markRead: 'Mark lesson as read',
   lessonRead: 'Lesson read',
@@ -308,6 +311,7 @@ const es: CourseText = {
   hideNav: 'Ocultar el menú del curso',
   showNav: 'Mostrar el menú del curso',
   hideToc: 'Ocultar el índice de la nota',
+  moreTools: 'Más opciones',
   showToc: 'Mostrar el índice de la nota',
   markRead: 'Marcar clase como leída',
   lessonRead: 'Clase leída',

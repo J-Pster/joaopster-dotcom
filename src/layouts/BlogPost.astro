@@ -160,11 +160,11 @@ const blogLd = {
       display: flex;
       flex-direction: column;
       gap: var(--space-lg);
-      max-height: calc(100vh - 112px);
+      max-height: calc(100dvh - 112px);
       transition: top 0.25s ease, max-height 0.25s ease;
     }
     /* The header slides away while reading: the rails move up into its space. */
-    :global(html.header-hidden) .post-rail-inner { top: 32px; max-height: calc(100vh - 48px); }
+    :global(html.header-hidden) .post-rail-inner { top: 32px; max-height: calc(100dvh - 48px); }
     /* Taller than the viewport, the table of contents scrolls inside its rail. */
     .post-rail-inner > :global(.toc--rail) { flex: 1 1 auto; min-height: 0; }
     /* The right rail already has share and newsletter: no second copy at the end of the post. */

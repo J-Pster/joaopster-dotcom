@@ -46,7 +46,7 @@
     grid-area: assistant;
     position: sticky;
     top: var(--course-rail-top);
-    height: calc(100vh - var(--course-rail-top) - 20px);
+    height: calc(100dvh - var(--course-rail-top) - 20px);
     border: 1px solid var(--color-hairline-strong);
     border-radius: var(--radius-lg);
     transition: top 0.25s ease, height 0.25s ease;
@@ -56,11 +56,6 @@
   :root.assistant-open .course-rail--toc,
   :root.assistant-open .course-panel-toggle--toc { display: none; }
   :root.assistant-open .course-article { max-width: 740px; }
-  /* Three columns leave the note narrow: the search button shrinks to its icon so the breadcrumb
-     keeps one line. */
-  :root.assistant-open:not(.course-nav-hidden) .course-search-open { padding: 0 8px; }
-  :root.assistant-open:not(.course-nav-hidden) .course-search-open-label,
-  :root.assistant-open:not(.course-nav-hidden) .course-search-open kbd { display: none; }
 }
 @media (min-width: 1280px) {
   :root.assistant-open .course-layout { grid-template-columns: 260px minmax(0, 1fr) 340px; }
@@ -378,6 +373,12 @@
 }
 @media (hover: none) {
   .assistant-hint { display: none; }
+}
+/* Short screens (a tablet or phone on its side): a growing message must not push the
+   conversation out of the panel. */
+@media (max-height: 560px) {
+  .assistant-textarea { max-height: 88px; }
+  .assistant-meta { margin-top: 4px; }
 }
 
 /* ---------- API keys and "Is it safe?" windows ---------- */
