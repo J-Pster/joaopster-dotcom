@@ -22,6 +22,8 @@ export type AskError =
   | { readonly kind: 'rateLimit' }
   | { readonly kind: 'overloaded' }
   | { readonly kind: 'network' }
+  /** The SDK file of this page did not load (offline, or the site was updated since the page opened). */
+  | { readonly kind: 'load' }
   | { readonly kind: 'other'; readonly detail: string };
 
 export type AskOutcome =
@@ -77,11 +79,18 @@ function errorOf(sdk: typeof Anthropic, error: unknown): AskError {
   if (error instanceof sdk.APIConnectionError) return { kind: 'network' };
   if (error instanceof sdk.APIError && error.status !== undefined && error.status >= 500) return { kind: 'overloaded' };
   if (error instanceof sdk.APIError) return { kind: 'other', detail: error.message };
+  // Raised by the SDK itself, for example on a stream it cannot read.
+  if (error instanceof sdk.AnthropicError) return { kind: 'other', detail: error.message };
   throw error;
 }
 
 export async function ask({ key, model, context, turns, onText, signal }: AskRequest): Promise<AskOutcome> {
-  const { default: sdk } = await import('@anthropic-ai/sdk');
+  let sdk: typeof Anthropic;
+  try {
+    ({ default: sdk } = await import('@anthropic-ai/sdk'));
+  } catch {
+    return { kind: 'error', error: { kind: 'load' } };
+  }
   const client = new sdk({ apiKey: key, dangerouslyAllowBrowser: true });
   // Sonnet 5.5 can hand a request its safety classifiers decline to another model in the same call.
   const fallback = model === 'smart' ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' as const } : {};

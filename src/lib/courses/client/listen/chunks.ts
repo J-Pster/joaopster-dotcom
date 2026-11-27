@@ -40,6 +40,8 @@ function withStop(text: string): string {
 function cutAtLimit(text: string, limit: ChunkLimit): [string, string] {
   let end = text.length;
   while (measure(text.slice(0, end), limit.unit) > limit.max) end -= 1;
+  // Never between the two halves of an emoji or other character outside the BMP.
+  if (/[\uD800-\uDBFF]/.test(text.charAt(end - 1))) end -= 1;
   const space = text.lastIndexOf(' ', end);
   const cut = space > 0 ? space : end;
   return [text.slice(0, cut), text.slice(cut).trimStart()];

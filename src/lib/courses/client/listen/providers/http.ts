@@ -6,6 +6,7 @@ const DETAIL_MAX = 160;
 
 /** Providers word quota errors differently (ElevenLabs answers 401 for it), so the body is checked too. */
 const QUOTA_WORDS = /quota|insufficient|billing|credits|exceeded|resource_exhausted/i;
+const INVALID_KEY_WORDS = /api key not valid|api_key_invalid|invalid api key/i;
 
 async function readDetail(response: Response): Promise<string> {
   const body = await response.text();
@@ -55,7 +56,8 @@ export async function postJson(
   const status = response.status;
   const detail = (await readDetail(response)).trim().slice(0, DETAIL_MAX);
   if (status === 429 || status === 402 || QUOTA_WORDS.test(detail)) throw new ListenError({ kind: 'quota', provider });
-  if (status === 401 || status === 403) throw new ListenError({ kind: 'key-rejected', provider });
+  // Google answers a wrong key with 400 ("API key not valid", reason API_KEY_INVALID).
+  if (status === 401 || status === 403 || INVALID_KEY_WORDS.test(detail)) throw new ListenError({ kind: 'key-rejected', provider });
   if (status >= 500) throw new ListenError({ kind: 'server', provider, status });
   throw new ListenError({ kind: 'rejected', provider, detail: detail === '' ? `HTTP ${status}` : detail });
 }

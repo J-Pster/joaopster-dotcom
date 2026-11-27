@@ -86,6 +86,10 @@ export function renderMarkdown(source: string): DocumentFragment {
     const listPattern = BULLET.test(line) ? BULLET : NUMBERED.test(line) ? NUMBERED : undefined;
     if (listPattern) {
       const list = document.createElement(listPattern === BULLET ? 'ul' : 'ol');
+      // Models often leave a blank line between numbered items, which splits the list: each part keeps
+      // its own first number instead of starting again at 1.
+      const firstNumber = /^\s*(\d+)/.exec(line)?.[1];
+      if (list instanceof HTMLOListElement && firstNumber !== undefined) list.start = Number(firstNumber);
       while (i < lines.length) {
         const item = listPattern.exec(lines[i] ?? '');
         if (!item) break;

@@ -97,9 +97,15 @@ export function initKeysDialog(): void {
   required<HTMLButtonElement>(safety, '[data-safety-close]').addEventListener('click', () => safety.close());
 
   // A click on the backdrop (the dialog element itself, outside its content box) closes it.
+  // The press must start there too: a text selection dragged out of an input ends with a click whose
+  // target is the dialog, and that must not close it (nor clear the key being typed).
   for (const element of [dialog, safety]) {
+    let pressedOutside = false;
+    element.addEventListener('pointerdown', (event) => {
+      pressedOutside = event.target === element;
+    });
     element.addEventListener('click', (event) => {
-      if (event.target === element) element.close();
+      if (event.target === element && pressedOutside) element.close();
     });
   }
 

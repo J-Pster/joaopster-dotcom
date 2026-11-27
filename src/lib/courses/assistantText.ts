@@ -56,6 +56,7 @@ export interface AssistantText {
     readonly rateLimit: string;
     readonly overloaded: string;
     readonly network: string;
+    readonly load: string;
     readonly refusal: string;
     readonly truncated: string;
     readonly other: (detail: string) => string;
@@ -65,6 +66,7 @@ export interface AssistantText {
   readonly confirmNewChat: string;
   readonly copy: string;
   readonly copied: string;
+  readonly copyFailed: string;
 
   readonly keys: {
     readonly title: string;
@@ -129,6 +131,7 @@ const pt: AssistantText = {
     rateLimit: 'Você chegou no limite de uso da sua conta na Anthropic. Espere um pouco ou confira o limite no painel.',
     overloaded: 'Os servidores da Anthropic estão sobrecarregados agora. Tente de novo daqui a pouco.',
     network: 'Não consegui falar com a Anthropic. Confira sua conexão.',
+    load: 'Não consegui carregar o assistente. Recarregue a página e tente de novo.',
     refusal: 'O modelo preferiu não responder a esse pedido.',
     truncated: 'A resposta ficou longa demais e foi cortada.',
     other: (detail) => `A Anthropic devolveu um erro: ${detail}`,
@@ -138,6 +141,7 @@ const pt: AssistantText = {
   confirmNewChat: 'Apagar esta conversa e começar outra?',
   copy: 'Copiar',
   copied: 'Copiado',
+  copyFailed: 'O navegador não deixou copiar. Selecione o texto e copie à mão.',
   keys: {
     title: 'Chaves de API',
     intro:
@@ -250,6 +254,7 @@ const en: AssistantText = {
     rateLimit: 'Your Anthropic account reached its usage limit. Wait a little or check the limit in the console.',
     overloaded: "Anthropic's servers are overloaded right now. Try again in a moment.",
     network: 'Could not reach Anthropic. Check your connection.',
+    load: 'Could not load the assistant. Reload the page and try again.',
     refusal: 'The model chose not to answer this request.',
     truncated: 'The answer got too long and was cut off.',
     other: (detail) => `Anthropic returned an error: ${detail}`,
@@ -259,6 +264,7 @@ const en: AssistantText = {
   confirmNewChat: 'Delete this chat and start a new one?',
   copy: 'Copy',
   copied: 'Copied',
+  copyFailed: 'The browser did not allow copying. Select the text and copy it by hand.',
   keys: {
     title: 'API keys',
     intro:
@@ -371,6 +377,7 @@ const es: AssistantText = {
     rateLimit: 'Tu cuenta de Anthropic llegó a su límite de uso. Espera un poco o revisa el límite en la consola.',
     overloaded: 'Los servidores de Anthropic están sobrecargados ahora. Inténtalo de nuevo en un momento.',
     network: 'No pude conectar con Anthropic. Revisa tu conexión.',
+    load: 'No pude cargar el asistente. Recarga la página y vuelve a intentarlo.',
     refusal: 'El modelo prefirió no responder a esta petición.',
     truncated: 'La respuesta se hizo demasiado larga y se cortó.',
     other: (detail) => `Anthropic devolvió un error: ${detail}`,
@@ -380,6 +387,7 @@ const es: AssistantText = {
   confirmNewChat: '¿Borrar esta conversación y empezar otra?',
   copy: 'Copiar',
   copied: 'Copiado',
+  copyFailed: 'El navegador no permitió copiar. Selecciona el texto y cópialo a mano.',
   keys: {
     title: 'Claves de API',
     intro:

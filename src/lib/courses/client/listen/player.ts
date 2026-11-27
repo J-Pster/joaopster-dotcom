@@ -60,7 +60,11 @@ function failureMessage(t: ListenText, failure: ListenFailure): string {
 
 /** The provider whose key a failure is about, when entering a key is the way out. */
 function keyProviderOf(failure: ListenFailure): PaidProviderId | undefined {
-  return failure.kind === 'missing-key' || failure.kind === 'key-rejected' ? failure.provider : undefined;
+  // OpenAI answers a wrong key without the CORS header, so the browser reports it as a network
+  // failure: a key problem cannot be told apart from a connection problem there.
+  return failure.kind === 'missing-key' || failure.kind === 'key-rejected' || failure.kind === 'network'
+    ? failure.provider
+    : undefined;
 }
 
 function formatSize(bytes: number, lang: Lang): string {
@@ -309,11 +313,17 @@ export function initListen(): void {
     engine.start(block);
   }
 
+  /** Bumped on every start, so an estimate that finishes late knows it was overtaken. */
+  let estimating = 0;
+
   async function startAt(block: number): Promise<void> {
     const id = provider();
     const selected = voice();
+    const started = ++estimating;
     if (id !== 'browser' && selected !== undefined && hasKey(id) && confirmed !== `${id}:${selected}`) {
       const rest = await estimateFrom(block);
+      // Closed, or another play pressed, while the estimate was being worked out.
+      if (root.hidden || started !== estimating) return;
       if (rest !== undefined && rest.characters > 0) {
         moveTo(block);
         setState({ kind: 'confirming', block, estimate: { characters: rest.characters, cost: PAID_PROVIDERS[id].estimate(rest.text, selected) } });
@@ -494,9 +504,12 @@ export function initListen(): void {
   });
 
   // A key saved in the dialog while the player waits for it: carry on from where it stopped.
-  window.addEventListener(KEYS_CHANGED, () => {
+  window.addEventListener(KEYS_CHANGED, (event) => {
     if (state.kind !== 'error') return;
     const keyProvider = keyProviderOf(state.failure);
+    // Only a change to this provider's key (or to all of them) is an answer to this failure.
+    const changed: unknown = event instanceof CustomEvent ? event.detail : undefined;
+    if (changed !== keyProvider && changed !== 'all') return;
     if (keyProvider !== undefined && hasKey(keyProvider)) void startAt(state.block);
   });
 

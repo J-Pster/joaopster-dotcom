@@ -7,7 +7,7 @@ import { pageLang } from '../../i18n';
 import { KEYS_CHANGED, readKey, requestKey } from '../keys';
 import { panelHidden, setPanelHidden } from '../reader';
 import { showToast } from '../toast';
-import { ask, type AskError } from './api';
+import { ask, type AskError, type AskOutcome } from './api';
 import { currentSection, readNoteContext } from './context';
 import {
   loadConversation,
@@ -230,7 +230,10 @@ export function initAssistant(noteUrl: string): void {
     copy.className = 'assistant-copy';
     copy.textContent = t.copy;
     copy.addEventListener('click', () => {
-      void navigator.clipboard.writeText(turn.text).then(() => showToast(t.copied));
+      navigator.clipboard.writeText(turn.text).then(
+        () => showToast(t.copied),
+        () => showToast(t.copyFailed),
+      );
     });
     foot.append(copy);
   };
@@ -329,6 +332,7 @@ export function initAssistant(noteUrl: string): void {
     paintPassages();
     paintSend();
 
+    const startedFrom = turns;
     const asked = [...turns, question];
     list.append(userItem(question));
     empty.hidden = true;
@@ -339,26 +343,6 @@ export function initAssistant(noteUrl: string): void {
     body.append(thinking);
     list.append(item);
     scrollLogToEnd();
-
-    let frame = 0;
-    const outcome = await ask({
-      key,
-      model: modelSelect.value === 'smart' ? 'smart' : 'fast',
-      context: readNoteContext(courseTitle, noteTitle, lang),
-      turns: asked,
-      signal: controller.signal,
-      onText: (text) => {
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          const follow = isAtEnd();
-          body.replaceChildren(renderMarkdown(text));
-          if (follow) scrollLogToEnd();
-        });
-      },
-    });
-    cancelAnimationFrame(frame);
-    phase = { kind: 'idle' };
-    paintSend();
 
     // A question without an answer leaves the conversation: its text goes back to the composer.
     const giveBack = (): void => {
@@ -371,10 +355,42 @@ export function initAssistant(noteUrl: string): void {
       empty.hidden = turns.length > 0;
     };
 
+    let frame = 0;
+    let outcome: AskOutcome;
+    try {
+      outcome = await ask({
+        key,
+        model: modelSelect.value === 'smart' ? 'smart' : 'fast',
+        context: readNoteContext(courseTitle, noteTitle, lang),
+        turns: asked,
+        signal: controller.signal,
+        onText: (text) => {
+          cancelAnimationFrame(frame);
+          frame = requestAnimationFrame(() => {
+            const follow = isAtEnd();
+            body.replaceChildren(renderMarkdown(text));
+            if (follow) scrollLogToEnd();
+          });
+        },
+      });
+    } catch (error) {
+      // A failure ask() has no name for (a bug, not the provider): the reader keeps the question.
+      giveBack();
+      showAlert(t.errors.other(error instanceof Error ? error.message : String(error)), { retry: true, keys: false });
+      throw error;
+    } finally {
+      cancelAnimationFrame(frame);
+      phase = { kind: 'idle' };
+      paintSend();
+    }
+    // "Nova conversa" replaced the conversation while this answer was coming: it belongs nowhere now.
+    if (turns !== startedFrom) return;
+
     if (outcome.kind === 'error') {
       giveBack();
       const keyProblem = outcome.error.kind === 'key' || outcome.error.kind === 'permission';
-      showAlert(errorMessage(t, outcome.error), { retry: !keyProblem, keys: keyProblem });
+      // After a failed load only a reload helps; asking again would fail the same way.
+      showAlert(errorMessage(t, outcome.error), { retry: !keyProblem && outcome.error.kind !== 'load', keys: keyProblem });
       return;
     }
     if (outcome.kind === 'stopped' && outcome.text.trim() === '') {
@@ -411,6 +427,8 @@ export function initAssistant(noteUrl: string): void {
   required<HTMLButtonElement>(panel, '[data-assistant-add-key]').addEventListener('click', () => requestKey('anthropic'));
   for (const suggestion of panel.querySelectorAll<HTMLButtonElement>('[data-assistant-suggestion]')) {
     suggestion.addEventListener('click', () => {
+      // While an answer is coming the reader's draft stays as it is.
+      if (phase.kind === 'answering') return;
       input.value = suggestion.textContent?.trim() ?? '';
       void submit();
     });
