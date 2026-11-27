@@ -15,7 +15,6 @@
   letter-spacing: -1.08px;
   color: var(--color-ink);
 }
-.catalog-lead { margin: 0; font-size: 16px; line-height: 1.6; color: var(--color-body); }
 .catalog-facts { margin: var(--space-sm) 0 0; font-size: 13px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
 
 /* ---------- Layout ---------- */
@@ -279,10 +278,10 @@
 @media (max-width: 640px) {
   .catalog { padding-top: var(--space-xl); }
   .catalog-title { font-size: 28px; letter-spacing: -0.84px; }
-  /* On a phone the list should start on the first screen: the lead and the how-to link (also in the
-     closing band) give way. */
+  /* On a phone the list should start on the first screen: the how-to link (also in the closing band)
+     gives way. */
   .catalog-head { margin-bottom: var(--space-lg); }
-  .catalog-lead, .catalog-howto { display: none; }
+  .catalog-howto { display: none; }
   .catalog-side { margin-bottom: var(--space-base); }
   .catalog-filters { gap: var(--space-sm); }
   .catalog-facet legend { margin-bottom: 6px; }

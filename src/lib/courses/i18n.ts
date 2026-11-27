@@ -15,7 +15,6 @@ export interface CourseText {
   readonly landingMetaDescription: string;
   readonly section: string;
   readonly catalogTitle: string;
-  readonly catalogLead: string;
   /** Totals under the catalog title: courses, lessons and hours of reading. */
   readonly catalogFacts: (courses: number, lessons: number, hours: number) => string;
   readonly howToLink: string;
@@ -138,15 +137,13 @@ const pt: CourseText = {
   locale: 'pt-BR',
   languageNames: { pt: 'português', en: 'inglês', es: 'espanhol' },
 
-  landingMetaTitle: 'Cursos gratuitos criados com IA | João Pster',
+  landingMetaTitle: 'Cursos gratuitos | João Pster',
   landingMetaDescription:
-    'Cursos autodidatas em português que eu crio com IA para estudar e publico para qualquer pessoa ler de graça, aqui no site ou baixados.',
+    'Cursos que eu crio para mim mesmo e deixo abertos, de graça, para você: leia no site, acompanhe o seu progresso ou baixe o curso inteiro.',
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
-  catalogLead:
-    'Cursos gratuitos que eu crio com IA para estudar. Leia aqui no site, salve o progresso entre dispositivos ou baixe o curso inteiro.',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · ${hours} h de leitura · grátis`,
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · ${hours} h de leitura`,
   howToLink: 'Como eu crio os cursos',
   searchLabel: 'Buscar nos cursos',
   searchPlaceholder: 'Buscar curso ou aula',
@@ -258,15 +255,13 @@ const en: CourseText = {
   locale: 'en',
   languageNames: { pt: 'Portuguese', en: 'English', es: 'Spanish' },
 
-  landingMetaTitle: 'Free courses made with AI | João Pster',
+  landingMetaTitle: 'Free courses | João Pster',
   landingMetaDescription:
-    'Self-study courses I create with AI for my own learning and publish for anyone to read for free, here on the site or downloaded.',
+    'Courses I make for myself and leave open, for free, for you: read them on the site, track your progress or download the whole course.',
   section: 'Courses',
   catalogTitle: 'Course catalog',
-  catalogLead:
-    'Free courses I create with AI to study. Read them here, sync your progress across devices or download the whole course.',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · ${hours} h of reading · free`,
+    `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · ${hours} h of reading`,
   howToLink: 'How I make the courses',
   searchLabel: 'Search the courses',
   searchPlaceholder: 'Search courses and lessons',
@@ -378,15 +373,13 @@ const es: CourseText = {
   locale: 'es',
   languageNames: { pt: 'portugués', en: 'inglés', es: 'español' },
 
-  landingMetaTitle: 'Cursos gratuitos creados con IA | João Pster',
+  landingMetaTitle: 'Cursos gratuitos | João Pster',
   landingMetaDescription:
-    'Cursos autodidactas que creo con IA para estudiar y publico para que cualquiera los lea gratis, aquí en el sitio o descargados.',
+    'Cursos que creo para mí mismo y dejo abiertos, gratis, para ti: léelos en el sitio, sigue tu progreso o descarga el curso completo.',
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
-  catalogLead:
-    'Cursos gratuitos que creo con IA para estudiar. Léelos aquí, sincroniza tu progreso entre dispositivos o descarga el curso completo.',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · ${hours} h de lectura · gratis`,
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · ${hours} h de lectura`,
   howToLink: 'Cómo creo los cursos',
   searchLabel: 'Buscar en los cursos',
   searchPlaceholder: 'Buscar curso o clase',

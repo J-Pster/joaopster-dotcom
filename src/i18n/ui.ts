@@ -190,8 +190,8 @@ export const ui = {
     'blog.topics': 'Temas',
     'blog.totalRead': 'min de leitura no total',
     'blog.subscribe': 'Receber por e-mail',
-    'blog.coursesTitle': 'Cursos gratuitos',
-    'blog.coursesText': 'Cursos gratuitos que eu crio com IA para estudar, com progresso salvo e o curso inteiro para baixar.',
+    'blog.coursesTitle': 'Estude comigo',
+    'blog.coursesText': 'Cursos que eu crio para mim mesmo, disponíveis de graça para você.',
     'blog.coursesCta': 'Ver o catálogo',
     'blog.elsewhere': 'Também escrevo em',
 
@@ -400,8 +400,8 @@ export const ui = {
     'blog.topics': 'Topics',
     'blog.totalRead': 'min of reading in total',
     'blog.subscribe': 'Get it by email',
-    'blog.coursesTitle': 'Free courses',
-    'blog.coursesText': 'Free courses I create with AI to study, with saved progress and the whole course to download.',
+    'blog.coursesTitle': 'Study with me',
+    'blog.coursesText': 'Courses I make for myself, free for you too.',
     'blog.coursesCta': 'See the catalog',
     'blog.elsewhere': 'I also write on',
 
@@ -610,8 +610,8 @@ export const ui = {
     'blog.topics': 'Temas',
     'blog.totalRead': 'min de lectura en total',
     'blog.subscribe': 'Recibir por e-mail',
-    'blog.coursesTitle': 'Cursos gratuitos',
-    'blog.coursesText': 'Cursos gratuitos que creo con IA para estudiar, con progreso guardado y el curso completo para descargar.',
+    'blog.coursesTitle': 'Estudia conmigo',
+    'blog.coursesText': 'Cursos que creo para mí mismo, disponibles gratis para ti.',
     'blog.coursesCta': 'Ver el catálogo',
     'blog.elsewhere': 'También escribo en',
 

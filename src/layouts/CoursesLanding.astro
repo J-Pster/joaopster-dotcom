@@ -61,7 +61,6 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       <header class="catalog-head">
         <p class="courses-eyebrow">{text.section}</p>
         <h1 class="catalog-title">{text.catalogTitle}</h1>
-        <p class="catalog-lead">{text.catalogLead}</p>
         {courses.length > 0 && <p class="catalog-facts">{text.catalogFacts(courses.length, totalLessons, totalHours)}</p>}
       </header>
 
