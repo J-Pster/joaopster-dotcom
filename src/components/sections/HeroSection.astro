@@ -41,17 +41,17 @@ const lifeLog = [
     <div class="hero-stats">
       <a class="stat" href={`${about}#experience`}>
         <span class="stat-n" data-uptime="devYears">{uptime.devYears}</span>
-        <span class="stat-l">{t('hero.yearsBuilding')}</span>
+        <span class="stat-l">{t('hero.yearsExperience')}</span>
+      </a>
+      <div class="stat-divider"></div>
+      <a class="stat" href={`${about}#skills`}>
+        <span class="stat-n">{skillCount}</span>
+        <span class="stat-l">{t('hero.skills')}</span>
       </a>
       <div class="stat-divider"></div>
       <div class="stat">
-        <span class="stat-n">500+</span>
-        <span class="stat-l">{t('hero.usersInProduction')}</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-n">{t('hero.codeShare.n')}</span>
-        <span class="stat-l">{t('hero.codeShare')}</span>
+        <span class="stat-n">3</span>
+        <span class="stat-l">{t('hero.languages')}</span>
       </div>
     </div>
     <div class="hero-ctas">
