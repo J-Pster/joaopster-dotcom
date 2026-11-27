@@ -2,7 +2,7 @@
 // from the catalog and the vaults: lesson titles and descriptions, the catalog's ItemList and each
 // course's schema.org Course. Only facts the catalog or the notes state go in.
 import type { CourseInfo } from './catalog';
-import { courseUrl } from './catalog';
+import { courseUrl, coursesHome } from './catalog';
 import type { CourseText } from './i18n';
 import { readingMinutes } from './readingTime';
 import type { Note, Vault } from './vault';
@@ -102,16 +102,35 @@ export function courseJsonLd(vault: Vault, site: URL) {
   };
 }
 
-/** schema.org ItemList of the courses on a catalog landing. */
+/** schema.org ItemList of the courses on a catalog landing: only the courses open to search. */
 export function catalogJsonLd(courses: readonly CourseInfo[], site: URL) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: courses.map((course, index) => ({
+    itemListElement: courses.filter((course) => course.indexing === 'index').map((course, index) => ({
       '@type': 'ListItem',
       position: index + 1,
       name: course.title,
       url: new URL(courseUrl(course), site).href,
+    })),
+  };
+}
+
+/** schema.org BreadcrumbList of a course note: courses landing, course, then the note (the course home ends at the course). */
+export function noteBreadcrumbJsonLd(note: Note, course: CourseInfo, coursesLabel: string, site: URL) {
+  const trail = [
+    { name: coursesLabel, url: new URL(coursesHome(course.lang), site).href },
+    { name: course.title, url: new URL(courseUrl(course), site).href },
+    ...(note.kind === 'home' ? [] : [{ name: seoTitle(note) }]),
+  ];
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      ...('url' in crumb && { item: crumb.url }),
     })),
   };
 }

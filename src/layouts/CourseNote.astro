@@ -25,7 +25,8 @@ import { searchText } from '../lib/courses/searchText';
 import { shortcutsText } from '../lib/courses/shortcutsText';
 import { readingMinutes } from '../lib/courses/readingTime';
 import { readerText } from '../lib/courses/readerText';
-import { courseJsonLd, jsonLdScript, noteMetaDescription, seoTitle } from '../lib/courses/seo';
+import { courseJsonLd, jsonLdScript, noteBreadcrumbJsonLd, noteMetaDescription, seoTitle } from '../lib/courses/seo';
+import { useTranslations } from '../i18n/ui';
 import { assistantText } from '../lib/courses/assistantText';
 import '../styles/courses.css';
 import '../styles/courses-search.css';
@@ -71,7 +72,11 @@ const backlinks = [...(vault.backlinks.get(note.id) ?? [])].sort((a, b) => kindR
 
 const pageTitle = note.kind === 'home' ? text.courseHomeTitle(course.title) : `${seoTitle(note)} | ${course.title}`;
 const description = noteMetaDescription(note, course, text);
-const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(vault, Astro.site ?? new URL('https://joaopster.com'))) : undefined;
+const site = Astro.site ?? new URL('https://joaopster.com');
+const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(vault, site)) : undefined;
+// Breadcrumbs only where the page can show in search.
+const breadcrumbLd =
+  indexing === 'index' ? jsonLdScript(noteBreadcrumbJsonLd(note, course, useTranslations(course.lang)('nav.courses'), site)) : undefined;
 // A note exists only in its course's language: the language switcher goes to the courses landing of
 // the language picked (data-lang-* on <html>, read by i18n/switchLocale.ts).
 ---
@@ -80,6 +85,7 @@ const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(vault, Astro.s
   <head>
     <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} />
     {courseLd && <script type="application/ld+json" set:html={courseLd} />}
+    {breadcrumbLd && <script type="application/ld+json" set:html={breadcrumbLd} />}
     <link rel="manifest" href="/manifest.webmanifest" />
     <!-- Hidden side panels are applied before the first paint, so the layout does not jump.
          Same key and shape as saveHiddenPanels() in lib/courses/client/reader.ts. -->

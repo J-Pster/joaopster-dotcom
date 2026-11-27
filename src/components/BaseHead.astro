@@ -8,8 +8,9 @@ import '@fontsource/inter/latin-500.css';
 import '@fontsource/inter/latin-600.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import type { ImageMetadata } from 'astro';
-import { SITE_TITLE } from '../consts';
-import type { Lang } from '../i18n/ui';
+import { SITE_NAME } from '../consts';
+import { useTranslations, type Lang } from '../i18n/ui';
+import profilePhoto from '../assets/profile-photo.png';
 
 interface Props {
 	title: string;
@@ -37,7 +38,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
 const imageURL = new URL(typeof image === 'string' ? image : image.src, site);
 
 const localeMap: Record<string, string> = { pt: 'pt_BR', en: 'en_US', es: 'es_ES' };
-const currentLang = Astro.currentLocale ?? 'pt';
+const currentLang = (Astro.currentLocale ?? 'pt') as Lang;
 const ogLocale = localeMap[currentLang] ?? 'pt_BR';
 const altLocales = Object.entries(localeMap).filter(([code]) => code !== currentLang);
 
@@ -65,9 +66,14 @@ const personLd = {
 	'@type': 'Person',
 	'@id': PERSON_ID,
 	name: 'João Pster',
-	alternateName: 'João Pedro Viana',
+	// Legal name, in full and in the short form some documents use, so searches for either find the site.
+	alternateName: ['João Pedro Viana Freitas', 'João Pedro Viana'],
 	url: new URL('/sobre/', site).href,
-	jobTitle: 'Co-Founder and Developer',
+	// The same role as the hero and the page titles, so every source describes the person the same way.
+	jobTitle: useTranslations(currentLang)('hero.role'),
+	image: new URL(profilePhoto.src, site).href,
+	knowsAbout: ['TypeScript', 'Node.js', 'NestJS', 'Angular', 'React', 'PostgreSQL', 'Amazon Web Services', 'Infrastructure as code', 'Software architecture'],
+	alumniOf: { '@type': 'EducationalOrganization', name: 'Trybe', url: 'https://www.betrybe.com/' },
 	sameAs: [
 		'https://github.com/J-Pster',
 		'https://www.linkedin.com/in/joaopster/',
@@ -80,7 +86,7 @@ const siteLd = {
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
 	'@id': WEBSITE_ID,
-	name: SITE_TITLE,
+	name: SITE_NAME,
 	url: site.href,
 	publisher: { '@id': PERSON_ID },
 	author: { '@id': PERSON_ID },
@@ -97,7 +103,7 @@ const siteLd = {
 <link
 	rel="alternate"
 	type="application/rss+xml"
-	title={SITE_TITLE}
+	title={SITE_NAME}
 	href={new URL(feedPath, site)}
 />
 <meta name="generator" content={Astro.generator} />

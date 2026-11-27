@@ -34,7 +34,7 @@ export const GET: APIRoute = async () => {
     '',
     `> ${t('hero.role')}. ${t('hero.sub')}`,
     '',
-    'Personal site of João Pster (legal name João Pedro Viana): résumé, blog and free courses. The site is in Portuguese, English and Spanish.',
+    'Personal site of João Pster (legal name João Pedro Viana Freitas): résumé, blog and free courses. The site is in Portuguese, English and Spanish.',
     '',
     '## About',
     '',
