@@ -1,0 +1,88 @@
+---
+// The API keys window (one row per provider) and the "Is it safe?" window of the course notes.
+// Behaviour in lib/courses/client/keysDialog.ts; the keys themselves in lib/courses/client/keys.ts.
+import type { Lang } from '../../i18n/ui';
+import { ALLOWED_CONNECTIONS, SOURCE_URL, assistantText } from '../../lib/courses/assistantText';
+import { PROVIDERS } from '../../lib/courses/client/keys';
+import { privacyUrl } from '../../lib/legalUrls';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = assistantText(lang);
+---
+
+<dialog class="keys-dialog" id="course-keys" data-keys-dialog aria-labelledby="course-keys-title">
+  <div class="keys-dialog-head">
+    <h2 class="keys-dialog-title" id="course-keys-title">{t.keys.title}</h2>
+    <button type="button" class="keys-dialog-close" data-keys-close aria-label={t.keys.close} title={t.keys.close}>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <p class="keys-dialog-intro">
+    {t.keys.intro}
+    <button type="button" class="keys-safe-link" data-safety-open aria-haspopup="dialog" aria-controls="course-safety">{t.isItSafe}</button>
+  </p>
+  <ul class="keys-list">
+    {PROVIDERS.map((provider) => {
+      const info = t.providers[provider];
+      return (
+        <li class="keys-row" data-key-row={provider}>
+          <div class="keys-row-head">
+            <label class="keys-row-name" for={`course-key-${provider}`}>{info.name}</label>
+            <span class="keys-row-use">{info.usedFor}</span>
+          </div>
+          <p class="keys-row-state" data-key-state aria-live="polite">{t.keys.notSaved}</p>
+          <form class="keys-row-form" data-key-form>
+            <input
+              class="keys-row-input"
+              id={`course-key-${provider}`}
+              type="password"
+              autocomplete="off"
+              spellcheck="false"
+              autocapitalize="off"
+              placeholder={t.keys.placeholder}
+              data-key-input
+            />
+            <button type="submit" class="keys-row-save">{t.keys.save}</button>
+            <button type="button" class="keys-row-delete" data-key-delete hidden>{t.keys.delete}</button>
+          </form>
+          <p class="keys-row-tip">
+            {info.tip}
+            <a href={info.keysUrl} target="_blank" rel="noopener noreferrer">{t.keys.getKey}</a>
+          </p>
+        </li>
+      );
+    })}
+  </ul>
+  <button type="button" class="keys-delete-all" data-keys-delete-all>{t.keys.deleteAll}</button>
+</dialog>
+
+<dialog class="keys-dialog safety-dialog" id="course-safety" data-safety-dialog aria-labelledby="course-safety-title">
+  <div class="keys-dialog-head">
+    <h2 class="keys-dialog-title" id="course-safety-title">{t.safety.title}</h2>
+    <button type="button" class="keys-dialog-close" data-safety-close aria-label={t.keys.close} title={t.keys.close}>
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="safety-body">
+    {t.safety.sections.map((section) => (
+      <section class="safety-section">
+        <h3>{section.heading}</h3>
+        <p>{section.body}</p>
+      </section>
+    ))}
+    <section class="safety-section">
+      <h3>{t.safety.allowedTitle}</h3>
+      <ul class="safety-hosts">
+        {ALLOWED_CONNECTIONS.map((host) => <li><code>{host}</code></li>)}
+      </ul>
+    </section>
+    <p class="safety-links">
+      <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">{t.safety.sourceLink}</a>
+      <a href={privacyUrl(lang)}>{t.safety.privacyLink}</a>
+    </p>
+  </div>
+</dialog>

@@ -1051,6 +1051,19 @@ body:has(.toc--inline) .reader-bar-title { display: none; }
 }
 .reader-bar-toc svg { flex: none; color: var(--color-muted); }
 .reader-bar-search { flex: none; justify-content: center; width: 44px; }
+/* On narrow phones the bar holds five buttons: "Modules" keeps only its icon (the word stays for
+   screen readers) so the section being read has room. */
+@media (max-width: 479px) {
+  .reader-bar-nav { flex: none; justify-content: center; width: 44px; padding: 0; }
+  .reader-bar-nav span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
 .reader-bar-progress {
   position: absolute;
   left: 0;

@@ -98,7 +98,7 @@ function openNavOnWideScreens(): void {
 
 // Side panels the reader hid (course menu, note index). One choice for every course, kept in this
 // browser. CourseNote.astro reads the same key inline to apply it before the first paint.
-type Panel = 'nav' | 'toc';
+export type Panel = 'nav' | 'toc';
 const LAYOUT_KEY = 'jp-courses:layout';
 const PANEL_CLASS: Record<Panel, string> = { nav: 'course-nav-hidden', toc: 'course-toc-hidden' };
 function panelLabel(panel: Panel, shown: boolean): string {
@@ -137,6 +137,17 @@ function initPanelToggles(): void {
       if (panel === 'nav' && !isPanelHidden('nav')) centerCurrentLesson();
     });
   });
+}
+
+/** Shows or hides a side panel for another feature (the assistant hides the menu while it is open),
+ *  without saving it as the reader's own choice. */
+export function setPanelHidden(panel: Panel, hidden: boolean): void {
+  document.documentElement.classList.toggle(PANEL_CLASS[panel], hidden);
+  document.querySelectorAll<HTMLButtonElement>(`[data-panel-toggle="${panel}"]`).forEach((button) => paintPanelToggle(button, panel));
+}
+
+export function panelHidden(panel: Panel): boolean {
+  return isPanelHidden(panel);
 }
 
 function progressBar(done: number, total: number): string {

@@ -1,0 +1,63 @@
+---
+// Player of "listen to the lesson", docked at the bottom of the screen while open. It is a region,
+// not a modal: the lesson stays readable and scrollable behind it.
+// Behaviour in lib/courses/client/listen/player.ts.
+import type { Lang } from '../../i18n/ui';
+import { listenText } from '../../lib/courses/listenText';
+import { PROVIDER_IDS } from '../../lib/courses/client/listen/prefs';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = listenText(Astro.props.lang);
+---
+
+<section class="listen-player" id="listen-player" data-listen-player role="region" aria-label={t.player} tabindex="-1" hidden>
+  <div class="listen-main">
+    <div class="listen-transport">
+      <button type="button" class="listen-btn" data-listen-previous aria-label={t.previous} title={t.previous} disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 5 9 12l10 7V5ZM5 5v14"/></svg>
+      </button>
+      <button type="button" class="listen-btn listen-btn--play" data-listen-play data-action="play" aria-label={t.play} title={t.play}>
+        <svg class="listen-icon-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z"/></svg>
+        <svg class="listen-icon-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4.5" height="14" rx="1"/><rect x="13.5" y="5" width="4.5" height="14" rx="1"/></svg>
+      </button>
+      <button type="button" class="listen-btn" data-listen-next aria-label={t.next} title={t.next} disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 5 10 7-10 7V5ZM19 5v14"/></svg>
+      </button>
+    </div>
+
+    <div class="listen-info">
+      <p class="listen-status" data-listen-status></p>
+      <div class="listen-actions" data-listen-actions></div>
+    </div>
+
+    <button type="button" class="listen-btn listen-speed" data-listen-speed>1x</button>
+    <button type="button" class="listen-btn" data-listen-settings-toggle aria-expanded="false" aria-controls="listen-settings" aria-label={t.settings} title={t.settings}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+    </button>
+    <button type="button" class="listen-btn" data-listen-close aria-label={t.close} title={t.close}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="listen-settings" id="listen-settings" data-listen-settings hidden>
+    <label class="listen-field">
+      <span class="listen-label">{t.provider}</span>
+      <select data-listen-provider>
+        {PROVIDER_IDS.map((id) => <option value={id}>{t.providerName[id]}</option>)}
+      </select>
+    </label>
+    <label class="listen-field">
+      <span class="listen-label">{t.voice}</span>
+      <select data-listen-voice></select>
+    </label>
+    <div class="listen-cache">
+      <p class="listen-cache-label" data-listen-cache-label></p>
+      <button type="button" class="listen-link" data-listen-cache-clear>{t.clearAudio}</button>
+    </div>
+  </div>
+
+  <p class="listen-announce" data-listen-announce role="status" aria-live="polite"></p>
+</section>

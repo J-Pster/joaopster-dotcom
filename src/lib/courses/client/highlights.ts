@@ -1,10 +1,12 @@
 // Text highlights in a course note. A highlight is stored as a quote (the text plus a little context,
 // see Highlight in progressModel.ts) rather than as DOM positions, because other features decorate the
 // note after it is rendered and a sync can bring highlights made on another device.
+import { assistantText } from '../assistantText';
 import { highlightsText } from '../highlightsText';
 import { pageLang } from '../i18n';
 import { addHighlights, loadHighlights, setHighlights } from '../progress';
 import { LIMITS, type Highlight } from '../progressModel';
+import { ADD_TO_CHAT } from './assistant/events';
 
 const CONTENT = '.note-content';
 const MARK = 'mark.user-highlight';
@@ -137,13 +139,21 @@ function newId(): string {
 
 const signature = (list: readonly Highlight[]): string => JSON.stringify(list);
 
-function createButton(): HTMLButtonElement {
+// The floating buttons over a selection: highlight it (or remove a highlight) and send it to the chat.
+function createActions(chatLabel: string): { bar: HTMLDivElement; button: HTMLButtonElement; chat: HTMLButtonElement } {
+  const bar = document.createElement('div');
+  bar.className = 'highlight-actions';
+  bar.hidden = true;
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'highlight-button';
-  button.hidden = true;
-  document.body.append(button);
-  return button;
+  const chat = document.createElement('button');
+  chat.type = 'button';
+  chat.className = 'highlight-button highlight-button--chat';
+  chat.textContent = chatLabel;
+  bar.append(button, chat);
+  document.body.append(bar);
+  return { bar, button, chat };
 }
 
 function createNotice(): HTMLElement {
@@ -163,7 +173,7 @@ export function initHighlights(slug: string, noteUrl: string): () => void {
   const root = document.querySelector<HTMLElement>(CONTENT);
   if (!root) throw new Error('Highlights loaded outside a course note');
   const text = highlightsText(pageLang());
-  const button = createButton();
+  const { bar, button, chat } = createActions(assistantText(pageLang()).addToChat);
   const notice = createNotice();
   const coarsePointer = window.matchMedia('(pointer: coarse)');
 
@@ -213,12 +223,12 @@ export function initHighlights(slug: string, noteUrl: string): () => void {
   // Above the text on desktop; below it on touch, where the native selection menu sits above.
   // It never overlaps the text: when the preferred side is off screen it takes the other one.
   const place = (): void => {
-    if (!target || button.hidden) return;
+    if (!target || bar.hidden) return;
     const rects = rectsOf(target);
     if (!rects) return hide();
     const { first, last } = rects;
-    const height = button.offsetHeight;
-    const width = button.offsetWidth;
+    const height = bar.offsetHeight;
+    const width = bar.offsetWidth;
     const above = first.top - height - MARGIN;
     const below = last.bottom + MARGIN;
     const fitsAbove = above >= MARGIN;
@@ -228,19 +238,20 @@ export function initHighlights(slug: string, noteUrl: string): () => void {
     const anchor = useBelow ? last : first;
     const left = (anchor.left + anchor.right) / 2 - width / 2;
     const maxLeft = document.documentElement.clientWidth - width - MARGIN;
-    button.style.top = `${Math.min(Math.max(top, MARGIN), window.innerHeight - height - MARGIN)}px`;
-    button.style.left = `${Math.min(Math.max(left, MARGIN), Math.max(MARGIN, maxLeft))}px`;
+    bar.style.top = `${Math.min(Math.max(top, MARGIN), window.innerHeight - height - MARGIN)}px`;
+    bar.style.left = `${Math.min(Math.max(left, MARGIN), Math.max(MARGIN, maxLeft))}px`;
   };
 
   function hide(): void {
-    button.hidden = true;
+    bar.hidden = true;
     target = undefined;
   }
 
   const show = (next: Target, label: string): void => {
     target = next;
     button.textContent = label;
-    button.hidden = false;
+    chat.hidden = next.kind !== 'add';
+    bar.hidden = false;
     place();
   };
 
@@ -293,7 +304,7 @@ export function initHighlights(slug: string, noteUrl: string): () => void {
 
   document.addEventListener('selectionchange', () => scheduleRefresh(SELECTION_DELAY_MS));
   document.addEventListener('pointerdown', (event) => {
-    if (event.target === button) return;
+    if (event.target instanceof Node && bar.contains(event.target)) return;
     mouseDown = event.pointerType === 'mouse';
     const onMark = event.target instanceof Element && event.target.closest(MARK);
     if (target?.kind === 'remove' && !onMark) hide();
@@ -304,23 +315,31 @@ export function initHighlights(slug: string, noteUrl: string): () => void {
   });
   document.addEventListener('pointercancel', () => { mouseDown = false; });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !button.hidden) hide();
+    if (event.key === 'Escape' && !bar.hidden) hide();
   });
   window.addEventListener('scroll', place, { passive: true });
   window.addEventListener('resize', place);
 
   // Keeps the selection (and, on touch, the press) alive until the click lands.
-  button.addEventListener('pointerdown', (event) => {
+  bar.addEventListener('pointerdown', (event) => {
     event.preventDefault();
     pressingButton = true;
   });
   const releaseButton = (): void => { pressingButton = false; };
-  button.addEventListener('pointerup', releaseButton);
-  button.addEventListener('pointercancel', releaseButton);
+  bar.addEventListener('pointerup', releaseButton);
+  bar.addEventListener('pointercancel', releaseButton);
   button.addEventListener('click', () => {
     pressingButton = false;
     if (target?.kind === 'add') create(target.range);
     else if (target?.kind === 'remove') remove(target.id);
+  });
+  chat.addEventListener('click', () => {
+    pressingButton = false;
+    if (target?.kind !== 'add') return;
+    const passage = target.range.toString();
+    window.getSelection()?.removeAllRanges();
+    hide();
+    window.dispatchEvent(new CustomEvent(ADD_TO_CHAT, { detail: passage }));
   });
 
   root.addEventListener('click', (event) => {

@@ -1,11 +1,13 @@
 ---
 // Phone and tablet reading bar of a course note (below 1024px, where the side columns are not shown):
 // sticky under the header, with the course modules, the section being read (it opens the note's table
-// of contents) and search. Modules and contents open as bottom sheets; lib/courses/client/readerBar.ts
+// of contents), listening, the AI assistant and search. Modules and contents open as bottom sheets; lib/courses/client/readerBar.ts
 // moves the sidebar and the table of contents into them while open.
 import type { Lang } from '../../i18n/ui';
 import { courseText } from '../../lib/courses/i18n';
 import { searchText } from '../../lib/courses/searchText';
+import { assistantText } from '../../lib/courses/assistantText';
+import { listenText } from '../../lib/courses/listenText';
 
 interface Props {
   lang: Lang;
@@ -15,6 +17,8 @@ interface Props {
 const { lang, title } = Astro.props;
 const text = courseText(lang);
 const search = searchText(lang);
+const assistant = assistantText(lang);
+const listen = listenText(lang);
 const sheets = [
   { name: 'nav', title: text.navToggle },
   { name: 'toc', title: text.onThisNote },
@@ -34,6 +38,12 @@ const sheets = [
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
   </button>
   <p class="reader-bar-title" data-reader-title>{title}</p>
+  <button type="button" class="reader-bar-listen" data-listen-open aria-controls="listen-player" aria-expanded="false" aria-label={listen.open} title={listen.open}>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg>
+  </button>
+  <button type="button" class="reader-bar-assistant" data-assistant-open aria-controls="course-assistant" aria-expanded="false" aria-label={assistant.open} title={assistant.open}>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+  </button>
   <button type="button" class="reader-bar-search" data-search-open aria-label={search.open} title={search.open}>
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
   </button>

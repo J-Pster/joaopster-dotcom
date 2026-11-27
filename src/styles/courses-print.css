@@ -10,6 +10,7 @@
   body > footer,
   .course-rail,
   .course-toolbar,
+  .listen-player,
   .reader-focus-exit,
   .toc--inline,
   .sync-card,
@@ -32,6 +33,7 @@
   .prose h1, .prose h2, .prose h3, .prose h4 { color: #000; break-after: avoid; }
   .prose p, .prose li { orphans: 3; widows: 3; }
   .prose a { color: inherit; text-decoration: underline; }
+  .prose .listen-current { background: none; box-shadow: none; }
   /* External links show where they go; links between notes do not, they only make sense online. */
   .prose a.external-link::after { content: ' (' attr(href) ')'; font-size: 0.85em; word-break: break-all; }
 

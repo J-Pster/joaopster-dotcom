@@ -10,9 +10,21 @@
 }
 .note-content mark.user-highlight:hover { background: rgba(250, 204, 21, 0.5); }
 
-.highlight-button {
+/* Floating buttons over a selection: highlight it, and send it to the AI assistant. */
+.highlight-actions {
   position: fixed;
   z-index: 60;
+  display: flex;
+  gap: 6px;
+}
+.highlight-actions[hidden] { display: none; }
+.highlight-button--chat {
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border-color: var(--color-hairline-strong);
+}
+.highlight-button--chat:active { background: var(--color-surface-strong); }
+.highlight-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -61,5 +73,5 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .highlight-button, .highlight-notice { display: none; }
+  .highlight-actions, .highlight-notice { display: none; }
 }

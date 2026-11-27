@@ -1,0 +1,224 @@
+/* "Listen to the lesson": the toolbar button, the player docked at the bottom and the highlight of
+   the block being read. Markup in components/courses/ListenButton.astro and ListenPlayer.astro,
+   behaviour in lib/courses/client/listen/. */
+
+/* ---------- Toolbar button (same 32px look as the reading settings button) ---------- */
+
+.listen-open {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--color-body);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.listen-open:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
+.listen-open[aria-expanded='true'] { color: var(--color-ink); background: var(--color-surface-strong); }
+/* The same button in the phone reading bar (ReaderBar.astro). */
+.reader-bar .reader-bar-listen { flex: none; justify-content: center; width: 44px; padding: 0; }
+.reader-bar .reader-bar-listen[aria-expanded='true'] { background: var(--color-surface-strong); }
+
+/* ---------- Player ---------- */
+
+.listen-player {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 80;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border-top: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+}
+.listen-player[hidden] { display: none; }
+
+@media (min-width: 720px) {
+  .listen-player {
+    right: auto;
+    bottom: calc(var(--space-base) + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    width: min(760px, calc(100vw - 32px));
+    padding-bottom: 0;
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateX(-50%);
+  }
+}
+
+/* The page keeps room under its last line, so the player never hides the end of the lesson. */
+:root.listen-docked body { padding-bottom: calc(var(--listen-height, 0px) + var(--space-xl)); }
+:root.listen-docked .course-toast { bottom: calc(var(--listen-height, 0px) + var(--space-xl)); }
+
+.listen-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+}
+.listen-transport { display: flex; flex: none; gap: var(--space-xxs); }
+
+.listen-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font: inherit;
+  color: var(--color-ink);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.listen-btn:hover:not(:disabled) { background: var(--color-surface-strong); }
+.listen-btn:disabled { color: var(--color-muted-soft); cursor: default; }
+.listen-btn[aria-expanded='true'] { background: var(--color-surface-strong); }
+.listen-btn:focus-visible,
+.listen-open:focus-visible,
+.listen-action:focus-visible,
+.listen-link:focus-visible,
+.listen-field select:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+
+.listen-btn--play { width: 40px; height: 40px; color: var(--color-on-primary); background: var(--color-primary); }
+.listen-btn--play:hover:not(:disabled) { background: var(--color-primary-active); }
+.listen-btn--play .listen-icon-pause { display: none; }
+.listen-btn--play[data-action='pause'] .listen-icon-play { display: none; }
+.listen-btn--play[data-action='pause'] .listen-icon-pause { display: block; }
+
+.listen-speed { width: auto; min-width: 52px; padding: 0 var(--space-xs); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.listen-info { flex: 1; min-width: 0; }
+.listen-status {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.listen-status[data-state='loading'], .listen-status[data-state='idle'] { color: var(--color-body); }
+.listen-status[data-state='error'] { color: var(--color-accent-warning); font-weight: 500; }
+/* The price notice is read in full: it is what the reader agrees to. */
+.listen-status[data-state='confirming'] { display: block; -webkit-line-clamp: unset; }
+
+.listen-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.listen-actions:not(:empty) { margin-top: var(--space-xs); }
+.listen-action {
+  min-height: 32px;
+  padding: 0 var(--space-sm);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.listen-action:hover { background: var(--color-canvas-soft); }
+.listen-action--primary { color: var(--color-on-primary); background: var(--color-primary); border-color: var(--color-primary); }
+.listen-action--primary:hover { background: var(--color-primary-active); }
+
+/* ---------- Settings ---------- */
+
+.listen-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border-top: 1px solid var(--color-hairline);
+}
+.listen-settings[hidden] { display: none; }
+.listen-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.listen-label { font-size: 11px; font-weight: 600; line-height: 1.4; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); }
+.listen-field select {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-xs);
+  font: inherit;
+  font-size: 14px;
+  color: var(--color-ink);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+}
+.listen-cache {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+.listen-cache-label { margin: 0; font-size: 13px; color: var(--color-body); }
+.listen-link {
+  padding: 6px 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.listen-link[hidden] { display: none; }
+
+.listen-announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Narrow screens: the status gets a row of its own ---------- */
+
+@media (max-width: 639px) {
+  .listen-info { order: 5; flex: 1 0 100%; }
+  .listen-speed { margin-left: auto; }
+  .listen-settings { grid-template-columns: 1fr; }
+}
+
+/* ---------- Touch: targets of at least 40px ---------- */
+
+@media (pointer: coarse) {
+  .listen-open { width: 40px; height: 40px; }
+  .listen-btn { width: 40px; height: 40px; }
+  .listen-btn--play { width: 44px; height: 44px; }
+  .listen-speed { width: auto; min-width: 52px; }
+  .listen-action { min-height: 40px; }
+  .listen-link { min-height: 40px; }
+  .listen-field select { height: 44px; }
+}
+
+/* ---------- Block being read ---------- */
+
+.note-content .listen-current {
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 6px var(--color-surface-strong);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .note-content .listen-current { transition: background 0.2s ease, box-shadow 0.2s ease; }
+}

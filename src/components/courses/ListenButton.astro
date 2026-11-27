@@ -1,0 +1,16 @@
+---
+// Toolbar button that opens the "listen to the lesson" player (ListenPlayer.astro).
+// Behaviour in lib/courses/client/listen/player.ts.
+import type { Lang } from '../../i18n/ui';
+import { listenText } from '../../lib/courses/listenText';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = listenText(Astro.props.lang);
+---
+
+<button type="button" class="listen-open" data-listen-open aria-expanded="false" aria-controls="listen-player" aria-label={t.open} title={t.open}>
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="14" width="4" height="7" rx="1.5"/><rect x="17" y="14" width="4" height="7" rx="1.5"/></svg>
+</button>

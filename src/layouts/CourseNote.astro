@@ -13,6 +13,10 @@ import ShortcutsDialog from '../components/courses/ShortcutsDialog.astro';
 import ReaderBar from '../components/courses/ReaderBar.astro';
 import OfflineCard from '../components/courses/OfflineCard.astro';
 import ReaderTools from '../components/courses/ReaderTools.astro';
+import ListenButton from '../components/courses/ListenButton.astro';
+import ListenPlayer from '../components/courses/ListenPlayer.astro';
+import AssistantPanel from '../components/courses/AssistantPanel.astro';
+import KeysDialog from '../components/courses/KeysDialog.astro';
 import { courseOutlineUrl, coursesHome, glossaryUrl, hasStudyPages, mistakesUrl, studyIndexUrl, type ExamRules } from '../lib/courses/catalog';
 import { courseText } from '../lib/courses/i18n';
 import type { Note, Vault } from '../lib/courses/vault';
@@ -20,11 +24,14 @@ import { searchText } from '../lib/courses/searchText';
 import { shortcutsText } from '../lib/courses/shortcutsText';
 import { readingMinutes } from '../lib/courses/readingTime';
 import { readerText } from '../lib/courses/readerText';
+import { assistantText } from '../lib/courses/assistantText';
 import '../styles/courses.css';
 import '../styles/courses-search.css';
 import '../styles/courses-study.css';
 import '../styles/courses-highlights.css';
+import '../styles/courses-assistant.css';
 import '../styles/courses-reader.css';
+import '../styles/courses-listen.css';
 import '../styles/courses-print.css';
 
 interface Props {
@@ -44,6 +51,7 @@ const text = courseText(course.lang);
 const search = searchText(course.lang);
 const shortcuts = shortcutsText(course.lang);
 const reader = readerText(course.lang);
+const assistant = assistantText(course.lang);
 const module = vault.modules.find((m) => m.id === note.moduleId);
 const lessonIndex = note.kind === 'lesson' ? vault.lessons.indexOf(note) : -1;
 const previous = lessonIndex > 0 ? vault.lessons[lessonIndex - 1] : undefined;
@@ -95,6 +103,17 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
         // Storage blocked or edited by hand: default size, focus mode off.
       }
     </script>
+    <!-- The AI assistant stays open from one note to the next in this tab, with the course menu folded
+         away if it folded it. Same key and shape as UI_KEY in lib/courses/client/assistant/panel.ts. -->
+    <script is:inline>
+      try {
+        const ui = JSON.parse(sessionStorage.getItem('jp-courses:assistant-ui') || '{}');
+        if (ui.open === true) document.documentElement.classList.add('assistant-open');
+        if (ui.open === true && ui.hidNav === true) document.documentElement.classList.add('course-nav-hidden');
+      } catch {
+        // Storage blocked: the assistant starts closed.
+      }
+    </script>
   </head>
   <body>
     <Header autoHide />
@@ -114,6 +133,10 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
         <aside class="course-rail course-rail--toc" id="course-panel-toc">
           <div class="course-rail-inner">
             <SyncCard lang={course.lang} layout="rail" />
+            <button type="button" class="assistant-open-btn assistant-open-btn--rail" data-assistant-open aria-controls="course-assistant" aria-expanded="false">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+              <span>{assistant.open}</span>
+            </button>
             <button type="button" class="course-shortcuts-open course-shortcuts-open--rail" data-shortcuts-open aria-haspopup="dialog" aria-controls="course-shortcuts">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
               <span class="course-shortcuts-open-label">{shortcuts.open}</span>
@@ -145,6 +168,9 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
                 </>
               )}
             </nav>
+            <button type="button" class="assistant-open-btn assistant-open-btn--toolbar" data-assistant-open aria-controls="course-assistant" aria-expanded="false" aria-label={assistant.open} title={assistant.open}>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+            </button>
             <button type="button" class="course-search-open" data-search-open aria-label={search.open} title={search.open}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
               <span class="course-search-open-label">{search.open}</span>
@@ -153,6 +179,7 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
             <button type="button" class="course-shortcuts-open course-shortcuts-open--toolbar" data-shortcuts-open aria-haspopup="dialog" aria-controls="course-shortcuts" aria-label={shortcuts.title} title={`${shortcuts.title} (?)`}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
             </button>
+            <ListenButton lang={course.lang} />
             <ReaderTools lang={course.lang} />
             <button type="button" class="course-panel-toggle course-panel-toggle--toc" data-panel-toggle="toc" aria-controls="course-panel-toc" aria-expanded="true" aria-label={text.hideToc} title={text.hideToc}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
@@ -232,9 +259,12 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
             </section>
           )}
         </article>
+        <AssistantPanel lang={course.lang} courseTitle={course.title} noteTitle={note.title} />
       </div>
     </main>
+    <ListenPlayer lang={course.lang} />
     <ShortcutsDialog lang={course.lang} />
+    <KeysDialog lang={course.lang} />
     <Footer />
   </body>
 </html>
@@ -250,15 +280,23 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
   import { initLessonKeys } from '../lib/courses/client/lessonKeys';
   import { initPrint } from '../lib/courses/client/print';
   import { initReaderTools } from '../lib/courses/client/readerTools';
+  import { initListen } from '../lib/courses/client/listen/player';
+  import { initAssistant } from '../lib/courses/client/assistant/panel';
+  import { initKeysDialog } from '../lib/courses/client/keysDialog';
 
   initSearch();
   initShortcuts();
   initReaderBar();
   initReader();
   initReaderTools();
+  initListen();
   initLessonKeys();
   initPrint();
   initLinkPreview();
+  initKeysDialog();
+  const noteUrl = document.querySelector<HTMLElement>('[data-note-url]')?.dataset.noteUrl;
+  if (!noteUrl) throw new Error('Course note without its address');
+  initAssistant(noteUrl);
   void renderMermaid();
   void registerOffline();
   const offlineCard = document.querySelector<HTMLElement>('[data-offline-card]');

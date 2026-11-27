@@ -178,7 +178,7 @@
 :root.course-focus .toc--inline,
 :root.course-focus .sync-card,
 :root.course-focus .backlinks,
-:root.course-focus .course-toolbar > :not(.reader-tools, .reader-focus-exit) { display: none; }
+:root.course-focus .course-toolbar > :not(.reader-tools, .reader-focus-exit, .listen-open) { display: none; }
 :root.course-focus .course-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'article'; }
 :root.course-focus .course-article { max-width: 700px; }
 :root.course-focus .course-toolbar { justify-content: flex-end; }
