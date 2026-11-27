@@ -189,9 +189,18 @@ export function initSearch(): void {
       showMessage(text.unavailable);
       return;
     }
-    const response = await state.pagefind.debouncedSearch(term, { filters: { course } }, DEBOUNCE_MS);
-    if (response === null || current !== searchRun) return;
-    const loaded = await Promise.all(response.results.slice(0, MAX_RESULTS).map((result) => result.data()));
+    let response: PagefindResponse | null;
+    let loaded: PagefindResultData[];
+    try {
+      response = await state.pagefind.debouncedSearch(term, { filters: { course } }, DEBOUNCE_MS);
+      if (response === null || current !== searchRun) return;
+      loaded = await Promise.all(response.results.slice(0, MAX_RESULTS).map((result) => result.data()));
+    } catch (error) {
+      // The index failed to load or to answer (a blocked WebAssembly module, a missing chunk): say so in
+      // the dialog instead of leaving it blank, and still report the error.
+      if (current === searchRun) showMessage(text.failed);
+      throw error;
+    }
     if (current !== searchRun || !modal) return;
     if (loaded.length === 0) {
       showMessage(text.noResults(term));
