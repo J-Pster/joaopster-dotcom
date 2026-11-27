@@ -1,5 +1,6 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { privacyUrl, termsUrl } from '../lib/legalUrls';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -35,6 +36,8 @@ const today = new Date();
         <ul class="footer-links">
           <li><a href={`${prefix}/blog`} class="footer-link">{t('nav.blog')}</a></li>
           <li><a href="/rss.xml" class="footer-link">{t('footer.rss')}</a></li>
+          <li><a href={privacyUrl(lang)} class="footer-link">{t('footer.privacy')}</a></li>
+          <li><a href={termsUrl(lang)} class="footer-link">{t('footer.terms')}</a></li>
         </ul>
       </div>
 

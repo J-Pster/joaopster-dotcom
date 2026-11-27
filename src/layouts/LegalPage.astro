@@ -1,0 +1,165 @@
+---
+// A legal page (privacy policy or terms of use) in one language. The text comes from lib/legal.
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { Lang } from '../i18n/ui';
+import { legalCopy } from '../lib/legal';
+import { legalAlternates, type LegalDoc } from '../lib/legal/types';
+
+interface Props {
+  lang: Lang;
+  doc: LegalDoc;
+}
+
+const { lang, doc } = Astro.props;
+const language = legalCopy(lang);
+const page = language[doc];
+---
+
+<html lang={lang}>
+  <head>
+    <BaseHead title={page.metaTitle} description={page.metaDescription} alternates={legalAlternates(doc)} />
+  </head>
+  <body>
+    <Header />
+    <main class="legal">
+      <article class="legal-inner">
+        <header class="legal-head">
+          <h1>{page.title}</h1>
+          <p class="legal-updated">{language.updatedLabel}</p>
+          <p class="legal-lead">{page.lead}</p>
+        </header>
+
+        <nav class="legal-toc" aria-label={language.onThisPage}>
+          <p class="legal-toc-title">{language.onThisPage}</p>
+          <ol>
+            {page.sections.map((section) => <li><a href={`#${section.id}`}>{section.title}</a></li>)}
+          </ol>
+        </nav>
+
+        <div class="legal-prose">
+          {
+            page.sections.map((section) => (
+              <section aria-labelledby={section.id}>
+                <h2 id={section.id}>{section.title}</h2>
+                {section.blocks.map((block) =>
+                  block.kind === 'p' ? (
+                    <p set:html={block.html} />
+                  ) : (
+                    <ul>
+                      {block.items.map((item) => <li set:html={item} />)}
+                    </ul>
+                  ),
+                )}
+              </section>
+            ))
+          }
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .legal {
+    padding: calc(var(--space-section) + 16px) var(--space-xl) var(--space-section);
+  }
+  .legal-inner {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+  .legal-head h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -1.2px;
+    margin: 0 0 var(--space-sm);
+  }
+  .legal-updated {
+    font-size: 13px;
+    color: var(--color-muted);
+    margin: 0 0 var(--space-lg);
+  }
+  .legal-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-body);
+    margin: 0 0 var(--space-xl);
+  }
+  .legal-toc {
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xxl);
+  }
+  .legal-toc-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.88px;
+    color: var(--color-muted);
+    margin: 0 0 var(--space-sm);
+  }
+  .legal-toc ol {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .legal-toc a {
+    color: var(--color-body);
+    text-decoration: none;
+  }
+  .legal-toc a:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+  .legal-prose section {
+    margin-bottom: var(--space-xxl);
+  }
+  .legal-prose h2 {
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    margin: 0 0 var(--space-base);
+    scroll-margin-top: 96px;
+  }
+  .legal-prose p,
+  .legal-prose li {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-body);
+  }
+  .legal-prose p {
+    margin: 0 0 var(--space-base);
+  }
+  .legal-prose ul {
+    margin: 0 0 var(--space-base);
+    padding-left: 22px;
+    display: grid;
+    gap: var(--space-xs);
+  }
+  .legal-prose :global(a) {
+    color: var(--color-text-link);
+    overflow-wrap: anywhere;
+  }
+  .legal-prose :global(strong) {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .legal {
+      padding: calc(var(--space-section) - 8px) var(--space-base) var(--space-xxl);
+    }
+    .legal-head h1 {
+      font-size: 32px;
+      letter-spacing: -0.96px;
+    }
+    .legal-prose h2 {
+      font-size: 22px;
+    }
+  }
+</style>

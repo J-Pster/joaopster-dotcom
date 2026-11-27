@@ -158,6 +158,8 @@ export const ui = {
     'footer.projects': 'Projetos',
     'footer.allGithub': 'Tudo no GitHub',
     'footer.email': 'E-mail',
+    'footer.privacy': 'Privacidade',
+    'footer.terms': 'Termos',
     'footer.built': `Feito com ❤️ e Astro por João Pster.`,
 
     'blog.title': 'Blog · joaopster',
@@ -356,6 +358,8 @@ export const ui = {
     'footer.projects': 'Projects',
     'footer.allGithub': 'All on GitHub',
     'footer.email': 'Email',
+    'footer.privacy': 'Privacy',
+    'footer.terms': 'Terms',
     'footer.built': `Made with ❤️ and Astro by João Pster.`,
 
     'blog.title': 'Blog · joaopster',
@@ -554,6 +558,8 @@ export const ui = {
     'footer.projects': 'Proyectos',
     'footer.allGithub': 'Todo en GitHub',
     'footer.email': 'Email',
+    'footer.privacy': 'Privacidad',
+    'footer.terms': 'Términos',
     'footer.built': `Hecho con ❤️ y Astro por João Pster.`,
 
     'blog.title': 'Blog · joaopster',
