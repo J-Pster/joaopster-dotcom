@@ -32,6 +32,7 @@ const frontmatterValue = (/** @type {string} */ block, /** @type {string} */ key
 	const line = block.split('\n').find((l) => l.startsWith(`${key}:`));
 	return line?.slice(key.length + 1).trim().replace(/^['"]|['"]$/g, '');
 };
+/** @type {Map<string, string>} */
 const POST_LASTMOD = new Map(
 	LANGS.flatMap((lang) =>
 		readdirSync(`./src/content/blog/${lang}`)

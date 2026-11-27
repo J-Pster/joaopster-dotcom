@@ -1,0 +1,33 @@
+---
+// A course's emblem: its icon in its accent color on a dark plate (lib/courses/look.ts). The same
+// emblem is drawn on the course's share image. Its size comes from where it sits (--emblem-size).
+import { COURSE_GLYPHS, type CourseLook } from '../../lib/courses/look';
+
+interface Props {
+  look: CourseLook;
+}
+
+const { look } = Astro.props;
+---
+
+<span class="course-emblem" style={`--course-accent: ${look.accent}`} aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={COURSE_GLYPHS[look.glyph]} />
+</span>
+
+<style>
+  .course-emblem {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--emblem-size);
+    height: var(--emblem-size);
+    color: var(--course-accent);
+    background: var(--color-surface-dark);
+    border-radius: calc(var(--emblem-size) * 0.24);
+  }
+  .course-emblem svg {
+    width: 56%;
+    height: 56%;
+  }
+</style>

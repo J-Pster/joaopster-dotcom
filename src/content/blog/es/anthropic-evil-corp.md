@@ -3,7 +3,7 @@ slug: anthropic-es-evil-corp
 title: '¿Anthropic es o no es la Evil Corp?'
 description: 'Un artículo en LinkedIn dice que Anthropic usa Claude Code para copiar tu software, así que revisé cada fuente para separar los hechos del terrorismo'
 pubDate: 'Nov 26 2026'
-tags: ['IA', 'Claude Code', 'Mi opinión']
+tags: ['ai', 'claude-code', 'opinion']
 ---
 
 Quien vio Mr. Robot se acuerda de E Corp, el conglomerado más grande del mundo en la serie, al que Elliot solo llama [Evil Corp](https://en.wikipedia.org/wiki/Mr._Robot). Pues un artículo que apareció en LinkedIn este mes prácticamente pinta a Anthropic así, una empresa que usa Claude Code para meterse en tu repositorio, copiar tu negocio y desecharte después.

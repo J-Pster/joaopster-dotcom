@@ -172,11 +172,13 @@ Antes de entregar, rode nos textos escritos do zero, resumidos ou reescritos (o 
   description: 'Resumo de 1 a 2 frases, usado na listagem, no Google e no preview de link.'
   pubDate: 'Nov 26 2026'
   updatedDate: 'Dec 10 2026'   # só quando o post mudou de verdade
-  tags: ['AI', 'Claude Code']
+  tags: ['ai', 'claude-code']
   ---
   ```
 
   - Se o texto tiver apóstrofo, use aspas duplas no campo.
-  - Reaproveite as tags que já existem nos outros posts antes de criar uma nova.
+  - As tags são ids de tópico de `src/lib/blog/topics.ts`, iguais nos três idiomas (o site mostra o rótulo de cada idioma). O build recusa qualquer outro valor. Hoje: `ai`, `claude-code`, `programming`, `infra-cloud`, `setup`, `workflow`, `career`, `investments`, `courses`, `opinion` e `off-topic` (Baguncinha).
+  - De 1 a 4 tags por post, na prática 2 ou 3: o tema principal e, quando couber, um eixo como `opinion`. `claude-code` vai sempre junto com `ai`. Post fora de todos os temas leva `off-topic`.
+  - Tópico novo só entra em `topics.ts`, com cor e rótulo nos três idiomas, quando houver uns três posts que o justifiquem e ele não for sinônimo de um existente.
 - Não existe rascunho no schema: qualquer `.md` que chega no `master` é publicado, mesmo com `pubDate` no futuro.
 - Para link interno, use o caminho relativo do idioma: `/blog/<slug>/` em PT, `/en/blog/<slug>/` em EN e `/es/blog/<slug>/` em ES.

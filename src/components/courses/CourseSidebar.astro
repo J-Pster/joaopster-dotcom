@@ -6,6 +6,7 @@
 // would otherwise carry the whole lesson tree each.
 import { glossaryUrl as glossaryUrlOf, hasStudyPages, mistakesUrl, reviewUrl } from '../../lib/courses/catalog';
 import { courseText } from '../../lib/courses/i18n';
+import CourseEmblem from './CourseEmblem.astro';
 import { studyText } from '../../lib/courses/studyText';
 import type { Note, Vault } from '../../lib/courses/vault';
 
@@ -27,7 +28,8 @@ const LESSON_PREFIX = /^(?:Aula|Lesson|Lecci[oó]n|Clase) [\d.]+:\s*/;
   <summary class="course-nav-toggle">{text.navToggle}</summary>
   <nav class="course-nav-inner" aria-label={text.navToggle}>
     <a class="course-nav-home" href={vault.home.url} aria-current={note.kind === 'home' ? 'page' : undefined}>
-      {vault.course.title}
+      <CourseEmblem look={vault.course.look} />
+      <span>{vault.course.title}</span>
     </a>
     <p class="course-nav-progress" data-course-total={vault.lessons.length}>
       <span data-course-read>0</span>{text.lessonsReadOf(vault.lessons.length)}

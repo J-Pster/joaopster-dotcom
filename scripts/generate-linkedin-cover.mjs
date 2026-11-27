@@ -15,6 +15,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import satori from 'satori';
 import sharp from 'sharp';
+import { TOPICS, topicColor, topicLabel, topicTint } from '../src/lib/blog/topics.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -43,14 +44,21 @@ if (!postId || !/^(pt|en|es)\/[a-z0-9-]+$/.test(postId)) {
 }
 const [lang, slug] = postId.split('/');
 
-const source = await readFile(join(root, 'src', 'content', 'blog', lang, `${slug}.md`), 'utf8');
+// A Windows checkout has CRLF line endings; the frontmatter is read line by line.
+const source = (await readFile(join(root, 'src', 'content', 'blog', lang, `${slug}.md`), 'utf8')).replace(/\r\n/g, '\n');
 const frontmatter = source.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
 const field = (name) => {
 	const line = frontmatter.match(new RegExp(`^${name}:\\s*(.*)$`, 'm'))?.[1]?.trim() ?? '';
 	return line.replace(/^(['"])(.*)\1$/, '$2');
 };
 const title = field('title');
-const tags = (field('tags').match(/['"]([^'"]+)['"]/g) ?? []).map((t) => t.slice(1, -1));
+// Topic ids in the frontmatter (src/lib/blog/topics.ts), drawn as the labels of the post's language.
+const tags = (field('tags').match(/['"]([^'"]+)['"]/g) ?? []).map((t) => {
+	const id = t.slice(1, -1);
+	if (!(id in TOPICS)) throw new Error(`Unknown topic "${id}" in src/content/blog/${lang}/${slug}.md`);
+	return { label: topicLabel(id, lang), dot: topicColor(id), tint: topicTint(id) };
+});
+const description = field('description');
 if (!title) {
 	console.error(`No title found in src/content/blog/${lang}/${slug}.md`);
 	process.exit(1);
@@ -76,21 +84,24 @@ const logoMark = `data:image/svg+xml;base64,${Buffer.from(
 	`<svg xmlns="http://www.w3.org/2000/svg" width="58" height="58" viewBox="0 0 58 58"><rect width="58" height="58" rx="11" fill="#000"/><polyline points="18,16 40,29 18,42" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 ).toString('base64')}`;
 
-// The title is the whole message of the cover, so it gets most of the space.
-const titleSize = title.length <= 40 ? 112 : title.length <= 75 ? 92 : 76;
+// The title leads the cover; the description below it says what the post delivers.
+const titleSize = title.length <= 40 ? 104 : title.length <= 75 ? 86 : 72;
 
-const tagPill = (tag) =>
+// Topic pills: the topic's color as a dot on a light tint of it (src/lib/blog/topics.ts).
+const tagPill = ({ label, dot, tint }) =>
 	div(
 		{
 			display: 'flex',
+			alignItems: 'center',
+			gap: 14,
 			padding: '12px 24px',
 			borderRadius: 9999,
-			background: color.surfaceStrong,
+			background: tint,
 			color: color.ink,
 			fontSize: 28,
 			fontWeight: 500,
 		},
-		tag
+		[div({ width: 14, height: 14, borderRadius: 9999, background: dot }), label]
 	);
 
 const card = div(
@@ -117,8 +128,7 @@ const card = div(
 				div({ fontSize: 38, color: color.muted }, '/'),
 				div({ fontSize: 38, fontWeight: 500, color: color.body }, 'blog'),
 			]),
-			div(
-				{ display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'center' },
+			div({ display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'center', gap: 32 }, [
 				div(
 					{
 						display: 'block',
@@ -130,8 +140,9 @@ const card = div(
 						color: color.ink,
 					},
 					title
-				)
-			),
+				),
+				div({ display: 'block', lineClamp: 2, fontSize: 40, lineHeight: 1.4, color: color.body }, description),
+			]),
 			div(
 				{
 					display: 'flex',
@@ -145,7 +156,7 @@ const card = div(
 						div({ fontSize: 34, fontWeight: 600, color: color.ink }, byline[lang]),
 						div({ fontSize: 30, color: color.body }, 'joaopster.com'),
 					]),
-					div({ display: 'flex', gap: 14 }, tags.slice(0, 3).map(tagPill)),
+					div({ display: 'flex', gap: 14 }, tags.map(tagPill)),
 				]
 			),
 		]

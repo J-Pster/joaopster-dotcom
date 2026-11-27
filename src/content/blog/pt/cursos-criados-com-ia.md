@@ -2,7 +2,7 @@
 title: 'Como eu uso IA pra criar cursos do jeito que eu gosto de aprender'
 description: 'Eu peço pro Claude montar cursos completos pra mim, com módulos, aulas, glossário e questionário, e agora os quatro que eu fiz tão abertos no meu site, aqui eu conto como funciona e como você cria o seu'
 pubDate: 'Nov 26 2026'
-tags: ['IA', 'Claude Code', 'Cursos', 'Minha opinião']
+tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 
 No começo de novembro a Defesa Civil soltou aquela orientação pra cada família ter um kit pra se virar sozinha por 72 horas, com água, comida e remédio, e isso caiu bem na época em que todo mundo tava falando do El Niño. Eu li aquilo e pensei, cara, eu devia saber primeiros socorros. Fui procurar e o conteúdo tava muito espalhado, difícil de achar num lugar só, e nada me levava do começo ao fim. Então eu pedi pra IA montar um curso pra mim.

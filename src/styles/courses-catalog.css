@@ -145,18 +145,21 @@
 
 .catalog-list { display: flex; flex-direction: column; gap: var(--space-base); margin: 0; padding: 0; list-style: none; }
 
+/* A thin stripe of the course's accent on top: the card's color, without tinting its text. */
 .catalog-course {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--radius-lg);
+  box-shadow: inset 0 3px 0 var(--course-accent);
+  --emblem-size: 56px;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 .catalog-course[hidden] { display: none; }
-.catalog-course:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); }
+.catalog-course:hover { box-shadow: inset 0 3px 0 var(--course-accent), 0 4px 12px rgba(0, 0, 0, 0.04); }
 
 .catalog-course-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: var(--space-lg);
   align-items: start;
   padding: var(--space-lg);
@@ -285,7 +288,9 @@
   .catalog-side { margin-bottom: var(--space-base); }
   .catalog-filters { gap: var(--space-sm); }
   .catalog-facet legend { margin-bottom: 6px; }
+  /* One column: the emblem sits above the course, so the text keeps the card's full width. */
   .catalog-course-main { grid-template-columns: minmax(0, 1fr); gap: var(--space-base); padding: var(--space-base); }
+  .catalog-course { --emblem-size: 40px; }
   .catalog-course-title { font-size: 20px; }
   .catalog-course-actions { flex-direction: row; flex-wrap: wrap; min-width: 0; }
   .catalog-course-actions .course-btn { flex: 1 1 140px; }
@@ -300,8 +305,7 @@
 .catalog-course-audience { margin: 0; max-width: 62ch; font-size: 14px; line-height: 1.55; color: var(--color-body); }
 .catalog-course-audience strong { font-weight: 600; color: var(--color-ink); }
 
-/* The flagship takes the black of the primary CTA: an ink outline and an ink badge, no extra color. */
-.catalog-course--flagship { border: 2px solid var(--color-ink); }
+/* The flagship takes the black of the primary CTA on its badge; the card keeps the same frame as the others. */
 .catalog-badge--flagship { color: var(--color-on-primary); background: var(--color-primary); }
 
 .catalog-about { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); padding: var(--space-base) var(--space-lg) var(--space-xs); }

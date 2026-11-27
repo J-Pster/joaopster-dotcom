@@ -10,10 +10,8 @@ export interface RelatedPost {
   readonly href: string;
 }
 
-const sharedTags = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => {
-  const tags = new Set(a.data.tags.map((t) => t.toLowerCase()));
-  return b.data.tags.filter((t) => tags.has(t.toLowerCase())).length;
-};
+const sharedTags = (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+  b.data.tags.filter((topic) => a.data.tags.includes(topic)).length;
 
 /** Other posts in the same language, most shared tags first, then newest. */
 export async function getRelatedPosts(current: CollectionEntry<'blog'>, lang: Lang, count: number): Promise<RelatedPost[]> {

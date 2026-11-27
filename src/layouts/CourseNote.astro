@@ -28,6 +28,7 @@ import { readerText } from '../lib/courses/readerText';
 import { courseJsonLd, jsonLdScript, noteBreadcrumbJsonLd, noteMetaDescription, seoTitle } from '../lib/courses/seo';
 import { useTranslations } from '../i18n/ui';
 import { assistantText } from '../lib/courses/assistantText';
+import { courseOgImage } from '../lib/og/siteCards';
 import '../styles/courses.css';
 import '../styles/courses-search.css';
 import '../styles/courses-study.css';
@@ -83,7 +84,7 @@ const breadcrumbLd =
 
 <html lang={course.lang} data-lang-pt={coursesHome('pt')} data-lang-en={coursesHome('en')} data-lang-es={coursesHome('es')}>
   <head>
-    <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} />
+    <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} image={courseOgImage(vault.course)} />
     {courseLd && <script type="application/ld+json" set:html={courseLd} />}
     {breadcrumbLd && <script type="application/ld+json" set:html={breadcrumbLd} />}
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -136,6 +137,7 @@ const breadcrumbLd =
     <ReaderBar lang={course.lang} title={note.title} />
     <main
       class="course-main"
+      style={`--course-accent: ${course.look.accent}`}
       data-course={course.slug}
       data-note-url={note.url}
       data-note-kind={note.kind}

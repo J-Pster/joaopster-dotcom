@@ -5,6 +5,7 @@ import profilePhoto from '../../assets/profile-photo.png';
 import { countUniqueSkills } from '../../data/skills';
 import { uptimeText } from '../../lib/lifeUptime';
 import { aboutPath } from '../../lib/aboutPath';
+import { SPOKEN_LANGUAGES } from '../../consts';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -50,7 +51,7 @@ const lifeLog = [
       </a>
       <div class="stat-divider"></div>
       <div class="stat">
-        <span class="stat-n">3</span>
+        <span class="stat-n">{SPOKEN_LANGUAGES}</span>
         <span class="stat-l">{t('hero.languages')}</span>
       </div>
     </div>

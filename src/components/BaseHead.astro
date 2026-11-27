@@ -11,10 +11,12 @@ import type { ImageMetadata } from 'astro';
 import { SITE_NAME } from '../consts';
 import { useTranslations, type Lang } from '../i18n/ui';
 import profilePhoto from '../assets/profile-photo.png';
+import { siteOgImage } from '../lib/og/siteCards';
 
 interface Props {
 	title: string;
 	description: string;
+	/** Share image; pages without their own use the home card of their language. */
 	image?: ImageMetadata | string;
 	type?: 'website' | 'article';
 	/**
@@ -27,7 +29,8 @@ interface Props {
 	indexing?: 'index' | 'noindex';
 }
 
-const { title, description, image = '/og-image.png', type = 'website', alternates = 'auto', indexing = 'index' } = Astro.props;
+const currentLang = (Astro.currentLocale ?? 'pt') as Lang;
+const { title, description, image = siteOgImage(currentLang, 'home'), type = 'website', alternates = 'auto', indexing = 'index' } = Astro.props;
 const robots = indexing === 'index' ? 'index, follow, max-image-preview:large' : 'noindex, follow';
 
 const site = Astro.site ?? new URL('https://joaopster.com');
@@ -38,7 +41,6 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
 const imageURL = new URL(typeof image === 'string' ? image : image.src, site);
 
 const localeMap: Record<string, string> = { pt: 'pt_BR', en: 'en_US', es: 'es_ES' };
-const currentLang = (Astro.currentLocale ?? 'pt') as Lang;
 const ogLocale = localeMap[currentLang] ?? 'pt_BR';
 const altLocales = Object.entries(localeMap).filter(([code]) => code !== currentLang);
 

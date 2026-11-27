@@ -17,6 +17,7 @@ import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { ABOUT_PATHS, CV_PDF_PATH } from '../lib/aboutPath';
 import { blogPostPath, getPostsForLang } from '../lib/getLatestPost';
 import { COURSES, courseUrl } from '../lib/courses/catalog';
+import { siteOgImage } from '../lib/og/siteCards';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -37,7 +38,7 @@ const profileLd = {
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={t('aboutPage.metaTitle')} description={t('aboutPage.metaDescription')} alternates={ABOUT_PATHS} />
+    <BaseHead title={t('aboutPage.metaTitle')} description={t('aboutPage.metaDescription')} alternates={ABOUT_PATHS} image={siteOgImage(lang, 'about')} />
     <script type="application/ld+json" set:html={JSON.stringify(profileLd)} />
   </head>
   <body>

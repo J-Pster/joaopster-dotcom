@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { TOPIC_IDS } from './lib/blog/topics';
 
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
@@ -26,7 +27,8 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
-			tags: z.array(z.string()).default([]),
+			// Topic ids from lib/blog/topics.ts, one to four per post.
+			tags: z.array(z.enum(TOPIC_IDS)).min(1).max(4),
 		}),
 });
 

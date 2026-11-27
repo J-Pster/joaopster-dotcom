@@ -14,7 +14,10 @@ import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { coursesHome } from '../lib/courses/catalog';
 import { catalogCourses } from '../lib/courses/catalogView';
 import { courseText } from '../lib/courses/i18n';
+import { siteOgImage } from '../lib/og/siteCards';
 import { blogPostPath, getPostsForLang, readTime, slugOf } from '../lib/getLatestPost';
+import { TOPIC_IDS, topicColor, topicLabel } from '../lib/blog/topics';
+import TopicChip from '../components/TopicChip.astro';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -31,9 +34,10 @@ const tocShown = featuredSections.slice(0, TOC_LINES);
 const tocHidden = featuredSections.length - tocShown.length;
 
 const totalMinutes = posts.reduce((sum, post) => sum + readTime(post.body), 0);
-const topics = [...new Set(posts.flatMap((p) => p.data.tags))]
-  .sort((a, b) => a.localeCompare(b, lang))
-  .map((tag) => ({ tag, key: tag.toLowerCase(), count: posts.filter((p) => p.data.tags.includes(tag)).length }));
+// Topics in the taxonomy's order, only those with posts in this language.
+const topics = TOPIC_IDS.map((id) => ({ id, count: posts.filter((p) => p.data.tags.includes(id)).length })).filter(
+  ({ count }) => count > 0,
+);
 
 // Posts arrive newest first, so each year's group keeps that order.
 const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))].map((year) => ({
@@ -52,7 +56,7 @@ const feedHref = `${localePrefix}/rss.xml`;
 <!doctype html>
 <html lang={lang}>
   <head>
-    <BaseHead title={t('blog.title')} description={t('blog.description')} />
+    <BaseHead title={t('blog.title')} description={t('blog.description')} image={siteOgImage(lang, 'blog')} />
   </head>
   <body>
     <Header />
@@ -83,11 +87,9 @@ const feedHref = `${localePrefix}/rss.xml`;
               <span class="dot-sep">·</span>
               <span class="read-time">{readTime(featured.body)} {t('blog.minRead')}</span>
             </div>
-            {featured.data.tags.length > 0 && (
-              <div class="tag-list">
-                {featured.data.tags.map((tag) => <span class="tag-chip">{tag}</span>)}
-              </div>
-            )}
+            <div class="tag-list">
+              {featured.data.tags.map((topic) => <TopicChip topic={topic} lang={lang} />)}
+            </div>
             <a class="featured-read" href={hrefOf(featured)}>{t('blog.readPost')}</a>
           </div>
           <div class="featured-panel">
@@ -132,9 +134,9 @@ const feedHref = `${localePrefix}/rss.xml`;
                 <button type="button" class="blog-topic" aria-pressed="true" data-topic="">
                   {t('blog.all')} <span class="blog-topic-count">{posts.length}</span>
                 </button>
-                {topics.map(({ tag, key, count }) => (
-                  <button type="button" class="blog-topic" aria-pressed="false" data-topic={key}>
-                    {tag} <span class="blog-topic-count">{count}</span>
+                {topics.map(({ id, count }) => (
+                  <button type="button" class="blog-topic" aria-pressed="false" data-topic={id} style={`--topic: ${topicColor(id)}`}>
+                    <span class="blog-topic-dot" aria-hidden="true"></span>{topicLabel(id, lang)} <span class="blog-topic-count">{count}</span>
                   </button>
                 ))}
               </div>
@@ -153,8 +155,8 @@ const feedHref = `${localePrefix}/rss.xml`;
                     data-blog-post
                     data-featured={post === featured ? '' : undefined}
                     hidden={post === featured}
-                    data-topics={post.data.tags.map((tag) => tag.toLowerCase()).join(',')}
-                    data-search={[post.data.title, post.data.description, ...post.data.tags].join(' ')}
+                    data-topics={post.data.tags.join(',')}
+                    data-search={[post.data.title, post.data.description, ...post.data.tags.map((id) => topicLabel(id, lang))].join(' ')}
                   >
                     <a href={hrefOf(post)} class="blog-post-link">
                       <span class="blog-post-date"><FormattedDate date={post.data.pubDate} withYear={false} /></span>
@@ -163,7 +165,7 @@ const feedHref = `${localePrefix}/rss.xml`;
                         {post.data.description && <span class="blog-post-desc">{post.data.description}</span>}
                         <span class="blog-post-meta">
                           <span>{readTime(post.body)} {t('blog.minRead')}</span>
-                          {post.data.tags.map((tag) => <span class="tag-chip">{tag}</span>)}
+                          {post.data.tags.map((topic) => <TopicChip topic={topic} lang={lang} />)}
                         </span>
                       </span>
                     </a>
@@ -353,17 +355,6 @@ const feedHref = `${localePrefix}/rss.xml`;
   }
 
   .tag-list { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-sm); }
-  .tag-chip {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--color-body);
-    background: var(--color-surface-strong);
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-  }
 
   /* ---------- List and side column ---------- */
   .blog-layout {
@@ -435,6 +426,8 @@ const feedHref = `${localePrefix}/rss.xml`;
   .blog-topic:hover { color: var(--color-ink); border-color: var(--color-ink); }
   .blog-topic[aria-pressed="true"] { color: var(--color-on-primary); background: var(--color-primary); border-color: var(--color-primary); }
   .blog-topic:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  /* The ring keeps the dot visible on the black pressed state. */
+  .blog-topic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--topic); box-shadow: 0 0 0 1.5px var(--color-canvas); }
   .blog-topic-count { font-size: 12px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
   .blog-topic[aria-pressed="true"] .blog-topic-count { color: var(--color-on-dark-soft); }
 

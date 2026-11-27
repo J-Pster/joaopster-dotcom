@@ -3,7 +3,8 @@ import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { useTranslations, type Lang } from '../../i18n/ui';
 import { langOf, readTime, slugOf } from '../../lib/getLatestPost';
-import { renderPostOgImage } from '../../lib/og/renderPostOgImage';
+import { topicPill } from '../../lib/og/siteCards';
+import { renderOgImage } from '../../lib/og/renderOgImage';
 
 const dateLocale: Record<Lang, string> = { pt: 'pt-BR', en: 'en-US', es: 'es-ES' };
 
@@ -22,11 +23,10 @@ export const GET: APIRoute<{ post: CollectionEntry<'blog'> }> = async ({ props: 
 		timeZone: 'UTC',
 	});
 
-	const png = await renderPostOgImage({
-		title: post.data.title,
-		description: post.data.description,
-		tags: post.data.tags,
-		meta: `${date} · ${readTime(post.body)} ${t('post.minRead')}`,
+	const png = await renderOgImage({
+		section: 'blog',
+		body: { kind: 'article', title: post.data.title, description: post.data.description },
+		footer: { kind: 'byline', meta: `${date} · ${readTime(post.body)} ${t('post.minRead')}`, pills: post.data.tags.map((topic) => topicPill(topic, lang)) },
 	});
 	return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
 };

@@ -3,7 +3,7 @@ slug: claude-code-harness-made-my-workflow-obsolete
 title: "Claude Code's harness made my AI workflow obsolete"
 description: 'I built a workflow with 20 commands and 45 agents and now Claude Code does almost all of it on its own, so I wrote down what changed in the harness and what I still use on top'
 pubDate: 'Nov 26 2026'
-tags: ['AI', 'Claude Code', 'My Opinion', 'Setup']
+tags: ['ai', 'claude-code', 'opinion', 'setup']
 ---
 
 In March I shipped version 1.0 of [Pster's AI Workflow](https://github.com/J-Pster/Psters_AI_Workflow), a plugin I built to organize how AI works on my projects, with 20 commands, 45 agents, 17 skills, 4 hooks and 8 rules. In May, in the [post where I told the story of moving from Cursor to Claude Code](/en/blog/i-migrated-from-cursor-to-claude-code/), I even signed off with "long live OMC", the agent orchestrator I had installed on top of Claude Code.

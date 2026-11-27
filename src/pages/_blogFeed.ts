@@ -3,6 +3,7 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { useTranslations, type Lang } from '../i18n/ui';
+import { topicLabel } from '../lib/blog/topics';
 import { blogPostPath, getPostsForLang } from '../lib/getLatestPost';
 
 export async function blogFeed(lang: Lang, context: APIContext) {
@@ -17,7 +18,7 @@ export async function blogFeed(lang: Lang, context: APIContext) {
 			description: post.data.description,
 			pubDate: post.data.pubDate,
 			link: blogPostPath(lang, post),
-			categories: post.data.tags,
+			categories: post.data.tags.map((topic) => topicLabel(topic, lang)),
 		})),
 	});
 }

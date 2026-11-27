@@ -189,10 +189,11 @@
   background: var(--color-surface-strong);
   border-radius: var(--radius-pill);
 }
+/* Inside a course (its pages, its catalog card) the bar takes the course's accent. */
 .progress-bar > span {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--color-ink);
+  background: var(--course-accent, var(--color-ink));
   border-radius: var(--radius-pill);
 }
 .progress-count { font-size: 12px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
@@ -505,7 +506,10 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   .course-nav-inner { padding: 0; }
 }
 .course-nav-home {
-  display: block;
+  --emblem-size: 32px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   font-size: 15px;
   font-weight: 600;
   line-height: 1.35;

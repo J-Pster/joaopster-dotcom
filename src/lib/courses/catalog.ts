@@ -3,6 +3,7 @@
 // courses live on the site. A course is written in one language and is listed only in that
 // language's section (/cursos/, /en/courses/, /es/cursos/).
 import { languages, type Lang } from '../../i18n/ui';
+import type { CourseLook } from './look';
 
 export interface CourseInfo {
   readonly slug: string;
@@ -35,6 +36,8 @@ export interface CourseInfo {
    * from the catalog but out of search and the sitemap (health content without expert review).
    */
   readonly indexing: 'index' | 'noindex';
+  /** Emblem icon and colors, the same on the catalog, the course pages and the share image. */
+  readonly look: CourseLook;
 }
 
 export const COURSE_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
@@ -85,6 +88,7 @@ export const COURSES: readonly CourseInfo[] = [
     ],
     standing: 'flagship',
     indexing: 'index',
+    look: { glyph: 'cloud', accent: '#ff9900', wash: '#ffe2bf' },
   },
   {
     slug: 'primeiros-socorros',
@@ -107,6 +111,7 @@ export const COURSES: readonly CourseInfo[] = [
     ],
     standing: 'study-notes',
     indexing: 'noindex',
+    look: { glyph: 'cross', accent: '#ff5c61', wash: '#ffd9d9' },
   },
   {
     slug: 'radio',
@@ -129,6 +134,7 @@ export const COURSES: readonly CourseInfo[] = [
     ],
     standing: 'study-notes',
     indexing: 'index',
+    look: { glyph: 'radio', accent: '#3ccf8e', wash: '#cdf2de' },
   },
   {
     slug: 'modelagem-de-casas',
@@ -151,6 +157,7 @@ export const COURSES: readonly CourseInfo[] = [
     ],
     standing: 'study-notes',
     indexing: 'index',
+    look: { glyph: 'house', accent: '#b98cff', wash: '#e6dcff' },
   },
 ];
 

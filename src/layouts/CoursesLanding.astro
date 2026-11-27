@@ -5,6 +5,7 @@
 // (lib/courses/client/catalog.ts). With no course in the language yet, it points to the languages
 // that have some.
 import BaseHead from '../components/BaseHead.astro';
+import CourseEmblem from '../components/courses/CourseEmblem.astro';
 import CourseDownloadModal from '../components/CourseDownloadModal.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -12,6 +13,7 @@ import SyncCard from '../components/courses/SyncCard.astro';
 import type { Lang } from '../i18n/ui';
 import { COURSE_TOPICS, coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
 import { catalogCourses } from '../lib/courses/catalogView';
+import { siteOgImage } from '../lib/og/siteCards';
 import { courseText } from '../lib/courses/i18n';
 import { catalogJsonLd, jsonLdScript } from '../lib/courses/seo';
 import '../styles/courses.css';
@@ -48,6 +50,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       title={text.landingMetaTitle}
       description={text.landingMetaDescription}
       alternates={sectionAlternates(coursesHome)}
+      image={siteOgImage(lang, 'courses')}
       indexing={indexing}
     />
     {itemListLd && <script type="application/ld+json" set:html={itemListLd} />}
@@ -160,7 +163,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
             <ol class="catalog-list" data-catalog-list>
               {courses.map(({ course, url, firstLesson, modules, lessons, minutes, terms }, index) => (
                 <li
-                  class:list={['catalog-course', course.standing === 'flagship' && 'catalog-course--flagship']}
+                  class="catalog-course"
                   data-course-card={course.slug}
                   data-topic={course.topic}
                   data-order={index}
@@ -168,9 +171,11 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                   data-title={course.title}
                   data-lessons={lessons}
                   data-first-lesson={firstLesson}
+                  style={`--course-accent: ${course.look.accent}`}
                   data-search={[course.title, course.goal, course.audience, text.topicNames[course.topic]].join(' ')}
                 >
                   <div class="catalog-course-main">
+                    <CourseEmblem look={course.look} />
                     <div class="catalog-course-body">
                       <p class="catalog-course-tags">
                         {course.standing === 'flagship'

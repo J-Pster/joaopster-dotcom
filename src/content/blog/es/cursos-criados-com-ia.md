@@ -3,7 +3,7 @@ slug: como-uso-la-ia-para-crear-cursos
 title: 'Cómo uso la IA para crear cursos a mi manera de aprender'
 description: 'Le pido a Claude que me arme cursos completos, con módulos, clases, glosario y cuestionarios, y ahora los cuatro que hice están abiertos en mi sitio, aquí cuento cómo funciona y cómo puedes crear el tuyo'
 pubDate: 'Nov 26 2026'
-tags: ['IA', 'Claude Code', 'Cursos', 'Mi opinión']
+tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 
 A principios de noviembre la Defensa Civil de Brasil sacó una recomendación para que cada familia tenga un kit para arreglárselas sola durante 72 horas, con agua, comida y medicamentos, y eso cayó justo cuando todo el mundo hablaba de El Niño. Lo leí y pensé, oye, yo debería saber primeros auxilios. Me puse a buscar y el contenido estaba muy disperso, difícil de encontrar en un solo lugar, y nada me llevaba de principio a fin. Así que le pedí a la IA que me armara un curso.

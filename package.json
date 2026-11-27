@@ -10,7 +10,7 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
-    "cover": "node scripts/generate-linkedin-cover.mjs",
+    "cover": "node --experimental-strip-types scripts/generate-linkedin-cover.mjs",
     "newsletter:digest": "node --env-file-if-exists=.env scripts/newsletter-digest.mjs",
     "courses:sync": "node scripts/sync-courses.mjs"
   },

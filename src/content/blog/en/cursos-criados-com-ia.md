@@ -3,7 +3,7 @@ slug: how-i-use-ai-to-build-courses
 title: 'How I use AI to build courses the way I like to learn'
 description: 'I ask Claude to build full courses for me, with modules, lessons, a glossary and quizzes, and now the four I made are open on my site, here is how it works and how you can make your own'
 pubDate: 'Nov 26 2026'
-tags: ['AI', 'Claude Code', 'Courses', 'My Opinion']
+tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 
 In early November Brazil's civil defense agency put out a recommendation that every family keep a kit to get by on their own for 72 hours, with water, food and medicine, and it landed right when everyone was talking about El Niño. I read it and thought, man, I should know first aid. I went looking and the material was all over the place, hard to find in one spot, and nothing took me from start to finish. So I asked AI to build a course for me.

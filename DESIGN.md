@@ -334,6 +334,11 @@ The semantic colors above are fills, borders and icons. As text they fall short 
 - **Warning Text** (`{colors.text-warning}`: #8f5300): Warning text and callout titles.
 - **Error Text** (`{colors.text-error}`: #b3322c): Error and validation text.
 
+### Category Accents
+Black, white and gray stay the brand. Categories get one accent each, so a reader tells courses and blog topics apart at a glance. Accents are decorative only: a dot, a thin stripe, an icon, a progress fill, or a tint of about 9% over white behind ink text. Never text color, never a CTA, never a page background, and always next to a label, so color is not the only cue.
+- **Course accents** live on each course in `src/lib/courses/catalog.ts` (`look`: icon, accent, share-image wash). They color the course emblem (icon on a `{colors.surface-dark}` plate), the 3px stripe on top of its catalog card, its progress bars and its share image.
+- **Blog topic colors** live in `src/lib/blog/topics.ts`, one per topic: a dot plus a light tint on the topic chips and filters. Format topics (opinion) and off-topic are neutral (ink and gray).
+
 ## Typography
 
 ### Font Family
@@ -492,6 +497,7 @@ Compact developer-ergonomic radii — 8px CTAs, 12px cards. Pill geometry is res
 
 ### Don't
 - Don't introduce a saturated brand action color. Black is the only CTA fill.
+- Don't use a category accent (course or blog topic) as text, CTA fill or background: they are dots, stripes, icons and light tints only.
 - Don't use blue (`{colors.text-link}`) on a CTA. Inline links only.
 - Don't drop display below weight 600 or above 700.
 - Don't use full pills on CTAs — pills are for badges only.

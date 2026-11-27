@@ -7,6 +7,7 @@ import Header from '../components/Header.astro';
 import type { Lang } from '../i18n/ui';
 import { coursesHome, howToUrl, sectionAlternates, SKILL_DOWNLOADS } from '../lib/courses/catalog';
 import { howToCopy } from '../lib/courses/howToCopy';
+import { siteOgImage } from '../lib/og/siteCards';
 import { courseText } from '../lib/courses/i18n';
 import '../styles/courses.css';
 
@@ -24,7 +25,7 @@ const submitHref = `mailto:${SUBMIT_EMAIL}?subject=${encodeURIComponent(copy.mai
 
 <html lang={lang}>
   <head>
-    <BaseHead title={copy.metaTitle} description={copy.metaDescription} alternates={sectionAlternates(howToUrl)} />
+    <BaseHead title={copy.metaTitle} description={copy.metaDescription} alternates={sectionAlternates(howToUrl)} image={siteOgImage(lang, 'courses')} />
   </head>
   <body>
     <Header />
