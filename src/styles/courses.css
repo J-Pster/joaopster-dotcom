@@ -991,12 +991,15 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   max-width: none;
   max-height: calc(100dvh - 48px);
   padding: 0;
+  overflow: hidden;
   color: var(--color-body);
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--radius-lg);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
+/* Header stays put; only the list scrolls, with the thin scrollbar of the course menu. */
+.course-shortcuts[open] { display: flex; flex-direction: column; }
 .course-shortcuts::backdrop { background: rgba(23, 23, 23, 0.4); }
 .course-shortcuts-head {
   display: flex;
@@ -1021,9 +1024,22 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   cursor: pointer;
 }
 .course-shortcuts-close:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
-.course-shortcuts-body { display: flex; flex-direction: column; gap: var(--space-lg); padding: var(--space-md) var(--space-lg) var(--space-lg); }
-/* The tour of the reader (components/courses/CourseTour.astro) replays from here. */
-.course-shortcuts-foot { display: flex; justify-content: flex-end; padding: var(--space-base) var(--space-lg); border-top: 1px solid var(--color-hairline); }
+.course-shortcuts-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 0;
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.course-shortcuts-body:hover, .course-shortcuts-body:focus-within { scrollbar-color: var(--color-hairline-strong) transparent; }
+.course-shortcuts-body:focus { outline: none; }
+/* The tour of the reader (components/courses/CourseTour.astro) replays from here, left of the close button. */
+.course-shortcuts-actions { display: flex; flex: none; align-items: center; gap: var(--space-xs); }
+.course-shortcuts-tour { height: 32px; padding: 0 12px; font-size: 13px; }
 .course-shortcuts-group-title {
   margin: 0 0 var(--space-xs);
   font-size: 11px;

@@ -15,14 +15,18 @@ const tour = tourText(lang);
 const keyLabel = (key: Key): string => (key === 'Space' ? text.keyNames.Space : key === 'Mod' ? 'Ctrl' : key);
 ---
 
-<dialog class="course-shortcuts" id="course-shortcuts" data-shortcuts aria-labelledby="course-shortcuts-title" autofocus>
+<dialog class="course-shortcuts" id="course-shortcuts" data-shortcuts aria-labelledby="course-shortcuts-title">
   <div class="course-shortcuts-head">
     <h2 class="course-shortcuts-title" id="course-shortcuts-title">{text.title}</h2>
-    <button type="button" class="course-shortcuts-close" data-shortcuts-close aria-label={text.close} title={text.close}>
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-    </button>
+    <div class="course-shortcuts-actions">
+      <button type="button" class="course-btn course-btn--secondary course-shortcuts-tour" data-tour-restart>{tour.restart}</button>
+        <button type="button" class="course-shortcuts-close" data-shortcuts-close aria-label={text.close} title={text.close}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="course-shortcuts-body">
+  <!-- Focus starts on the list, so the arrow keys scroll it and no header button looks pressed. -->
+  <div class="course-shortcuts-body" tabindex="-1" autofocus>
     {text.groups.map((group) => (
       <section class="course-shortcuts-group">
         <h3 class="course-shortcuts-group-title">{group.title}</h3>
@@ -47,8 +51,5 @@ const keyLabel = (key: Key): string => (key === 'Space' ? text.keyNames.Space : 
         </dl>
       </section>
     ))}
-  </div>
-  <div class="course-shortcuts-foot">
-    <button type="button" class="course-btn course-btn--secondary course-shortcuts-tour" data-tour-restart>{tour.restart}</button>
   </div>
 </dialog>
