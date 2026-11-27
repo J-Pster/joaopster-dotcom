@@ -21,7 +21,29 @@ export interface CourseInfo {
   readonly format: 'obsidian' | 'markdown';
   /** For courses that prepare for an exam: how its simulated exams (notes tagged "simulado") run. */
   readonly exam?: ExamRules;
+  /** Who the course is for, in one sentence. */
+  readonly audience: string;
+  readonly level: CourseLevel;
+  /** What the reader should know or have before starting. Empty: nothing is required. */
+  readonly prerequisites: readonly string[];
+  /** What the reader can do after the course: each starts with an observable action verb. */
+  readonly objectives: CourseObjectives;
+  /** The flagship course gets the leading place on the catalog; the others are study notes. */
+  readonly standing: CourseStanding;
 }
+
+export const COURSE_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+export type CourseLevel = (typeof COURSE_LEVELS)[number];
+
+export const COURSE_STANDINGS = ['flagship', 'study-notes'] as const;
+export type CourseStanding = (typeof COURSE_STANDINGS)[number];
+
+/** Three to five objectives: the catalog card has room for no more, and a course with fewer has no plan. */
+type Tuple<T, N extends number, Acc extends T[] = []> = Acc['length'] extends N ? Acc : Tuple<T, N, [...Acc, T]>;
+export type CourseObjectives =
+  | Readonly<Tuple<string, 3>>
+  | Readonly<Tuple<string, 4>>
+  | Readonly<Tuple<string, 5>>;
 
 /** Topics of the catalog's filter, in the order they are listed. Labels live in lib/courses/i18n.ts. */
 export const COURSE_TOPICS = ['technology', 'health', 'home'] as const;
@@ -46,6 +68,17 @@ export const COURSES: readonly CourseInfo[] = [
     format: 'obsidian',
     // From the instructions of the course's simulated exams: 130 minutes for 65 questions, 72% per domain.
     exam: { minutesPerQuestion: 2, targetPercent: 72 },
+    audience: 'Quem vai fazer a prova AWS SAA-C03 e quer entender o porquê de cada decisão de arquitetura, não decorar serviços.',
+    level: 'intermediate',
+    prerequisites: ['Noções básicas de desenvolvimento de software ou de infraestrutura de TI', 'Conta AWS pessoal, só para os laboratórios opcionais'],
+    objectives: [
+      'Escolher Região e zonas de disponibilidade por resiliência, latência e residência de dados',
+      'Projetar arquiteturas seguras com IAM, VPC e criptografia',
+      'Dimensionar computação, armazenamento e bancos de dados para cada tipo de carga',
+      'Desenhar arquiteturas resilientes e desacopladas, com alta disponibilidade e recuperação de desastres',
+      'Resolver questões no estilo da prova nos quatro domínios, com dois simulados completos',
+    ],
+    standing: 'flagship',
   },
   {
     slug: 'primeiros-socorros',
@@ -56,6 +89,17 @@ export const COURSES: readonly CourseInfo[] = [
     home: 'Primeiros Socorros - Inicio.md',
     vaultName: 'Aprendendo Primeiros Socorros',
     format: 'obsidian',
+    audience: 'Pessoas leigas que querem saber agir numa emergência até o socorro chegar e examinar uma pessoa com um kit básico.',
+    level: 'beginner',
+    prerequisites: [],
+    objectives: [
+      'Aplicar a sequência XABCDE para avaliar uma vítima de trauma',
+      'Conter uma hemorragia grave com torniquete',
+      'Executar a RCP e usar o DEA',
+      'Medir pressão, saturação, temperatura e glicemia com o kit',
+      'Decidir entre esperar, pronto atendimento e SAMU a partir do exame',
+    ],
+    standing: 'study-notes',
   },
   {
     slug: 'radio',
@@ -66,6 +110,17 @@ export const COURSES: readonly CourseInfo[] = [
     home: 'README.md',
     vaultName: 'Aprendendo Radio',
     format: 'markdown',
+    audience: 'Quem quer montar uma rede de comunicação privada própria e prefere entender a física e a lógica antes da prática.',
+    level: 'beginner',
+    prerequisites: ['Matemática de ensino médio (potências e logaritmos, usados nos decibéis)', 'Para o projeto final: noções de Linux e um Raspberry Pi'],
+    objectives: [
+      'Explicar como uma onda leva informação: frequência, modulação e propagação',
+      'Calcular a perda de um enlace e o alcance em decibéis',
+      'Distinguir LoRa, LoRaWAN e redes mesh como o Meshtastic',
+      'Comparar o Reticulum com a pilha de rede convencional',
+      'Planejar a rede respeitando o regime legal da Anatel',
+    ],
+    standing: 'study-notes',
   },
   {
     slug: 'modelagem-de-casas',
@@ -76,8 +131,22 @@ export const COURSES: readonly CourseInfo[] = [
     home: 'README.md',
     vaultName: 'Aprendendo Modelagem de Casas',
     format: 'markdown',
+    audience: 'Quem quer entender o projeto residencial e modelar a própria casa, como hobby.',
+    level: 'beginner',
+    prerequisites: [],
+    objectives: [
+      'Organizar o programa de necessidades e a setorização de uma casa',
+      'Posicionar a casa no terreno considerando sol, ventilação e legislação',
+      'Ler plantas, cortes e fachadas de um desenho técnico',
+      'Modelar uma casa em 3D no Sweet Home 3D, SketchUp, BIM ou Blender',
+      'Montar o dossiê do projeto para validar com um arquiteto ou engenheiro',
+    ],
+    standing: 'study-notes',
   },
 ];
+
+const flagships = COURSES.filter((c) => c.standing === 'flagship');
+if (flagships.length > 1) throw new Error(`Only one course can be the flagship, found ${flagships.length}`);
 
 export const LANGS = Object.keys(languages) as Lang[];
 

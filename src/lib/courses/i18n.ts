@@ -2,7 +2,7 @@
 // translated: a course is written in one language and shown only in that language's section.
 // Imported by the client scripts too, so it holds only short labels.
 import type { Lang } from '../../i18n/ui';
-import type { CourseTopic } from './catalog';
+import type { CourseLevel, CourseTopic } from './catalog';
 
 export interface CourseText {
   /** BCP 47 tag for sorting and number formatting. */
@@ -40,6 +40,20 @@ export interface CourseText {
   /** Reading time of a course or module, from its minutes. */
   readonly duration: (minutes: number) => string;
   readonly examBadge: string;
+  /** Catalog badges: the flagship course and the other courses (study notes). */
+  readonly flagshipBadge: string;
+  readonly studyNotesBadge: string;
+  /** "Reading time: 54 h" (a course) and "45 min of reading" (a module): never a bare duration. */
+  readonly readingTimeOf: (minutes: number) => string;
+  readonly minutesOfReading: (minutes: number) => string;
+  readonly levelLabel: string;
+  readonly levelNames: Readonly<Record<CourseLevel, string>>;
+  readonly audienceLabel: string;
+  readonly prerequisitesLabel: string;
+  readonly noPrerequisites: string;
+  readonly objectivesLabel: string;
+  /** Under the catalog title: the courses are read in the browser and Obsidian is optional. */
+  readonly browserLine: string;
   readonly syllabusShow: string;
   readonly syllabusHide: string;
   /** Heading of the modules and lessons that match the search, inside a course card. */
@@ -71,6 +85,8 @@ export interface CourseText {
   readonly onThisNote: string;
   readonly courseHomeTitle: (course: string) => string;
   readonly noteDescription: (note: string, course: string) => string;
+  /** Meta description of a lesson: the question the lesson answers, then where it comes from. */
+  readonly lessonDescription: (question: string, course: string) => string;
   readonly navToggle: string;
   readonly navShort: string;
   readonly close: string;
@@ -143,7 +159,7 @@ const pt: CourseText = {
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · ${hours} h de leitura`,
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · tempo de leitura: ${hours} h`,
   howToLink: 'Como eu crio os cursos',
   searchLabel: 'Buscar nos cursos',
   searchPlaceholder: 'Buscar curso ou aula',
@@ -166,6 +182,17 @@ const pt: CourseText = {
   termsCount: (count) => `${count} termos no glossário`,
   duration: formatDuration,
   examBadge: 'Com simulados de prova',
+  flagshipBadge: 'Curso principal',
+  studyNotesBadge: 'Notas de estudo',
+  readingTimeOf: (minutes) => `Tempo de leitura: ${formatDuration(minutes)}`,
+  minutesOfReading: (minutes) => `${formatDuration(minutes)} de leitura`,
+  levelLabel: 'Nível',
+  levelNames: { beginner: 'Iniciante', intermediate: 'Intermediário', advanced: 'Avançado' },
+  audienceLabel: 'Para quem é',
+  prerequisitesLabel: 'Antes de começar',
+  noPrerequisites: 'Nenhum pré-requisito.',
+  objectivesLabel: 'Ao final você será capaz de',
+  browserLine: 'Você lê tudo aqui no navegador, sem instalar nada. O Obsidian é opcional.',
   syllabusShow: 'Ver ementa',
   syllabusHide: 'Fechar ementa',
   searchMatches: (count) => `${count} ${count === 1 ? 'resultado' : 'resultados'} neste curso`,
@@ -196,6 +223,7 @@ const pt: CourseText = {
   onThisNote: 'Nesta nota',
   courseHomeTitle: (course) => `${course}: curso gratuito`,
   noteDescription: (note, course) => `${note}. Do curso ${course}, gratuito e aberto.`,
+  lessonDescription: (question, course) => `${question} Aula do curso ${course}.`,
   navToggle: 'Módulos do curso',
   navShort: 'Módulos',
   close: 'Fechar',
@@ -261,7 +289,7 @@ const en: CourseText = {
   section: 'Courses',
   catalogTitle: 'Course catalog',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · ${hours} h of reading`,
+    `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · reading time: ${hours} h`,
   howToLink: 'How I make the courses',
   searchLabel: 'Search the courses',
   searchPlaceholder: 'Search courses and lessons',
@@ -284,6 +312,17 @@ const en: CourseText = {
   termsCount: (count) => `${count} glossary terms`,
   duration: formatDuration,
   examBadge: 'With practice exams',
+  flagshipBadge: 'Flagship course',
+  studyNotesBadge: 'Study notes',
+  readingTimeOf: (minutes) => `Reading time: ${formatDuration(minutes)}`,
+  minutesOfReading: (minutes) => `${formatDuration(minutes)} of reading`,
+  levelLabel: 'Level',
+  levelNames: { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' },
+  audienceLabel: 'Who it is for',
+  prerequisitesLabel: 'Before you start',
+  noPrerequisites: 'No prerequisites.',
+  objectivesLabel: 'By the end you will be able to',
+  browserLine: 'You read everything here in the browser, with nothing to install. Obsidian is optional.',
   syllabusShow: 'See syllabus',
   syllabusHide: 'Hide syllabus',
   searchMatches: (count) => `${count} ${count === 1 ? 'match' : 'matches'} in this course`,
@@ -314,6 +353,7 @@ const en: CourseText = {
   onThisNote: 'On this note',
   courseHomeTitle: (course) => `${course}: free course`,
   noteDescription: (note, course) => `${note}. From the free and open course ${course}.`,
+  lessonDescription: (question, course) => `${question} A lesson from the course ${course}.`,
   navToggle: 'Course modules',
   navShort: 'Modules',
   close: 'Close',
@@ -379,7 +419,7 @@ const es: CourseText = {
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
   catalogFacts: (courses, lessons, hours) =>
-    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · ${hours} h de lectura`,
+    `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · tiempo de lectura: ${hours} h`,
   howToLink: 'Cómo creo los cursos',
   searchLabel: 'Buscar en los cursos',
   searchPlaceholder: 'Buscar curso o clase',
@@ -402,6 +442,17 @@ const es: CourseText = {
   termsCount: (count) => `${count} términos en el glosario`,
   duration: formatDuration,
   examBadge: 'Con exámenes de práctica',
+  flagshipBadge: 'Curso principal',
+  studyNotesBadge: 'Notas de estudio',
+  readingTimeOf: (minutes) => `Tiempo de lectura: ${formatDuration(minutes)}`,
+  minutesOfReading: (minutes) => `${formatDuration(minutes)} de lectura`,
+  levelLabel: 'Nivel',
+  levelNames: { beginner: 'Principiante', intermediate: 'Intermedio', advanced: 'Avanzado' },
+  audienceLabel: 'Para quién es',
+  prerequisitesLabel: 'Antes de empezar',
+  noPrerequisites: 'Sin requisitos previos.',
+  objectivesLabel: 'Al terminar podrás',
+  browserLine: 'Lees todo aquí en el navegador, sin instalar nada. Obsidian es opcional.',
   syllabusShow: 'Ver temario',
   syllabusHide: 'Cerrar temario',
   searchMatches: (count) => `${count} ${count === 1 ? 'resultado' : 'resultados'} en este curso`,
@@ -432,6 +483,7 @@ const es: CourseText = {
   onThisNote: 'En esta nota',
   courseHomeTitle: (course) => `${course}: curso gratuito`,
   noteDescription: (note, course) => `${note}. Del curso ${course}, gratuito y abierto.`,
+  lessonDescription: (question, course) => `${question} Clase del curso ${course}.`,
   navToggle: 'Módulos del curso',
   navShort: 'Módulos',
   close: 'Cerrar',

@@ -20,4 +20,4 @@ const isSimulatedExam = (n: Note) => Array.isArray(n.frontmatter.tags) && n.fron
 const exam = vault.course.exam && quiz.length > 0 && isSimulatedExam(note) ? vault.course.exam : undefined;
 ---
 
-<CourseNote vault={vault} note={note} html={html} headings={headings} exam={exam} />
+<CourseNote vault={vault} note={note} html={html} headings={headings} exam={exam} indexing={note.kind === 'glossary' ? 'noindex' : 'index'} />

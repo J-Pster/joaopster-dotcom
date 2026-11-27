@@ -25,6 +25,7 @@ import { searchText } from '../lib/courses/searchText';
 import { shortcutsText } from '../lib/courses/shortcutsText';
 import { readingMinutes } from '../lib/courses/readingTime';
 import { readerText } from '../lib/courses/readerText';
+import { courseJsonLd, jsonLdScript, noteMetaDescription, seoTitle } from '../lib/courses/seo';
 import { assistantText } from '../lib/courses/assistantText';
 import '../styles/courses.css';
 import '../styles/courses-search.css';
@@ -42,11 +43,13 @@ interface Props {
   headings: readonly MarkdownHeading[];
   /** Set on simulated exams: the note's quiz runs as a timed exam. */
   exam?: ExamRules;
+  /** "noindex" on glossary terms: thin pages that stay reachable (previews, in-lesson links) but out of search. */
+  indexing?: 'index' | 'noindex';
 }
 
 const BACKLINKS_SHOWN = 24;
 
-const { vault, note, html, headings, exam } = Astro.props;
+const { vault, note, html, headings, exam, indexing = 'index' } = Astro.props;
 const { course } = vault;
 const text = courseText(course.lang);
 const search = searchText(course.lang);
@@ -62,15 +65,17 @@ const next = lessonIndex >= 0 ? vault.lessons[lessonIndex + 1] : undefined;
 const kindRank = { lesson: 0, module: 1, home: 2, page: 3, glossary: 4 } as const;
 const backlinks = [...(vault.backlinks.get(note.id) ?? [])].sort((a, b) => kindRank[a.kind] - kindRank[b.kind]);
 
-const pageTitle = note.kind === 'home' ? text.courseHomeTitle(course.title) : `${note.title} | ${course.title}`;
-const description = note.kind === 'home' ? course.goal : text.noteDescription(note.title, course.title);
+const pageTitle = note.kind === 'home' ? text.courseHomeTitle(course.title) : `${seoTitle(note)} | ${course.title}`;
+const description = noteMetaDescription(note, course, text);
+const courseLd = note.kind === 'home' ? jsonLdScript(courseJsonLd(vault, Astro.site ?? new URL('https://joaopster.com'))) : undefined;
 // A note exists only in its course's language: the language switcher goes to the courses landing of
 // the language picked (data-lang-* on <html>, read by i18n/switchLocale.ts).
 ---
 
 <html lang={course.lang} data-lang-pt={coursesHome('pt')} data-lang-en={coursesHome('en')} data-lang-es={coursesHome('es')}>
   <head>
-    <BaseHead title={pageTitle} description={description} alternates="none" />
+    <BaseHead title={pageTitle} description={description} alternates="none" indexing={indexing} />
+    {courseLd && <script type="application/ld+json" set:html={courseLd} />}
     <link rel="manifest" href="/manifest.webmanifest" />
     <!-- Hidden side panels are applied before the first paint, so the layout does not jump.
          Same key and shape as saveHiddenPanels() in lib/courses/client/reader.ts. -->

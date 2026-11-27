@@ -13,6 +13,7 @@ import type { Lang } from '../i18n/ui';
 import { COURSE_TOPICS, coursesHome, coursesIn, courseZipUrl, howToUrl, LANGS, sectionAlternates } from '../lib/courses/catalog';
 import { catalogCourses } from '../lib/courses/catalogView';
 import { courseText } from '../lib/courses/i18n';
+import { catalogJsonLd, jsonLdScript } from '../lib/courses/seo';
 import '../styles/courses.css';
 import '../styles/courses-catalog.css';
 
@@ -23,6 +24,9 @@ interface Props {
 const { lang } = Astro.props;
 const text = courseText(lang);
 const courses = catalogCourses(lang);
+// A language with no course of its own has only this page to show: out of search results until it has some.
+const indexing = courses.length === 0 ? 'noindex' : 'index';
+const itemListLd = courses.length > 0 ? jsonLdScript(catalogJsonLd(courses.map((c) => c.course), Astro.site ?? new URL('https://joaopster.com'))) : undefined;
 const otherLanguages = LANGS.filter((l) => l !== lang && coursesIn(l).length > 0);
 const totalLessons = courses.reduce((sum, c) => sum + c.lessons, 0);
 const totalHours = Math.round(courses.reduce((sum, c) => sum + c.minutes, 0) / 60);
@@ -44,7 +48,9 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       title={text.landingMetaTitle}
       description={text.landingMetaDescription}
       alternates={sectionAlternates(coursesHome)}
+      indexing={indexing}
     />
+    {itemListLd && <script type="application/ld+json" set:html={itemListLd} />}
     <!-- With a sync code saved, the sync cards start collapsed (lib/courses/client/syncCard.ts),
          so the side column does not jump. Same key as CODE_KEY in lib/courses/client/sync.ts. -->
     <script is:inline>
@@ -61,6 +67,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       <header class="catalog-head">
         <p class="courses-eyebrow">{text.section}</p>
         <h1 class="catalog-title">{text.catalogTitle}</h1>
+        {courses.length > 0 && <p class="catalog-note">{text.browserLine}</p>}
         {courses.length > 0 && <p class="catalog-facts">{text.catalogFacts(courses.length, totalLessons, totalHours)}</p>}
       </header>
 
@@ -153,7 +160,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
             <ol class="catalog-list" data-catalog-list>
               {courses.map(({ course, url, firstLesson, modules, lessons, minutes, terms }, index) => (
                 <li
-                  class="catalog-course"
+                  class:list={['catalog-course', course.standing === 'flagship' && 'catalog-course--flagship']}
                   data-course-card={course.slug}
                   data-topic={course.topic}
                   data-order={index}
@@ -161,20 +168,25 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                   data-title={course.title}
                   data-lessons={lessons}
                   data-first-lesson={firstLesson}
-                  data-search={[course.title, course.goal, text.topicNames[course.topic]].join(' ')}
+                  data-search={[course.title, course.goal, course.audience, text.topicNames[course.topic]].join(' ')}
                 >
                   <div class="catalog-course-main">
                     <div class="catalog-course-body">
                       <p class="catalog-course-tags">
+                        {course.standing === 'flagship'
+                          ? <span class="catalog-badge catalog-badge--flagship">{text.flagshipBadge}</span>
+                          : <span class="catalog-badge catalog-badge--outline">{text.studyNotesBadge}</span>}
                         <span class="catalog-badge">{text.topicNames[course.topic]}</span>
                         {course.exam && <span class="catalog-badge catalog-badge--outline">{text.examBadge}</span>}
                       </p>
                       <h3 class="catalog-course-title" id={`course-${course.slug}`}><a href={url}>{course.title}</a></h3>
                       <p class="catalog-course-goal">{course.goal}</p>
+                      <p class="catalog-course-audience"><strong>{text.audienceLabel}:</strong> {course.audience}</p>
                       <ul class="catalog-course-meta">
                         <li>{text.modulesCount(modules.length)}</li>
                         <li>{text.lessonsCount(lessons)}</li>
-                        <li>{text.duration(minutes)}</li>
+                        <li>{text.readingTimeOf(minutes)}</li>
+                        <li>{text.levelNames[course.level]}</li>
                         {terms > 0 && <li>{text.termsCount(terms)}</li>}
                       </ul>
                       <div class="catalog-course-progress" data-card-progress hidden>
@@ -213,6 +225,24 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                   <div class="catalog-matches" data-card-matches hidden></div>
 
                   <div class="catalog-syllabus" id={`syllabus-${course.slug}`} data-syllabus hidden>
+                    <div class="catalog-about">
+                      <div>
+                        <h4 class="catalog-about-title">{text.objectivesLabel}</h4>
+                        <ul class="catalog-about-list">
+                          {course.objectives.map((objective) => <li>{objective}</li>)}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 class="catalog-about-title">{text.prerequisitesLabel}</h4>
+                        {course.prerequisites.length === 0 ? (
+                          <p class="catalog-about-none">{text.noPrerequisites}</p>
+                        ) : (
+                          <ul class="catalog-about-list">
+                            {course.prerequisites.map((prerequisite) => <li>{prerequisite}</li>)}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
                     <ol class="catalog-modules">
                       {modules.map((module) => (
                         <li data-module={module.number} data-module-url={module.url} data-module-lessons={module.lessons}>
@@ -220,7 +250,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                             <span class="catalog-module-number">{pad(module.number)}</span>
                             <span class="catalog-module-title">{module.title}</span>
                             <span class="catalog-module-meta">
-                              <span data-module-done>{text.lessonsCount(module.lessons)}</span> · {text.duration(module.minutes)}
+                              <span data-module-done>{text.lessonsCount(module.lessons)}</span> · {text.minutesOfReading(module.minutes)}
                             </span>
                           </a>
                         </li>

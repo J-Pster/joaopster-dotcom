@@ -13,6 +13,7 @@ import { pathToFileURL } from 'node:url';
 import { SKIP, visit } from 'unist-util-visit';
 import { rehypePostLinks } from '../markdown/rehypePostLinks';
 import { courseText } from './i18n';
+import { rehypeCheckboxLabels } from './rehypeCheckboxLabels';
 import { extractQuizzes, type QuizQuestion } from './quiz';
 import type { Note, Vault } from './vault';
 
@@ -262,7 +263,7 @@ async function createRenderer(vault: Vault): Promise<CourseRenderer> {
   const quizzes = new Map<string, readonly QuizQuestion[]>();
   const processor = await createMarkdownProcessor({
     remarkPlugins: [[remarkObsidian, { vault, missing, quizzes }]],
-    rehypePlugins: [rehypeHeadingIds, rehypePostLinks],
+    rehypePlugins: [rehypeHeadingIds, rehypePostLinks, rehypeCheckboxLabels],
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
   });
   // A note is rendered once per build: its page and the course's study index both need it.

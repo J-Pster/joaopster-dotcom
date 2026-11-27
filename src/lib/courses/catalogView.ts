@@ -28,8 +28,10 @@ export interface CatalogCourse {
   readonly searchLessons: readonly CatalogLesson[];
 }
 
+/** The flagship course leads the catalog; the rest keep the catalog's order. */
 export function catalogCourses(lang: Lang): readonly CatalogCourse[] {
-  return coursesIn(lang).map(catalogCourse);
+  const flagship = (course: CourseInfo) => (course.standing === 'flagship' ? 0 : 1);
+  return [...coursesIn(lang)].sort((a, b) => flagship(a) - flagship(b)).map(catalogCourse);
 }
 
 function catalogCourse(course: CourseInfo): CatalogCourse {
