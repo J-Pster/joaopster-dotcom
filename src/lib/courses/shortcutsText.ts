@@ -1,10 +1,10 @@
 // Text of the keyboard shortcuts window of the course pages (components/courses/ShortcutsDialog.astro).
 // The keys listed here are the ones handled in lib/courses/client: search.ts, review.ts,
-// linkPreview.ts and shortcuts.ts. Change both together.
+// linkPreview.ts, shortcuts.ts, lessonKeys.ts and readerTools.ts. Change both together.
 import type { Lang } from '../../i18n/ui';
 
 /** "Mod" is Ctrl, shown as ⌘ on Apple devices (client/shortcuts.ts). */
-export type Key = 'Mod' | 'K' | '/' | '?' | 'Esc' | 'Enter' | 'Space' | '↑' | '↓' | '1' | '2' | '3' | '4';
+export type Key = 'Mod' | 'K' | '/' | '?' | 'Esc' | 'Enter' | 'Space' | '↑' | '↓' | '←' | '→' | 'M' | 'F' | '1' | '2' | '3' | '4';
 
 export interface Shortcut {
   readonly label: string;
@@ -43,6 +43,14 @@ const TEXT: Record<Lang, ShortcutsText> = {
         ],
       },
       {
+        title: 'Na aula',
+        items: [
+          { label: 'Aula anterior ou próxima', combos: [['←'], ['→']] },
+          { label: 'Marcar a aula como lida (ou não)', combos: [['M']] },
+          { label: 'Ligar ou desligar o modo foco', combos: [['F']] },
+        ],
+      },
+      {
         title: 'Na busca',
         items: [
           { label: 'Andar pelos resultados', combos: [['↑'], ['↓']] },
@@ -74,6 +82,14 @@ const TEXT: Record<Lang, ShortcutsText> = {
         ],
       },
       {
+        title: 'In a lesson',
+        items: [
+          { label: 'Previous or next lesson', combos: [['←'], ['→']] },
+          { label: 'Mark the lesson as read (or not)', combos: [['M']] },
+          { label: 'Turn focus mode on or off', combos: [['F']] },
+        ],
+      },
+      {
         title: 'In search',
         items: [
           { label: 'Move through the results', combos: [['↑'], ['↓']] },
@@ -102,6 +118,14 @@ const TEXT: Record<Lang, ShortcutsText> = {
           { label: 'Buscar en el curso', combos: [['Mod', 'K'], ['/']] },
           { label: 'Ver los atajos', combos: [['?']] },
           { label: 'Cerrar una ventana o la vista previa de un enlace', combos: [['Esc']] },
+        ],
+      },
+      {
+        title: 'En la clase',
+        items: [
+          { label: 'Clase anterior o siguiente', combos: [['←'], ['→']] },
+          { label: 'Marcar la clase como leída (o no)', combos: [['M']] },
+          { label: 'Activar o desactivar el modo enfoque', combos: [['F']] },
         ],
       },
       {

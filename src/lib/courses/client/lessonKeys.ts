@@ -1,5 +1,5 @@
 // Lesson keys: ← and → go to the previous and next lesson, M marks the lesson as read (or not).
-// To be listed in the shortcuts window (shortcutsText.ts) once it lands; change both together.
+// Listed in the shortcuts window (shortcutsText.ts); change both together.
 import { pageLang } from '../i18n';
 import { readerText } from '../readerText';
 import { showToast } from './toast';

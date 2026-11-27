@@ -172,6 +172,7 @@
 /* ---------- Focus mode ---------- */
 
 :root.course-focus #site-header,
+:root.course-focus .reader-bar,
 :root.course-focus body > footer,
 :root.course-focus .course-rail,
 :root.course-focus .toc--inline,
