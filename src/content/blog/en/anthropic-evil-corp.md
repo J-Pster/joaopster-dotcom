@@ -2,7 +2,7 @@
 slug: is-anthropic-evil-corp
 title: 'Is Anthropic the Evil Corp or not?'
 description: 'A LinkedIn article claims Anthropic uses Claude Code to copy your software, so I went through every single source to separate fact from fearmongering'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-26T11:42:15-03:00'
 tags: ['ai', 'claude-code', 'opinion']
 ---
 

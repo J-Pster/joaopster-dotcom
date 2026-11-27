@@ -2,7 +2,7 @@
 slug: harness-claude-code-workflow-obsoleto
 title: 'El harness de Claude Code dejó obsoleto mi workflow'
 description: 'Creé un workflow con 20 comandos y 45 agentes y hoy Claude Code hace casi todo eso solo, aquí cuento qué cambió en el harness y qué sigo usando por fuera'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-25T21:46:04-03:00'
 tags: ['ai', 'claude-code', 'opinion', 'setup']
 ---
 

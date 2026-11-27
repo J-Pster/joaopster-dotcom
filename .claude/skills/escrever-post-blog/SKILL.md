@@ -170,11 +170,13 @@ Antes de entregar, rode nos textos escritos do zero, resumidos ou reescritos (o 
   ---
   title: 'Título do post'
   description: 'Resumo de 1 a 2 frases, usado na listagem, no Google e no preview de link.'
-  pubDate: 'Nov 26 2026'
-  updatedDate: 'Dec 10 2026'   # só quando o post mudou de verdade
+  pubDate: '2026-11-26T18:11:31-03:00'
+  updatedDate: '2026-12-10T09:30:00-03:00'   # só quando o post mudou de verdade
   tags: ['ai', 'claude-code']
   ---
   ```
+
+  - `pubDate` leva data, hora, minuto, segundo e fuso, o momento real da publicação (a hora do commit que publica o post), igual nos três idiomas. A listagem ordena por ele, e só a data deixa empatados os posts do mesmo dia.
 
   - Se o texto tiver apóstrofo, use aspas duplas no campo.
   - As tags são ids de tópico de `src/lib/blog/topics.ts`, iguais nos três idiomas (o site mostra o rótulo de cada idioma). O build recusa qualquer outro valor. Hoje: `ai`, `claude-code`, `programming`, `infra-cloud`, `setup`, `workflow`, `career`, `investments`, `courses`, `opinion` e `off-topic` (Baguncinha).

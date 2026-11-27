@@ -1,7 +1,7 @@
 ---
 title: 'O harness do Claude Code deixou meu workflow obsoleto'
 description: 'Criei um workflow com 20 comandos e 45 agentes e hoje o Claude Code faz quase tudo isso sozinho, aqui eu conto o que mudou no harness e o que eu ainda uso por fora'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-25T21:46:04-03:00'
 tags: ['ai', 'claude-code', 'opinion', 'setup']
 ---
 

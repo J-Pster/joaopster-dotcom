@@ -2,7 +2,7 @@
 slug: migre-de-cursor-a-claude-code
 title: 'Migré de Cursor a Claude Code y ahorré $400'
 description: 'Mi opinión honesta después de una semana con Claude Code, OMC y Serena. El setup completo con MCPs, workflows y lo que realmente funciona.'
-pubDate: 'May 25 2026'
+pubDate: '2026-05-25T11:34:47-03:00'
 tags: ['ai', 'claude-code', 'opinion', 'setup']
 ---
 

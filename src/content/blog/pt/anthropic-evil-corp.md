@@ -1,7 +1,7 @@
 ---
 title: 'A Anthropic é ou não é a Evil Corp?'
 description: 'Um artigo no LinkedIn diz que a Anthropic usa o Claude Code pra copiar teu software, então fui atrás de cada fonte pra separar fato de terrorismo'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-26T11:42:15-03:00'
 tags: ['ai', 'claude-code', 'opinion']
 ---
 

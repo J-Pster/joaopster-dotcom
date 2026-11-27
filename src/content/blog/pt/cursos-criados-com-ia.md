@@ -1,7 +1,7 @@
 ---
 title: 'Como eu uso IA pra criar cursos do jeito que eu gosto de aprender'
 description: 'Eu peço pro Claude montar cursos completos pra mim, com módulos, aulas, glossário e questionário, e agora os quatro que eu fiz tão abertos no meu site, aqui eu conto como funciona e como você cria o seu'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-26T18:11:31-03:00'
 tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 

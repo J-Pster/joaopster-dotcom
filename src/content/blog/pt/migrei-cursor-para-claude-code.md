@@ -1,7 +1,7 @@
 ---
 title: 'Eu migrei do Cursor para o Claude Code e economizei $400'
 description: 'Minha opinião honesta depois de uma semana com Claude Code, OMC e Serena. Setup completo com MCPs, workflows e o que realmente funciona.'
-pubDate: 'May 25 2026'
+pubDate: '2026-05-25T11:34:47-03:00'
 tags: ['ai', 'claude-code', 'opinion', 'setup']
 ---
 

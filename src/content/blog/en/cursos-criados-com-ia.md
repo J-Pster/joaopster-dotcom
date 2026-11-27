@@ -2,7 +2,7 @@
 slug: how-i-use-ai-to-build-courses
 title: 'How I use AI to build courses the way I like to learn'
 description: 'I ask Claude to build full courses for me, with modules, lessons, a glossary and quizzes, and now the four I made are open on my site, here is how it works and how you can make your own'
-pubDate: 'Nov 26 2026'
+pubDate: '2026-11-26T18:11:31-03:00'
 tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 
