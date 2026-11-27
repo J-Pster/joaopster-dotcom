@@ -1,9 +1,7 @@
 // The assistant's conversations, one per note, saved only in this browser. A conversation is a list of
 // turns that always alternates user, assistant, ... and ends with an assistant turn: a question whose
 // answer failed is taken back out (its text returns to the composer), so the list stays valid to send.
-
-export type ModelChoice = 'fast' | 'smart';
-export const MODEL_CHOICES: readonly ModelChoice[] = ['fast', 'smart'];
+import { isModelChoice, type ModelChoice } from './models';
 
 export interface UserTurn {
   readonly role: 'user';
@@ -87,16 +85,19 @@ export function saveConversation(noteUrl: string, turns: readonly Turn[]): boole
   }
 }
 
-export function loadModelChoice(): ModelChoice {
+/** The model the reader picked last, if any. Before other providers existed it was 'fast' or 'smart'. */
+export function loadModelChoice(): ModelChoice | undefined {
   const raw = localStorage.getItem(SETTINGS_KEY);
-  if (raw === null) return 'fast';
+  if (raw === null) return undefined;
+  let model: unknown;
   try {
     const parsed: unknown = JSON.parse(raw);
-    const model = typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>).model : undefined;
-    return model === 'smart' ? 'smart' : 'fast';
+    model = typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>).model : undefined;
   } catch {
-    return 'fast';
+    return undefined;
   }
+  if (model === 'fast' || model === 'smart') return `anthropic-${model}`;
+  return isModelChoice(model) ? model : undefined;
 }
 
 export function saveModelChoice(model: ModelChoice): void {

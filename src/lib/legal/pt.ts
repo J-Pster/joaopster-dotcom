@@ -123,7 +123,7 @@ export const pt: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              `Assistente de IA: usa a API da Anthropic (api.anthropic.com). ${ext(POLICIES.anthropic, 'Política de privacidade')}.`,
+              `Assistente de IA: usa a API do provedor do modelo que você escolher, com a sua chave: Anthropic (api.anthropic.com, ${ext(POLICIES.anthropic, 'política')}), OpenAI (api.openai.com, ${ext(POLICIES.openai, 'política')}) ou Google Gemini (generativelanguage.googleapis.com, ${ext(POLICIES.gemini, 'termos')}). Pelos termos da API Gemini, no nível gratuito o Google pode usar o que você envia pra melhorar os produtos dele.`,
               `Voz do navegador (Web Speech API): gratuita. Em alguns sistemas, como as vozes online do Chrome e do Edge, o navegador pode enviar o texto aos servidores do fabricante dele. Depende do navegador e da voz escolhida.`,
               `Vozes pagas, só se você cadastrar a chave: OpenAI (api.openai.com, ${ext(POLICIES.openai, 'política')}), Google Cloud Text-to-Speech (texttospeech.googleapis.com, ${ext(POLICIES.google, 'política')}) e ElevenLabs (api.elevenlabs.io, ${ext(POLICIES.elevenlabs, 'política')}).`,
             ],
@@ -154,7 +154,7 @@ export const pt: LegalLanguage = {
               `jsDelivr: alguns cursos carregam a biblioteca Mermaid, que desenha diagramas, de cdn.jsdelivr.net. ${ext(POLICIES.jsdelivr, 'Política')}.`,
               `Giscus e GitHub: comentários nos posts, como descrito acima.`,
               'WakaTime: as estatísticas de código mostradas no site são as minhas, buscadas pelo endereço /api/wakatime. Nenhum dado de visitante é enviado ao WakaTime.',
-              'Buttondown, Anthropic, OpenAI, Google Cloud e ElevenLabs: só nos usos descritos nas seções da newsletter e das chaves.',
+              'Buttondown, Anthropic, OpenAI, Google (Gemini e Cloud) e ElevenLabs: só nos usos descritos nas seções da newsletter e das chaves.',
             ],
           },
           {
@@ -298,7 +298,7 @@ export const pt: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              `Os termos e a política de cada provedor valem: ${ext(TERMS.anthropic, 'Anthropic')}, ${ext(TERMS.openai, 'OpenAI')}, ${ext(TERMS.google, 'Google Cloud')} e ${ext(TERMS.elevenlabs, 'ElevenLabs')}.`,
+              `Os termos e a política de cada provedor valem: ${ext(TERMS.anthropic, 'Anthropic')}, ${ext(TERMS.openai, 'OpenAI')}, ${ext(TERMS.gemini, 'Google Gemini')}, ${ext(TERMS.google, 'Google Cloud')} e ${ext(TERMS.elevenlabs, 'ElevenLabs')}.`,
               'O custo é seu. Eu não recebo nada e não controlo o que o provedor cobra. Defina um limite de gasto na sua conta.',
               'Respostas de IA podem estar erradas, incompletas ou desatualizadas. Elas não substituem professor, material oficial nem profissional.',
               'Você cuida da sua chave. Sobre os riscos de guardá-la no navegador, veja a Política de Privacidade.',

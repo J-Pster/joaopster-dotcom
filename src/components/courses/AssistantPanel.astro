@@ -3,6 +3,7 @@
 // 1024px). Behaviour in lib/courses/client/assistant/panel.ts.
 import type { Lang } from '../../i18n/ui';
 import { assistantText } from '../../lib/courses/assistantText';
+import { ASSISTANT_PROVIDERS, modelsOf } from '../../lib/courses/client/assistant/models';
 
 interface Props {
   lang: Lang;
@@ -36,7 +37,7 @@ const t = assistantText(lang);
       <p class="assistant-empty-title">{t.introTitle}</p>
       <p class="assistant-empty-text">{t.intro}</p>
       <div class="assistant-setup" data-assistant-setup hidden>
-        <p>{t.needKey}</p>
+        <p data-assistant-setup-text>{t.needKey(t.providers.anthropic.name)}</p>
         <button type="button" class="assistant-primary" data-assistant-add-key>{t.addKey}</button>
       </div>
       <div class="assistant-suggestions" data-assistant-suggestions>
@@ -69,8 +70,11 @@ const t = assistantText(lang);
       <label class="assistant-model">
         <span class="sr-only">{t.model}</span>
         <select data-assistant-model>
-          <option value="fast">{t.models.fast}</option>
-          <option value="smart">{t.models.smart}</option>
+          {ASSISTANT_PROVIDERS.map((provider) => (
+            <optgroup label={t.providers[provider].name}>
+              {modelsOf(provider).map((model) => <option value={model.choice}>{t.models[model.choice]}</option>)}
+            </optgroup>
+          ))}
         </select>
       </label>
       <button type="button" class="assistant-safe" data-safety-open aria-haspopup="dialog" aria-controls="course-safety">{t.isItSafe}</button>

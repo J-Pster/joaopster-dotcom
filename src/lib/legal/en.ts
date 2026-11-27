@@ -123,7 +123,7 @@ export const en: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              `AI assistant: uses Anthropic's API (api.anthropic.com). ${ext(POLICIES.anthropic, 'Privacy policy')}.`,
+              `AI assistant: uses the API of the provider of the model you pick, with your key: Anthropic (api.anthropic.com, ${ext(POLICIES.anthropic, 'policy')}), OpenAI (api.openai.com, ${ext(POLICIES.openai, 'policy')}) or Google Gemini (generativelanguage.googleapis.com, ${ext(POLICIES.gemini, 'terms')}). Under the Gemini API terms, on the free tier Google may use what you send to improve its products.`,
               `Browser voices (Web Speech API): free. On some systems, such as the online voices in Chrome and Edge, the browser may send the text to its vendor's servers. It depends on the browser and the voice you pick.`,
               `Paid voices, only if you add the key: OpenAI (api.openai.com, ${ext(POLICIES.openai, 'policy')}), Google Cloud Text-to-Speech (texttospeech.googleapis.com, ${ext(POLICIES.google, 'policy')}) and ElevenLabs (api.elevenlabs.io, ${ext(POLICIES.elevenlabs, 'policy')}).`,
             ],
@@ -154,7 +154,7 @@ export const en: LegalLanguage = {
               `jsDelivr: some courses load the Mermaid library, which draws diagrams, from cdn.jsdelivr.net. ${ext(POLICIES.jsdelivr, 'Policy')}.`,
               'Giscus and GitHub: comments on posts, as described above.',
               'WakaTime: the coding statistics shown on the site are my own, fetched through /api/wakatime. No visitor data is sent to WakaTime.',
-              'Buttondown, Anthropic, OpenAI, Google Cloud and ElevenLabs: only in the uses described in the newsletter and keys sections.',
+              'Buttondown, Anthropic, OpenAI, Google (Gemini and Cloud) and ElevenLabs: only in the uses described in the newsletter and keys sections.',
             ],
           },
           {
@@ -298,7 +298,7 @@ export const en: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              `Each provider's terms and policy apply: ${ext(TERMS.anthropic, 'Anthropic')}, ${ext(TERMS.openai, 'OpenAI')}, ${ext(TERMS.google, 'Google Cloud')} and ${ext(TERMS.elevenlabs, 'ElevenLabs')}.`,
+              `Each provider's terms and policy apply: ${ext(TERMS.anthropic, 'Anthropic')}, ${ext(TERMS.openai, 'OpenAI')}, ${ext(TERMS.gemini, 'Google Gemini')}, ${ext(TERMS.google, 'Google Cloud')} and ${ext(TERMS.elevenlabs, 'ElevenLabs')}.`,
               'The cost is yours. I receive nothing and do not control what the provider charges. Set a spending limit on your account.',
               'AI answers can be wrong, incomplete or out of date. They do not replace a teacher, official material or a professional.',
               'You look after your key. For the risks of keeping it in the browser, see the Privacy Policy.',

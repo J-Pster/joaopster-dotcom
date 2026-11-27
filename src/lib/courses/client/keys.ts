@@ -3,7 +3,7 @@
 // site has no server code that receives them. The keys dialog (keysDialog.ts) edits them, and any
 // module that needs one asks for it here or opens the dialog with requestKey().
 
-export const PROVIDERS = ['anthropic', 'openai', 'google', 'elevenlabs'] as const;
+export const PROVIDERS = ['anthropic', 'openai', 'gemini', 'google', 'elevenlabs'] as const;
 export type ProviderId = (typeof PROVIDERS)[number];
 
 /** localStorage key of the saved keys; the storage event of another tab reports it. */

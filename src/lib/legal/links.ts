@@ -6,6 +6,7 @@ export const POLICIES = {
   anthropic: 'https://www.anthropic.com/legal/privacy',
   openai: 'https://openai.com/policies/privacy-policy/',
   google: 'https://cloud.google.com/terms/cloud-privacy-notice',
+  gemini: 'https://ai.google.dev/gemini-api/terms',
   elevenlabs: 'https://elevenlabs.io/privacy-policy',
   buttondown: 'https://buttondown.com/legal/privacy',
   cloudflare: 'https://www.cloudflare.com/privacypolicy/',
@@ -19,6 +20,7 @@ export const TERMS = {
   anthropic: 'https://www.anthropic.com/legal/consumer-terms',
   openai: 'https://openai.com/policies/terms-of-use/',
   google: 'https://cloud.google.com/terms',
+  gemini: 'https://ai.google.dev/gemini-api/terms',
   elevenlabs: 'https://elevenlabs.io/terms-of-use',
 } as const;
 

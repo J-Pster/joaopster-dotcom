@@ -1,6 +1,7 @@
 // Interface text of the AI assistant of the course notes and of the API keys window, in each site
 // language. The assistant runs in client/assistant/, the keys window in client/keysDialog.ts.
 import type { Lang } from '../../i18n/ui';
+import type { ModelChoice } from './client/assistant/models';
 import type { ProviderId } from './client/keys';
 
 export interface ProviderText {
@@ -27,10 +28,11 @@ export interface AssistantText {
   readonly newChat: string;
   readonly keysButton: string;
   readonly model: string;
-  readonly models: { readonly fast: string; readonly smart: string };
+  readonly models: Record<ModelChoice, string>;
   readonly introTitle: string;
   readonly intro: string;
-  readonly needKey: string;
+  /** Shown when the picked model's provider has no key yet. */
+  readonly needKey: (provider: string) => string;
   readonly addKey: string;
   readonly isItSafe: string;
   readonly suggestions: readonly string[];
@@ -51,15 +53,15 @@ export interface AssistantText {
   readonly cost: (dollars: string) => string;
   readonly stopped: string;
   readonly errors: {
-    readonly key: string;
+    readonly key: (provider: string) => string;
     readonly permission: string;
-    readonly rateLimit: string;
-    readonly overloaded: string;
-    readonly network: string;
+    readonly rateLimit: (provider: string) => string;
+    readonly overloaded: (provider: string) => string;
+    readonly network: (provider: string) => string;
     readonly load: string;
     readonly refusal: string;
     readonly truncated: string;
-    readonly other: (detail: string) => string;
+    readonly other: (provider: string, detail: string) => string;
   };
   readonly retry: string;
   readonly openKeys: string;
@@ -92,6 +94,7 @@ const KEYS_URL: Record<ProviderId, string> = {
   anthropic: 'https://platform.claude.com/settings/keys',
   openai: 'https://platform.openai.com/api-keys',
   google: 'https://console.cloud.google.com/apis/credentials',
+  gemini: 'https://aistudio.google.com/apikey',
   elevenlabs: 'https://elevenlabs.io/app/settings/api-keys',
 };
 
@@ -102,11 +105,18 @@ const pt: AssistantText = {
   newChat: 'Nova conversa',
   keysButton: 'Chaves de API',
   model: 'Modelo',
-  models: { fast: 'Haiku 5.5 (rápido e barato)', smart: 'Sonnet 5.5 (mais capaz)' },
+  models: {
+    'anthropic-fast': 'Claude Haiku 5.5 (rápido e barato)',
+    'anthropic-smart': 'Claude Sonnet 5.5 (mais capaz)',
+    'openai-fast': 'GPT-6 Luna (rápido e barato)',
+    'openai-smart': 'GPT-6.1 Terra (mais capaz)',
+    'gemini-fast': 'Gemini 3.5 Flash-Lite (rápido e barato)',
+    'gemini-smart': 'Gemini 3.8 Flash (mais capaz)',
+  },
   introTitle: 'Pergunte sobre esta nota',
   intro:
     'O assistente lê a nota que você tem aberta e responde com base nela. Selecione um trecho do texto e use "Adicionar ao chat" pra perguntar sobre ele.',
-  needKey: 'Pra usar o assistente você precisa de uma chave da API da Anthropic. Ela fica salva só neste navegador.',
+  needKey: (provider) => `Pra usar este modelo você precisa de uma chave de API (${provider}). Ela fica salva só neste navegador. Você também pode escolher outro modelo lá embaixo.`,
   addKey: 'Colar minha chave',
   isItSafe: 'É seguro?',
   suggestions: ['Resuma esta nota em 5 pontos', 'Explique a parte onde eu estou com um exemplo', 'Me faça 3 perguntas pra eu testar o que aprendi'],
@@ -126,15 +136,15 @@ const pt: AssistantText = {
   cost: (dollars) => `cerca de US$ ${dollars}`,
   stopped: 'Resposta interrompida.',
   errors: {
-    key: 'A Anthropic recusou a chave. Confira se ela foi copiada inteira e se ainda está ativa.',
+    key: (provider) => `A chave foi recusada (${provider}). Confira se ela foi copiada inteira e se ainda está ativa.`,
     permission: 'Essa chave não tem permissão pra usar este modelo.',
-    rateLimit: 'Você chegou no limite de uso da sua conta na Anthropic. Espere um pouco ou confira o limite no painel.',
-    overloaded: 'Os servidores da Anthropic estão sobrecarregados agora. Tente de novo daqui a pouco.',
-    network: 'Não consegui falar com a Anthropic. Confira sua conexão.',
+    rateLimit: (provider) => `Sua conta chegou no limite de uso (${provider}). Espere um pouco ou confira o limite no painel.`,
+    overloaded: (provider) => `Os servidores estão sobrecarregados agora (${provider}). Tente de novo daqui a pouco.`,
+    network: (provider) => `Não consegui falar com ${provider}. Confira sua conexão e se a chave está certa.`,
     load: 'Não consegui carregar o assistente. Recarregue a página e tente de novo.',
     refusal: 'O modelo preferiu não responder a esse pedido.',
     truncated: 'A resposta ficou longa demais e foi cortada.',
-    other: (detail) => `A Anthropic devolveu um erro: ${detail}`,
+    other: (provider, detail) => `${provider} devolveu um erro: ${detail}`,
   },
   retry: 'Tentar de novo',
   openKeys: 'Abrir chaves',
@@ -166,7 +176,7 @@ const pt: AssistantText = {
     },
     openai: {
       name: 'OpenAI',
-      usedFor: 'Vozes do "Ouvir"',
+      usedFor: 'Assistente de IA e vozes do "Ouvir"',
       keysUrl: KEYS_URL.openai,
       tip: 'Uma chave de projeto com limite de gasto baixo é o suficiente.',
     },
@@ -175,6 +185,12 @@ const pt: AssistantText = {
       usedFor: 'Vozes do "Ouvir" (Text-to-Speech)',
       keysUrl: KEYS_URL.google,
       tip: 'No console, restrinja a chave à API Cloud Text-to-Speech e ao site joaopster.com. Assim ela não serve pra mais nada.',
+    },
+    gemini: {
+      name: 'Google Gemini',
+      usedFor: 'Assistente de IA',
+      keysUrl: KEYS_URL.gemini,
+      tip: 'Crie a chave no Google AI Studio, de preferência num projeto só pra este site. No nível gratuito o Google pode usar o que você envia pra melhorar os produtos dele.',
     },
     elevenlabs: {
       name: 'ElevenLabs',
@@ -225,11 +241,18 @@ const en: AssistantText = {
   newChat: 'New chat',
   keysButton: 'API keys',
   model: 'Model',
-  models: { fast: 'Haiku 5.5 (fast and cheap)', smart: 'Sonnet 5.5 (more capable)' },
+  models: {
+    'anthropic-fast': 'Claude Haiku 5.5 (fast and cheap)',
+    'anthropic-smart': 'Claude Sonnet 5.5 (more capable)',
+    'openai-fast': 'GPT-6 Luna (fast and cheap)',
+    'openai-smart': 'GPT-6.1 Terra (more capable)',
+    'gemini-fast': 'Gemini 3.5 Flash-Lite (fast and cheap)',
+    'gemini-smart': 'Gemini 3.8 Flash (more capable)',
+  },
   introTitle: 'Ask about this note',
   intro:
     'The assistant reads the note you have open and answers from it. Select a passage of the text and tap "Add to chat" to ask about it.',
-  needKey: 'To use the assistant you need an Anthropic API key. It is saved only in this browser.',
+  needKey: (provider) => `To use this model you need an API key (${provider}). It is saved only in this browser. You can also pick another model below.`,
   addKey: 'Paste my key',
   isItSafe: 'Is it safe?',
   suggestions: ['Summarize this note in 5 points', 'Explain the part I am reading with an example', 'Ask me 3 questions to test what I learned'],
@@ -249,15 +272,15 @@ const en: AssistantText = {
   cost: (dollars) => `about US$ ${dollars}`,
   stopped: 'Answer stopped.',
   errors: {
-    key: 'Anthropic refused the key. Check that it was copied whole and that it is still active.',
+    key: (provider) => `The key was refused (${provider}). Check that it was copied whole and that it is still active.`,
     permission: 'This key is not allowed to use this model.',
-    rateLimit: 'Your Anthropic account reached its usage limit. Wait a little or check the limit in the console.',
-    overloaded: "Anthropic's servers are overloaded right now. Try again in a moment.",
-    network: 'Could not reach Anthropic. Check your connection.',
+    rateLimit: (provider) => `Your account reached its usage limit (${provider}). Wait a little or check the limit in the console.`,
+    overloaded: (provider) => `The servers are overloaded right now (${provider}). Try again in a moment.`,
+    network: (provider) => `Could not reach ${provider}. Check your connection and that the key is right.`,
     load: 'Could not load the assistant. Reload the page and try again.',
     refusal: 'The model chose not to answer this request.',
     truncated: 'The answer got too long and was cut off.',
-    other: (detail) => `Anthropic returned an error: ${detail}`,
+    other: (provider, detail) => `${provider} returned an error: ${detail}`,
   },
   retry: 'Try again',
   openKeys: 'Open keys',
@@ -289,7 +312,7 @@ const en: AssistantText = {
     },
     openai: {
       name: 'OpenAI',
-      usedFor: '"Listen" voices',
+      usedFor: 'AI assistant and "Listen" voices',
       keysUrl: KEYS_URL.openai,
       tip: 'A project key with a low spending limit is enough.',
     },
@@ -298,6 +321,12 @@ const en: AssistantText = {
       usedFor: '"Listen" voices (Text-to-Speech)',
       keysUrl: KEYS_URL.google,
       tip: 'In the console, restrict the key to the Cloud Text-to-Speech API and to joaopster.com, so it is useless anywhere else.',
+    },
+    gemini: {
+      name: 'Google Gemini',
+      usedFor: 'AI assistant',
+      keysUrl: KEYS_URL.gemini,
+      tip: 'Create the key in Google AI Studio, ideally in a project just for this site. On the free tier Google may use what you send to improve its products.',
     },
     elevenlabs: {
       name: 'ElevenLabs',
@@ -348,11 +377,18 @@ const es: AssistantText = {
   newChat: 'Nueva conversación',
   keysButton: 'Claves de API',
   model: 'Modelo',
-  models: { fast: 'Haiku 5.5 (rápido y barato)', smart: 'Sonnet 5.5 (más capaz)' },
+  models: {
+    'anthropic-fast': 'Claude Haiku 5.5 (rápido y barato)',
+    'anthropic-smart': 'Claude Sonnet 5.5 (más capaz)',
+    'openai-fast': 'GPT-6 Luna (rápido y barato)',
+    'openai-smart': 'GPT-6.1 Terra (más capaz)',
+    'gemini-fast': 'Gemini 3.5 Flash-Lite (rápido y barato)',
+    'gemini-smart': 'Gemini 3.8 Flash (más capaz)',
+  },
   introTitle: 'Pregunta sobre esta nota',
   intro:
     'El asistente lee la nota que tienes abierta y responde a partir de ella. Selecciona un fragmento del texto y toca "Añadir al chat" para preguntar sobre él.',
-  needKey: 'Para usar el asistente necesitas una clave de la API de Anthropic. Se guarda solo en este navegador.',
+  needKey: (provider) => `Para usar este modelo necesitas una clave de API (${provider}). Se guarda solo en este navegador. También puedes elegir otro modelo abajo.`,
   addKey: 'Pegar mi clave',
   isItSafe: '¿Es seguro?',
   suggestions: ['Resume esta nota en 5 puntos', 'Explica la parte que estoy leyendo con un ejemplo', 'Hazme 3 preguntas para comprobar lo que aprendí'],
@@ -372,15 +408,15 @@ const es: AssistantText = {
   cost: (dollars) => `unos US$ ${dollars}`,
   stopped: 'Respuesta interrumpida.',
   errors: {
-    key: 'Anthropic rechazó la clave. Comprueba que se copió entera y que sigue activa.',
+    key: (provider) => `La clave fue rechazada (${provider}). Comprueba que se copió entera y que sigue activa.`,
     permission: 'Esta clave no tiene permiso para usar este modelo.',
-    rateLimit: 'Tu cuenta de Anthropic llegó a su límite de uso. Espera un poco o revisa el límite en la consola.',
-    overloaded: 'Los servidores de Anthropic están sobrecargados ahora. Inténtalo de nuevo en un momento.',
-    network: 'No pude conectar con Anthropic. Revisa tu conexión.',
+    rateLimit: (provider) => `Tu cuenta llegó a su límite de uso (${provider}). Espera un poco o revisa el límite en la consola.`,
+    overloaded: (provider) => `Los servidores están sobrecargados ahora (${provider}). Inténtalo de nuevo en un momento.`,
+    network: (provider) => `No pude conectar con ${provider}. Revisa tu conexión y que la clave esté bien.`,
     load: 'No pude cargar el asistente. Recarga la página y vuelve a intentarlo.',
     refusal: 'El modelo prefirió no responder a esta petición.',
     truncated: 'La respuesta se hizo demasiado larga y se cortó.',
-    other: (detail) => `Anthropic devolvió un error: ${detail}`,
+    other: (provider, detail) => `${provider} devolvió un error: ${detail}`,
   },
   retry: 'Intentar de nuevo',
   openKeys: 'Abrir claves',
@@ -412,7 +448,7 @@ const es: AssistantText = {
     },
     openai: {
       name: 'OpenAI',
-      usedFor: 'Voces de "Escuchar"',
+      usedFor: 'Asistente de IA y voces de "Escuchar"',
       keysUrl: KEYS_URL.openai,
       tip: 'Basta con una clave de proyecto con un límite de gasto bajo.',
     },
@@ -421,6 +457,12 @@ const es: AssistantText = {
       usedFor: 'Voces de "Escuchar" (Text-to-Speech)',
       keysUrl: KEYS_URL.google,
       tip: 'En la consola, limita la clave a la API Cloud Text-to-Speech y a joaopster.com, así no sirve para nada más.',
+    },
+    gemini: {
+      name: 'Google Gemini',
+      usedFor: 'Asistente de IA',
+      keysUrl: KEYS_URL.gemini,
+      tip: 'Crea la clave en Google AI Studio, mejor en un proyecto solo para este sitio. En el nivel gratuito Google puede usar lo que envías para mejorar sus productos.',
     },
     elevenlabs: {
       name: 'ElevenLabs',
@@ -477,6 +519,7 @@ export const ALLOWED_CONNECTIONS = [
   'joaopster.com',
   'api.anthropic.com',
   'api.openai.com',
+  'generativelanguage.googleapis.com',
   'texttospeech.googleapis.com',
   'api.elevenlabs.io',
   'cloudflareinsights.com',

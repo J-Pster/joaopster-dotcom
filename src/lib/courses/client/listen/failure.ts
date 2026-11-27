@@ -1,7 +1,8 @@
 // Why a listen attempt failed, as data the player turns into a message and the right button.
 import type { ProviderId } from '../keys';
 
-export type PaidProviderId = Exclude<ProviderId, 'anthropic'>;
+/** Providers with paid voices; Anthropic and Gemini keys only serve the assistant. */
+export type PaidProviderId = Exclude<ProviderId, 'anthropic' | 'gemini'>;
 
 export type ListenFailure =
   | { readonly kind: 'missing-key'; readonly provider: PaidProviderId }

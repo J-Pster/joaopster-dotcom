@@ -4,7 +4,7 @@
 // the assistant changed. Below 1024px it is a full screen sheet.
 import { assistantText, type AssistantText } from '../../assistantText';
 import { pageLang } from '../../i18n';
-import { KEYS_CHANGED, readKey, requestKey } from '../keys';
+import { KEYS_CHANGED, readKey, requestKey, type ProviderId } from '../keys';
 import { panelHidden, setPanelHidden } from '../reader';
 import { showToast } from '../toast';
 import { ask, type AskError, type AskOutcome } from './api';
@@ -15,12 +15,12 @@ import {
   saveConversation,
   saveModelChoice,
   type AssistantTurn,
-  type ModelChoice,
   type Turn,
   type UserTurn,
 } from './conversation';
 import { ADD_TO_CHAT } from './events';
 import { renderMarkdown } from './markdown';
+import { ASSISTANT_PROVIDERS, isModelChoice, modelOf, modelsOf, type AssistantModel, type ModelChoice } from './models';
 
 // Open state of this tab, so the chat stays open from one note to the next. CourseNote.astro reads the
 // same key inline to lay the page out before the first paint.
@@ -62,9 +62,22 @@ function formatCost(lang: string, dollars: number): string {
   return new Intl.NumberFormat(lang, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(dollars);
 }
 
-function errorMessage(t: AssistantText, error: AskError): string {
-  if (error.kind === 'other') return t.errors.other(error.detail);
-  return t.errors[error.kind];
+function errorMessage(t: AssistantText, error: AskError, provider: string): string {
+  switch (error.kind) {
+    case 'other': return t.errors.other(provider, error.detail);
+    case 'key': case 'rateLimit': case 'overloaded': case 'network': return t.errors[error.kind](provider);
+    case 'permission': case 'load': return t.errors[error.kind];
+  }
+}
+
+/** The model to start with: the reader's last pick if its provider has a key, else the fast model of
+ *  the first provider that has one, else the last pick (or Claude) so the setup asks for its key. */
+function initialModel(): ModelChoice {
+  const saved = loadModelChoice();
+  if (saved !== undefined && readKey(modelOf(saved).provider) !== undefined) return saved;
+  const withKey = ASSISTANT_PROVIDERS.find((provider) => readKey(provider) !== undefined);
+  if (withKey !== undefined) return modelsOf(withKey)[0]?.choice ?? 'anthropic-fast';
+  return saved ?? 'anthropic-fast';
 }
 
 type Phase =
@@ -85,6 +98,7 @@ export function initAssistant(noteUrl: string): void {
   const log = required<HTMLElement>(panel, '[data-assistant-log]');
   const empty = required<HTMLElement>(panel, '[data-assistant-empty]');
   const setup = required<HTMLElement>(panel, '[data-assistant-setup]');
+  const setupText = required<HTMLElement>(panel, '[data-assistant-setup-text]');
   const list = required<HTMLOListElement>(panel, '[data-assistant-turns]');
   const alert = required<HTMLElement>(panel, '[data-assistant-alert]');
   const alertText = required<HTMLElement>(panel, '[data-assistant-alert-text]');
@@ -95,6 +109,12 @@ export function initAssistant(noteUrl: string): void {
   const input = required<HTMLTextAreaElement>(panel, '[data-assistant-input]');
   const send = required<HTMLButtonElement>(panel, '[data-assistant-send]');
   const modelSelect = required<HTMLSelectElement>(panel, '[data-assistant-model]');
+  const chosen = (): AssistantModel => {
+    const value = modelSelect.value;
+    if (!isModelChoice(value)) throw new Error(`Unknown assistant model: ${value}`);
+    return modelOf(value);
+  };
+  const providerName = (provider: ProviderId): string => t.providers[provider].name;
 
   let turns: Turn[] = loadConversation(noteUrl);
   let passages: string[] = [];
@@ -162,7 +182,9 @@ export function initAssistant(noteUrl: string): void {
   // ---- Conversation
 
   const paintSetup = (): void => {
-    setup.hidden = readKey('anthropic') !== undefined;
+    const provider = chosen().provider;
+    setup.hidden = readKey(provider) !== undefined;
+    setupText.textContent = t.needKey(providerName(provider));
   };
 
   const isAtEnd = (): boolean => log.scrollHeight - log.scrollTop - log.clientHeight < FOLLOW_SLACK;
@@ -310,10 +332,11 @@ export function initAssistant(noteUrl: string): void {
     if (phase.kind === 'answering') return;
     const written = input.value.trim();
     if (written === '' && passages.length === 0) return input.focus();
-    const key = readKey('anthropic');
+    const model = chosen();
+    const key = readKey(model.provider);
     if (key === undefined) {
       paintSetup();
-      requestKey('anthropic');
+      requestKey(model.provider);
       return;
     }
     hideAlert();
@@ -360,7 +383,7 @@ export function initAssistant(noteUrl: string): void {
     try {
       outcome = await ask({
         key,
-        model: modelSelect.value === 'smart' ? 'smart' : 'fast',
+        model,
         context: readNoteContext(courseTitle, noteTitle, lang),
         turns: asked,
         signal: controller.signal,
@@ -376,7 +399,7 @@ export function initAssistant(noteUrl: string): void {
     } catch (error) {
       // A failure ask() has no name for (a bug, not the provider): the reader keeps the question.
       giveBack();
-      showAlert(t.errors.other(error instanceof Error ? error.message : String(error)), { retry: true, keys: false });
+      showAlert(t.errors.other(providerName(model.provider), error instanceof Error ? error.message : String(error)), { retry: true, keys: false });
       throw error;
     } finally {
       cancelAnimationFrame(frame);
@@ -390,7 +413,11 @@ export function initAssistant(noteUrl: string): void {
       giveBack();
       const keyProblem = outcome.error.kind === 'key' || outcome.error.kind === 'permission';
       // After a failed load only a reload helps; asking again would fail the same way.
-      showAlert(errorMessage(t, outcome.error), { retry: !keyProblem && outcome.error.kind !== 'load', keys: keyProblem });
+      // A wrong OpenAI key reaches the page as a network failure, so that one offers the keys too.
+      showAlert(errorMessage(t, outcome.error, providerName(model.provider)), {
+        retry: !keyProblem && outcome.error.kind !== 'load',
+        keys: keyProblem || outcome.error.kind === 'network',
+      });
       return;
     }
     if (outcome.kind === 'stopped' && outcome.text.trim() === '') {
@@ -423,8 +450,8 @@ export function initAssistant(noteUrl: string): void {
   });
   input.addEventListener('input', fitInput);
   retry.addEventListener('click', () => void submit());
-  alertKeys.addEventListener('click', () => requestKey('anthropic'));
-  required<HTMLButtonElement>(panel, '[data-assistant-add-key]').addEventListener('click', () => requestKey('anthropic'));
+  alertKeys.addEventListener('click', () => requestKey(chosen().provider));
+  required<HTMLButtonElement>(panel, '[data-assistant-add-key]').addEventListener('click', () => requestKey(chosen().provider));
   for (const suggestion of panel.querySelectorAll<HTMLButtonElement>('[data-assistant-suggestion]')) {
     suggestion.addEventListener('click', () => {
       // While an answer is coming the reader's draft stays as it is.
@@ -444,14 +471,26 @@ export function initAssistant(noteUrl: string): void {
     input.focus();
   });
 
-  modelSelect.value = loadModelChoice();
+  modelSelect.value = initialModel();
   modelSelect.addEventListener('change', () => {
-    const model: ModelChoice = modelSelect.value === 'smart' ? 'smart' : 'fast';
-    saveModelChoice(model);
-  });
-  window.addEventListener(KEYS_CHANGED, () => {
+    saveModelChoice(chosen().choice);
     paintSetup();
-    if (readKey('anthropic') !== undefined && !alertKeys.hidden) hideAlert();
+    if (!alertKeys.hidden) hideAlert();
+  });
+  window.addEventListener(KEYS_CHANGED, (event) => {
+    // A key just saved for another provider, while the picked one has none: switch to that provider.
+    const changed: unknown = event instanceof CustomEvent ? event.detail : undefined;
+    const picked = chosen();
+    const provider = ASSISTANT_PROVIDERS.find((id) => id === changed);
+    if (readKey(picked.provider) === undefined && provider !== undefined && readKey(provider) !== undefined) {
+      const fast = modelsOf(provider)[0];
+      if (fast) {
+        modelSelect.value = fast.choice;
+        saveModelChoice(fast.choice);
+      }
+    }
+    paintSetup();
+    if (readKey(chosen().provider) !== undefined && !alertKeys.hidden) hideAlert();
   });
 
   // ---- Passages from the note
