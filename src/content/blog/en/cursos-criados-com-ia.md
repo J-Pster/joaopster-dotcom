@@ -1,82 +1,83 @@
 ---
 slug: how-i-use-ai-to-build-courses
 title: 'How I use AI to build courses the way I like to learn'
-description: 'I ask Claude to build full courses for me, with modules, lessons, a glossary and quizzes, and now the four I made are open on my site, here is how it works and how you can make your own'
+description: "I stopped depending on how a teacher explains things and now I ask Claude to build text courses made for me, from the basics up, with a glossary, quizzes and spaced repetition, here's how I build them and how I study them"
 pubDate: '2026-11-26T18:11:31-03:00'
+updatedDate: '2026-11-27T15:52:39-03:00'
 tags: ['ai', 'claude-code', 'courses', 'opinion']
 ---
 
-In early November Brazil's civil defense agency put out a recommendation that every family keep a kit to get by on their own for 72 hours, with water, food and medicine, and it landed right when everyone was talking about El Niño. I read it and thought, man, I should know first aid. I went looking and the material was all over the place, hard to find in one spot, and nothing took me from start to finish. So I asked AI to build a course for me.
+In early November, Brazil's Civil Defense put out guidance telling every family to keep a kit to get by on their own for 72 hours, with water, food and medicine, and that landed right when everyone was talking about El Niño. I read it and thought, man, I should know first aid. I went looking and the material was scattered, hard to find in one place, and nothing took me from start to finish. So I asked AI to build a course for me.
 
-What came out was a course with 27 modules and 293 lessons, plus a glossary with 2,486 terms, based on PHTLS, TCCC and TECC, which are the reference standards for trauma care. That course and three others I made are open for free in the [courses section of my site](/cursos/), and in this post I explain what's there and why I think asking AI to build a course the way you like to learn is one of the best ways to study anything today.
+What came out was a course with 27 modules and 293 lessons, plus a glossary with 2,486 terms, based on PHTLS, TCCC and TECC, which are the reference standards for trauma care. It was the first big, truly structured course I made, because it was a subject I knew basically nothing about. In this post I explain how I ask AI to build a course the way I learn, the skill I wrote for it, and how I study what comes out.
 
-## What's in the courses section
+## What wore me out about ready-made courses
 
-Each course is a path of modules in order, with written lessons, a glossary, quizzes with answer keys and a final project tied to a concrete goal (in the AWS one, for example, the goal is passing the exam). Right now there are four, all in Portuguese:
+Before AI I'd look for courses on Udemy and videos on YouTube. I was never much of a book reader, and good, organized written material was hard to find. What bothered me most was depending on how the teacher explained things, and a lot of the time it wasn't my way. Either it was so-so, or the video had bad audio, bad image, and that stressed me out.
 
-| Course | Modules | Lessons | Glossary terms |
-|---|---|---|---|
-| [AWS Solutions Architect Associate (SAA-C03)](/cursos/aws-saa-c03/) | 27 | 234 | 902 |
-| [First Aid](/cursos/primeiros-socorros/) | 27 | 293 | 2,486 |
-| [Radio, LoRa and Mesh Networks](/cursos/radio/) | 12 | 110 | none |
-| [House Modeling](/cursos/modelagem-de-casas/) | 14 | 119 | none |
+Today I prefer text, by a lot. AI is really good at generating text and not at generating video, so text is where I can get content made for the way I learn. And I read text at my own pace, go back, mark a passage. With a video I have to listen to the guy say the same thing again, and with text I just glance and find it, it's way faster.
 
-![The courses page on joaopster.com with the AWS and First Aid course cards](../../../assets/blog/cursos-criados-com-ia/pagina-de-cursos.png)
+## How I tell the AI the way I learn
 
-You can read them two ways. On the site, each lesson has the module list on the left and the lesson outline on the right, and when you hover over a term its definition pops up right there, without leaving the page. Your progress is saved in your browser, so you can see how many lessons you've read in each module. And if you'd rather read offline, every course has a button that downloads the whole course as a .zip.
+I only learn by starting from the foundation. Even when I already know something about the subject I like to start from the basics, because if I don't understand why something is the way it is, I don't accept that information. So the first thing I did was write that down as rules:
 
-![AWS course lesson with the Availability Zone definition open after hovering over the term](../../../assets/blog/cursos-criados-com-ia/aula-com-glossario.png)
+- The first module is always the deepest foundation of the subject.
+- Every lesson answers "why is it like this?" before "how do you do it?".
+- No module uses something that hasn't been taught yet.
+- The course ends with a project tied to a concrete goal of mine.
 
-The interface is in Portuguese, English and Spanish, but every course I've made so far is in Portuguese, and each course only shows up on the page for the language it was written in.
+You can see it in the order of the courses. The first aid one opens with "How the body keeps itself alive", and tourniquets only show up in module 5, after four modules of foundation. The AWS one opens with "Why the cloud exists".
 
-## Why a course built for you teaches better
+The other thing I do is tell the AI the situation I'm in, so it focuses even more on me. That's why an AWS lesson says "João has already chosen `us-east-1` when creating resources". The course talks to me by name and uses my case as the example, which no recorded course does.
 
-I only learn by starting from the base. First I need to understand the fundamentals, and only then I build up, because if I don't understand why something is the way it is, I just don't accept that information. A ready-made course follows the way its author thinks, and when I ask AI for a course I tell it how I learn and it builds around that.
+That doesn't mean the course only works for me. Since it starts from zero, anyone with almost no background can pick it up and read it. And when the goal is a certification, I ask for a course for the specific exam I want, because then it also teaches how the exam works. The opening note of the AWS course already explains that there are 65 questions, that you pass with 720 out of 1,000 and how much each domain weighs, and the material follows those weights.
 
-The rule I wrote down is that the first module is always the deepest foundation of the subject, every lesson answers "why is it like this?" before "how do you do it?", and no module uses anything that hasn't been taught yet. You can see it in the order of the courses. The first aid one opens with "How the body keeps itself alive", and tourniquets only show up in module 5, after four modules of groundwork. The AWS one opens with "Why the cloud exists".
+## The skill that builds the course
 
-In one AWS lesson the text says "João already picked `us-east-1` when creating resources", so the course talks to me by name, and no recorded course is ever going to do that.
-
-AWS is the one I've studied the most so far. I study one or two hours a day, I've finished 2 modules and haven't done a practice exam yet, but I want to, just to see what it's like, and I plan to take the real exam in the next few months, maybe weeks. One thing I think makes a big difference is studying a course built for the exact certification you want, because it teaches you how the exam works. The course's start page already explains that there are 65 questions, that you pass with 720 out of 1,000 and how much each domain weighs, and the material is sized to match those weights.
-
-## How the AI builds a course
-
-I only use Claude Code, with Opus 5.5 and a skill I wrote called `criar-curso`. A skill is an instruction file that Claude loads when your request matches its description, and mine spells out the whole process:
+I use Claude Code with Opus 5.5 and a skill I wrote, `criar-curso` ("create course"). A skill is an instructions file Claude loads when the request matches its description, and mine has the whole process:
 
 1. Understand the topic and where I want to get to.
-2. Design the curriculum, with modules ordered by dependency, and show it to me for approval before researching anything.
+2. Design the curriculum, with modules in dependency order, and show it to me for approval before researching anything.
 3. Research and write, with one agent per module, up to 5 in parallel, all reading the same writing guide.
-4. Put it all together, check that facts match across modules and link every term to the glossary.
-5. Verify with scripts, no broken links, no unlinked terms and answer keys without bias (the right answer can't always be the longest one).
+4. Put it all together, check that facts match across modules and link each term to the glossary.
+5. Verify with scripts, no broken links, no unlinked terms and answer keys without bias (the right answer can't always be the longest one, which is a habit of AI-generated text).
 
-I run this with Claude Code's `/workflow`, which launches several subagents (other Claude instances, each with its own task) and collects what they return, and I wrote more about it in the [post about the Claude Code harness](/en/blog/claude-code-harness-made-my-workflow-obsolete/). The AWS course alone used around 483 agents, spread across several workflows.
+I run this with Claude Code's `/workflow`, which launches several subagents (other Claude instances, each with its own task) and collects what they return. I wrote more about it in the [post about the Claude Code harness](/en/blog/claude-code-harness-made-my-workflow-obsolete/). The AWS course alone used around 483 agents, spread across several workflows.
 
-A course takes 2 to 3 hours to finish, depending on its size, and it's basically one shot, because the workflows themselves research, write and review, so the AI handles the back and forth on its own without me touching anything. I'm on the Ultra plan, and each course eats about 1 to 2% of my weekly usage, which is very little.
+A course takes 2 to 3 hours to finish, depending on its size, and it's basically one shot. The workflows themselves research, write and review, so the AI handles the back and forth on its own without me touching anything. I'm on the Ultra plan, and each course eats about 1 to 2% of my weekly usage.
 
-The first two I made, House Modeling and then Radio, back in September, came from a very early version of the skill, which is why they don't even have a glossary. It has grown a lot since then.
+The course comes out as a folder in the format [Obsidian](https://obsidian.md/) understands, with one note per lesson, one note per glossary term and links between them. The courses section of my site reads that same format and adds on top what Obsidian doesn't have, so I write the course once and it works in both.
+
+The skill wasn't born like this. The first two courses, House Modeling and then Radio, back in September, came from a very early version that only researched and wrote the course. It had no glossary, didn't link one lesson to another and didn't follow the Obsidian structure. The courses weren't bad, but they were more basic, and the skill kept growing from there until the first aid one.
+
+## How I study the course
+
+Every day I open the course on any of my devices, and my progress is already saved there. I read the lesson to the end and, when I finish the module, I take its quiz, which helps me lock in what I read, and then I move on to the next one.
+
+About two days later I go back to the questions I got wrong. And I do spaced repetition pretty much every day, with cards for the glossary terms of the lessons I've already read and for the questions I missed, and each card comes back on the day I'd be close to forgetting it.
+
+When I don't understand something, I ask the AI assistant built into the courses platform. You add your own Anthropic, OpenAI or Google key, and it reads the lesson you have open and answers based on it, you can even select a passage and ask only about that. It's amazing. And when I find a mistake in the course, I fix it and update the course on the site. I showed everything else the platform does in the [post about the study platform](/en/blog/free-study-platform-spaced-repetition-practice-exams-ai/).
+
+AWS is the one I'm studying the most. I study one or two hours a day and I plan to take the exam in the next few months, maybe weeks.
 
 ## Does the AI get things wrong?
 
-It does, for sure, it's just how AI is and there's not much way around it. What you can do is make it research and analyze a lot online before it writes anything, which is what the skill does, and check the critical points yourself.
+It does, for sure, and there's not much way around it. What you can do is make it research and analyze a lot online before it writes anything, which is what the skill does, and check the critical points yourself.
 
 What I see most is the AI drifting into generic stuff. Once I asked for some first aid quick reference cards and it gave me huge, messy explanations, which is awful for a card you need to read in two seconds during an emergency. I had to refine the request until I got what I wanted, and the skill is basically that, a prompt I've already refined so it doesn't go generic.
 
-Now, to anyone who says AI teaches wrong things so it's useless for learning, I'd point out that books get things wrong, teachers get things wrong and YouTube videos get things wrong, and nobody stopped reading books because of it. Whoever throws AI out entirely because it can make mistakes is throwing away the most patient teacher that has ever shown up.
+Now, to anyone who says AI teaches wrong things so it's useless for learning, I'd point out that books get things wrong, teachers get things wrong and YouTube videos get things wrong, and nobody stopped reading books because of it.
 
 ## How to build your own course
 
-I opened up the courses because I think knowledge is something we have to pass on. It's part of who I am, teaching makes me really happy, and I want everyone to grow. And they're in text because you read text at your own pace, come back whenever you want and don't need headphones.
-
-The skill is open too, on the [How I make the courses](/en/courses/how-i-make-them/) page (the skill files are in Portuguese, but you can ask for the course in any language). To use it:
+The skill is open on the [How I make the courses](/en/courses/how-i-make-them/) page (the skill files are in Portuguese, but you can ask for the course in any language). To use it:
 
 1. Download the skill .zip.
 2. In Claude Code, unzip it and copy the `criar-curso` folder to `~/.claude/skills/`. On claude.ai or the app, upload the .zip in Settings, Capabilities, Skills. In another AI, paste the content of `SKILL.md` and `guia-de-escrita.md` as instructions.
-3. Ask by saying the topic and where you want to get to, like this:
+3. Ask by saying the topic, where you want to get to and, if you want, your situation, like this:
 
 ```text
 Learning photography, I want to be able to shoot a wedding on my own. Write the course in English.
 ```
 
-It shows you the curriculum to approve, writes the modules and checks everything at the end, and then you just open the `Aprendendo <Topic>` folder and start studying.
-
-If you make a course, send it to me at joao@joaopster.com. I'll read it, review it and, if it's good, publish it on the site with credit to you, so more people can learn too.
+It shows you the curriculum to approve, writes the modules and checks everything at the end. The courses I've made this way are open in the [courses section of my site](/cursos/) (in Portuguese), and if you make one, send it to me at joao@joaopster.com and I'll read it and, if it's good, publish it there with credit to you.
