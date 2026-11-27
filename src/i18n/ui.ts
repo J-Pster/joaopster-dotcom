@@ -8,6 +8,9 @@ export type Lang = keyof typeof languages;
 
 export const defaultLang: Lang = 'pt';
 
+/** Locale for dates and numbers shown in each language. */
+export const DATE_LOCALES: Record<Lang, string> = { pt: 'pt-BR', en: 'en-US', es: 'es' };
+
 export const ui = {
   pt: {
     'nav.blog': 'Blog',
@@ -82,6 +85,19 @@ export const ui = {
     'exp.role8.desc': `• Trabalhei em projetos Angular, React e Node.js com times multidisciplinares e autogerenciados, como desenvolvedor e consultor de tecnologia.\n• Construí um chatbot com IA para o cliente Mutant, uma empresa de experiência do cliente, e o conectei aos sistemas que o cliente já usava.\n• Implementei as funcionalidades de IA que permitem ao chatbot entender os pedidos dos usuários e responder, mantendo a conversa simples para o usuário final.`,
     'exp.role9.role': `Desenvolvedor Freelancer`,
     'exp.role9.desc': `• Comecei construindo plugins e mods para jogos em C# e .NET com HarmonyX, e vendia direto para pessoas que conheci nas comunidades de jogadores.\n• Encontrei clientes em plataformas de freelance como Fiverr, Workana e GetNinjas, e por contatos diretos.\n• Construí sites estáticos em HTML e CSS, sites em React, sites em WordPress com Elementor e lojas online, e desenhei layouts de sites no Figma.\n• Mais de 50 projetos no total com React, Angular, Vue, React Native, Node.js, Express, Django e WordPress, para agências de marketing como a Really e outros clientes, incluindo um projeto confidencial para um cliente do governo.\n• Entrevistei e contratei desenvolvedores e conduzi projetos com Scrum e Kanban.\n• Trabalhei com times internacionais e gerenciei servidores virtuais na AWS, no Google Cloud e no Azure.`,
+    'exp.present': 'Atual',
+    'exp.company.confidential': 'Startup confidencial',
+    'exp.company.selfEmployed': 'Autônomo',
+    'exp.place.us': 'Estados Unidos',
+    'exp.place.brazil': 'Brasil',
+    'exp.place.saoPaulo': 'São Paulo',
+    'exp.mode.remote': 'Remoto',
+    'exp.mode.onSite': 'Presencial',
+    'exp.terms.fullTime': 'Tempo integral',
+    'exp.terms.contract': 'Contrato',
+    'exp.terms.ownCompany': 'Empresa própria',
+    'exp.terms.outsourced': 'Terceirizado',
+    'exp.terms.fixedTerm': 'Prazo determinado',
 
     'features.label': `No que eu trabalho`,
     'features.heading': `Frontend, backend, infraestrutura\ne IA`,
@@ -310,6 +326,19 @@ export const ui = {
     'exp.role8.desc': `• Worked on Angular, React and Node.js projects with multidisciplinary, self-managed teams, as developer and technology consultant.\n• Built an AI chatbot for the client Mutant, a customer experience company, and connected it to the client's existing systems.\n• Implemented the AI features that let the chatbot understand users' requests and answer them, while keeping the conversation simple for the end user.`,
     'exp.role9.role': `Freelance Developer`,
     'exp.role9.desc': `• Started by building plugins and mods for games in C# and .NET with HarmonyX, and sold them directly to people I met in the games' player communities.\n• Found clients on freelance platforms such as Fiverr, Workana and GetNinjas, and through direct contacts.\n• Built static websites in HTML and CSS, websites in React, WordPress websites with Elementor and online stores, and designed website layouts in Figma.\n• More than 50 projects in total with React, Angular, Vue, React Native, Node.js, Express, Django and WordPress, for marketing agencies such as Really and other clients, including a confidential project for a government client.\n• Interviewed and hired developers and ran projects with Scrum and Kanban.\n• Worked with international teams and managed virtual servers on AWS, Google Cloud and Azure.`,
+    'exp.present': 'Present',
+    'exp.company.confidential': 'Confidential startup',
+    'exp.company.selfEmployed': 'Self-employed',
+    'exp.place.us': 'United States',
+    'exp.place.brazil': 'Brazil',
+    'exp.place.saoPaulo': 'São Paulo',
+    'exp.mode.remote': 'Remote',
+    'exp.mode.onSite': 'On-site',
+    'exp.terms.fullTime': 'Full-time',
+    'exp.terms.contract': 'Contract',
+    'exp.terms.ownCompany': 'Own company',
+    'exp.terms.outsourced': 'Outsourced',
+    'exp.terms.fixedTerm': 'Fixed-term',
 
     'features.label': `What I work on`,
     'features.heading': `Frontend, backend, infrastructure\nand AI`,
@@ -538,6 +567,19 @@ export const ui = {
     'exp.role8.desc': `• Trabajé en proyectos Angular, React y Node.js con equipos multidisciplinarios y autogestionados, como desarrollador y consultor de tecnología.\n• Construí un chatbot con IA para el cliente Mutant, una empresa de experiencia del cliente, y lo conecté a los sistemas que el cliente ya usaba.\n• Implementé las funcionalidades de IA que permiten al chatbot entender los pedidos de los usuarios y responderlos, manteniendo la conversación simple para el usuario final.`,
     'exp.role9.role': `Desarrollador Freelance`,
     'exp.role9.desc': `• Empecé construyendo plugins y mods para juegos en C# y .NET con HarmonyX, y los vendía directamente a personas que conocí en las comunidades de jugadores.\n• Encontré clientes en plataformas freelance como Fiverr, Workana y GetNinjas, y por contactos directos.\n• Construí sitios estáticos en HTML y CSS, sitios en React, sitios en WordPress con Elementor y tiendas online, y diseñé layouts de sitios en Figma.\n• Más de 50 proyectos en total con React, Angular, Vue, React Native, Node.js, Express, Django y WordPress, para agencias de marketing como Really y otros clientes, incluido un proyecto confidencial para un cliente del gobierno.\n• Entrevisté y contraté desarrolladores y llevé proyectos con Scrum y Kanban.\n• Trabajé con equipos internacionales y administré servidores virtuales en AWS, Google Cloud y Azure.`,
+    'exp.present': 'Actualidad',
+    'exp.company.confidential': 'Startup confidencial',
+    'exp.company.selfEmployed': 'Autónomo',
+    'exp.place.us': 'Estados Unidos',
+    'exp.place.brazil': 'Brasil',
+    'exp.place.saoPaulo': 'São Paulo',
+    'exp.mode.remote': 'Remoto',
+    'exp.mode.onSite': 'Presencial',
+    'exp.terms.fullTime': 'Tiempo completo',
+    'exp.terms.contract': 'Contrato',
+    'exp.terms.ownCompany': 'Empresa propia',
+    'exp.terms.outsourced': 'Subcontratado',
+    'exp.terms.fixedTerm': 'Plazo fijo',
 
     'features.label': `En qué trabajo`,
     'features.heading': `Frontend, backend, infraestructura\ne IA`,

@@ -10,7 +10,7 @@ import WorkflowSection from '../../components/sections/WorkflowSection.astro';
 import RecentPosts from '../../components/RecentPosts.astro';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import CTASection from '../../components/sections/CTASection.astro';
-import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { DATE_LOCALES, useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 import { getRecentPosts } from '../../lib/getLatestPost';
 import { getWakatimeData, buildAddendum } from '../../lib/getWakatimeData';
 
@@ -22,7 +22,7 @@ const [latestPost, ...morePosts] = await getRecentPosts(lang, 4);
 const writeCard = latestPost && {
   pill: t('blog.latestPost'),
   title: latestPost.title,
-  dateText: latestPost.pubDate.toLocaleDateString('en-us', { month: 'long', year: 'numeric' }),
+  dateText: latestPost.pubDate.toLocaleDateString(DATE_LOCALES[lang], { month: 'long', year: 'numeric', timeZone: 'UTC' }),
   excerpt: latestPost.description,
   href: latestPost.href,
   readMore: t('blog.readPost'),

@@ -1,4 +1,5 @@
 ---
+import LanguageFlag from './LanguageFlag.astro';
 import { languages, defaultLang, type Lang } from '../i18n/ui';
 
 const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
@@ -14,34 +15,7 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
     aria-expanded="false"
     aria-label={`Language: ${languages[currentLang]}`}
   >
-    <span class="lang-flag" aria-hidden="true">
-      {currentLang === 'pt' && (
-        <svg viewBox="0 0 24 16" width="22" height="15">
-          <rect width="24" height="16" fill="#009c3b"/>
-          <polygon points="12,1.5 21.5,8 12,14.5 2.5,8" fill="#ffdf00"/>
-          <circle cx="12" cy="8" r="4.2" fill="#002776"/>
-          <path d="M8.2 6.8 Q12 5.5 15.8 6.8" stroke="white" stroke-width="0.8" fill="none"/>
-        </svg>
-      )}
-      {currentLang === 'en' && (
-        <svg viewBox="0 0 24 16" width="22" height="15">
-          <rect width="24" height="16" fill="#bf0a30"/>
-          <rect y="1.23" width="24" height="1.23" fill="white"/>
-          <rect y="3.69" width="24" height="1.23" fill="white"/>
-          <rect y="6.15" width="24" height="1.23" fill="white"/>
-          <rect y="8.62" width="24" height="1.23" fill="white"/>
-          <rect y="11.08" width="24" height="1.23" fill="white"/>
-          <rect y="13.54" width="24" height="1.23" fill="white"/>
-          <rect width="10" height="8.62" fill="#002868"/>
-        </svg>
-      )}
-      {currentLang === 'es' && (
-        <svg viewBox="0 0 24 16" width="22" height="15">
-          <rect width="24" height="16" fill="#c60b1e"/>
-          <rect y="4" width="24" height="8" fill="#ffc400"/>
-        </svg>
-      )}
-    </span>
+    <LanguageFlag lang={currentLang} width={22} />
     <span class="lang-code">{codes[currentLang]}</span>
     <svg class="lang-chevron" viewBox="0 0 10 6" width="10" height="6" fill="none" aria-hidden="true">
       <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -56,34 +30,7 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
         role="option"
         aria-selected={lang === currentLang}
       >
-        <span class="lang-flag" aria-hidden="true">
-          {lang === 'pt' && (
-            <svg viewBox="0 0 24 16" width="20" height="13">
-              <rect width="24" height="16" fill="#009c3b"/>
-              <polygon points="12,1.5 21.5,8 12,14.5 2.5,8" fill="#ffdf00"/>
-              <circle cx="12" cy="8" r="4.2" fill="#002776"/>
-              <path d="M8.2 6.8 Q12 5.5 15.8 6.8" stroke="white" stroke-width="0.8" fill="none"/>
-            </svg>
-          )}
-          {lang === 'en' && (
-            <svg viewBox="0 0 24 16" width="20" height="13">
-              <rect width="24" height="16" fill="#bf0a30"/>
-              <rect y="1.23" width="24" height="1.23" fill="white"/>
-              <rect y="3.69" width="24" height="1.23" fill="white"/>
-              <rect y="6.15" width="24" height="1.23" fill="white"/>
-              <rect y="8.62" width="24" height="1.23" fill="white"/>
-              <rect y="11.08" width="24" height="1.23" fill="white"/>
-              <rect y="13.54" width="24" height="1.23" fill="white"/>
-              <rect width="10" height="8.62" fill="#002868"/>
-            </svg>
-          )}
-          {lang === 'es' && (
-            <svg viewBox="0 0 24 16" width="20" height="13">
-              <rect width="24" height="16" fill="#c60b1e"/>
-              <rect y="4" width="24" height="8" fill="#ffc400"/>
-            </svg>
-          )}
-        </span>
+        <LanguageFlag lang={lang} width={20} />
         <span class="lang-label">{label}</span>
       </button>
     ))}
@@ -114,15 +61,6 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
     border-color: var(--color-muted-soft);
   }
 
-  .lang-flag {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-    border-radius: 2px;
-    overflow: hidden;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
-  }
 
   .lang-code {
     font-size: 12px;
@@ -181,7 +119,7 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
 </style>
 
 <script>
-  import { isLang, localeSwitchTarget } from '../i18n/switchLocale';
+  import { isLang, switchLanguage } from '../i18n/switchLocale';
 
   const selector = document.getElementById('lang-selector');
   const trigger = document.getElementById('lang-trigger');
@@ -204,6 +142,6 @@ const codes: Record<Lang, string> = { pt: 'PT', en: 'EN', es: 'ES' };
     if (!btn) return;
     const newLang = btn.dataset.lang;
     if (!isLang(newLang)) throw new Error(`Unknown language button: ${newLang}`);
-    window.location.href = localeSwitchTarget(newLang);
+    switchLanguage(newLang);
   });
 </script>

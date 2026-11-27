@@ -2,6 +2,7 @@
 import HeaderLink from './HeaderLink.astro';
 import ContactModal from './ContactModal.astro';
 import LanguageSelector from './LanguageSelector.astro';
+import LanguageFlag from './LanguageFlag.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { getWakatimeData } from '../lib/getWakatimeData';
 import { coursesSection } from '../lib/courses/catalog';
@@ -156,9 +157,9 @@ const section = isIn(blogPath) ? 'blog' : isIn(coursesPath) ? 'courses' : undefi
       </div>
 
       <div class="nav-mobile-lang">
-        <a href="/" class="lang-mobile-btn" data-lang-mobile="pt">🇧🇷 PT</a>
-        <a href="/en" class="lang-mobile-btn" data-lang-mobile="en">🇺🇸 EN</a>
-        <a href="/es" class="lang-mobile-btn" data-lang-mobile="es">🇪🇸 ES</a>
+        <a href="/" class="lang-mobile-btn" data-lang-mobile="pt"><LanguageFlag lang="pt" width={20} />PT</a>
+        <a href="/en" class="lang-mobile-btn" data-lang-mobile="en"><LanguageFlag lang="en" width={20} />EN</a>
+        <a href="/es" class="lang-mobile-btn" data-lang-mobile="es"><LanguageFlag lang="es" width={20} />ES</a>
       </div>
     </div>
 </div>
@@ -425,6 +426,7 @@ const section = isIn(blogPath) ? 'blog' : isIn(coursesPath) ? 'courses' : undefi
     flex: 1;
     display: flex;
     align-items: center;
+    gap: var(--space-xs);
     justify-content: center;
     height: 40px;
     font-size: 13px;
@@ -482,7 +484,7 @@ const section = isIn(blogPath) ? 'blog' : isIn(coursesPath) ? 'courses' : undefi
 </style>
 
 <script>
-  import { isLang, localeSwitchTarget } from '../i18n/switchLocale';
+  import { isLang, switchLanguage } from '../i18n/switchLocale';
 
   const header = document.getElementById('site-header');
   const toggle = document.getElementById('nav-toggle');
@@ -542,7 +544,7 @@ const section = isIn(blogPath) ? 'blog' : isIn(coursesPath) ? 'courses' : undefi
       e.preventDefault();
       const newLang = btn.dataset.langMobile;
       if (!isLang(newLang)) throw new Error(`Unknown language button: ${newLang}`);
-      window.location.href = localeSwitchTarget(newLang);
+      switchLanguage(newLang);
     });
   });
 </script>

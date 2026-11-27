@@ -10,7 +10,9 @@ import '@fontsource/jetbrains-mono/latin-400.css';
 import type { ImageMetadata } from 'astro';
 import { SITE_NAME } from '../consts';
 import { CONSENT_STORAGE_KEY, GA_HOST, GA_MEASUREMENT_ID } from '../lib/analytics/consent';
-import { useTranslations, type Lang } from '../i18n/ui';
+import { languages, useTranslations, type Lang } from '../i18n/ui';
+import { BOT_USER_AGENT, LANGUAGE_STORAGE_KEY, TIME_ZONE_HINTS } from '../i18n/languagePreference';
+import LanguagePrompt from './LanguagePrompt.astro';
 import profilePhoto from '../assets/profile-photo.png';
 import { siteOgImage } from '../lib/og/siteCards';
 
@@ -28,10 +30,17 @@ interface Props {
 	alternates?: 'auto' | 'none' | Readonly<Record<Lang, string>>;
 	/** "noindex": thin pages that stay reachable by link but out of search results (glossary terms). */
 	indexing?: 'index' | 'noindex';
+	/**
+	 * The languages a reader who picked one gets this page in (i18n/languagePreference.ts). All of them by
+	 * default; the courses landing leaves out languages with no course yet, so a reader of one of those
+	 * who opens the courses of another language stays there.
+	 */
+	opensIn?: readonly Lang[];
 }
 
 const currentLang = (Astro.currentLocale ?? 'pt') as Lang;
-const { title, description, image = siteOgImage(currentLang, 'home'), type = 'website', alternates = 'auto', indexing = 'index' } = Astro.props;
+const ALL_LANGS = Object.keys(languages) as Lang[];
+const { title, description, image = siteOgImage(currentLang, 'home'), type = 'website', alternates = 'auto', indexing = 'index', opensIn = ALL_LANGS } = Astro.props;
 const robots = indexing === 'index' ? 'index, follow, max-image-preview:large' : 'noindex, follow';
 
 const site = Astro.site ?? new URL('https://joaopster.com');
@@ -56,6 +65,12 @@ const localizedURL = (l: Lang) =>
 	typeof alternates === 'object'
 		? new URL(alternates[l], site).href
 		: new URL(l === 'pt' ? basePath : `/${l}${basePath === '/' ? '' : basePath}`, site).href;
+
+// Where this page opens in each language the reader may have picked; null when it exists in one only.
+const languageTargets =
+	alternates === 'none'
+		? null
+		: Object.fromEntries(opensIn.map((l) => [l, new URL(localizedURL(l)).pathname] as const));
 
 // The feed of the current language (src/pages/rss.xml.js, en/rss.xml.js, es/rss.xml.js).
 const feedPath = currentLang === 'pt' ? '/rss.xml' : `/${currentLang}/rss.xml`;
@@ -99,6 +114,43 @@ const siteLd = {
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- The reader's language (i18n/languagePreference.ts), first in the head so a page in another
+     language is replaced before it paints. Plain script: it cannot import the module, so the data comes in. -->
+<script is:inline define:vars={{ storageKey: LANGUAGE_STORAGE_KEY, pageLang: currentLang, targets: languageTargets, zoneHints: TIME_ZONE_HINTS, botPattern: BOT_USER_AGENT.source }}>
+	(() => {
+		let saved;
+		try {
+			saved = localStorage.getItem(storageKey);
+		} catch {
+			// Storage blocked: no pick could be remembered, so the reader stays on the pages they open.
+			return;
+		}
+		const siteLangs = Object.keys(zoneHints);
+		const isSiteLang = (value) => siteLangs.includes(value);
+		const openIn = (lang) => {
+			const target = targets && targets[lang];
+			if (lang !== pageLang && target) location.replace(target + location.search + location.hash);
+		};
+		if (isSiteLang(saved)) return openIn(saved);
+		if (new RegExp(botPattern, 'i').test(navigator.userAgent)) return;
+
+		const browserLangs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+		const fromBrowser = browserLangs.map((tag) => String(tag).split('-')[0].toLowerCase()).find(isSiteLang);
+		const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+		const matchesZone = (hint) => (hint.endsWith('/') ? zone.startsWith(hint) : zone === hint);
+		const fromZone = siteLangs.find((lang) => zoneHints[lang].some(matchesZone));
+		const picked = fromBrowser || fromZone;
+		if (!picked) {
+			document.documentElement.dataset.languagePrompt = 'ask';
+			return;
+		}
+		// Open first: a full storage quota makes setItem throw, and that must not keep the reader on the wrong language.
+		openIn(picked);
+		localStorage.setItem(storageKey, picked);
+	})();
+</script>
+<LanguagePrompt pageLang={currentLang} targets={languageTargets} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

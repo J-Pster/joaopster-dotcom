@@ -4,6 +4,7 @@
 //    (a course note goes to the courses landing of the language picked).
 // 3. Otherwise, the same path under the other language prefix.
 import type { Lang } from './ui';
+import { rememberLanguage } from './languagePreference';
 
 const HREFLANG: Record<Lang, string> = { pt: 'pt-BR', en: 'en', es: 'es' };
 const FALLBACK_KEY: Record<Lang, string> = { pt: 'langPt', en: 'langEn', es: 'langEs' };
@@ -28,6 +29,12 @@ export function localeSwitchTarget(lang: Lang): string {
   // Alternates are absolute production URLs: keep the path, so it also works on a local preview.
   if (alternate) return new URL(alternate.href).pathname;
   return document.documentElement.dataset[FALLBACK_KEY[lang]] ?? prefixedPath(window.location.pathname, lang);
+}
+
+/** The reader picked a language in a switcher: remember it for every page, then open this one in it. */
+export function switchLanguage(lang: Lang): void {
+  rememberLanguage(lang);
+  window.location.href = localeSwitchTarget(lang);
 }
 
 export const isLang = (value: string | undefined): value is Lang => value === 'pt' || value === 'en' || value === 'es';

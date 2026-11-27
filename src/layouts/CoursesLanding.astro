@@ -50,6 +50,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       title={text.landingMetaTitle}
       description={text.landingMetaDescription}
       alternates={sectionAlternates(coursesHome)}
+      opensIn={LANGS.filter((other) => coursesIn(other).length > 0)}
       image={siteOgImage(lang, 'courses')}
       indexing={indexing}
     />

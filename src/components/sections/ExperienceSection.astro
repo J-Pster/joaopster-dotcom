@@ -1,5 +1,5 @@
 ---
-import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { useTranslations, defaultLang, type Lang, type UiKey, DATE_LOCALES } from '../../i18n/ui';
 import { uptimeText } from '../../lib/lifeUptime';
 import { aboutPath } from '../../lib/aboutPath';
 
@@ -18,89 +18,104 @@ const t = useTranslations(lang);
 const [headingBefore, headingAfter] = t('exp.heading1').split('{years}');
 const yearsWord = uptimeText(new Date(), lang).devYearsWord;
 
-const roles = [
+/** A month as YYYY-MM. */
+type Month = `${number}-${number}`;
+type Role = {
+  roleKey: UiKey;
+  /** Real company names stay as written; generic labels are translated. */
+  company: { kind: 'name'; name: string } | { kind: 'key'; key: UiKey };
+  meta: readonly UiKey[];
+  period: { start: Month; end: Month | 'present' };
+  descKey: UiKey;
+  tags: readonly string[];
+};
+
+const roles: readonly Role[] = [
   {
-    roleKey: 'exp.role1.role' as const,
-    company: 'Confidential startup',
-    meta: 'Full-time · Remote',
-    dates: 'Dec 2025 - Present',
-    current: true,
-    descKey: 'exp.role1.desc' as const,
+    roleKey: 'exp.role1.role',
+    company: { kind: 'key', key: 'exp.company.confidential' },
+    meta: ['exp.terms.fullTime', 'exp.mode.remote'],
+    period: { start: '2025-12', end: 'present' },
+    descKey: 'exp.role1.desc',
     tags: ['AWS', 'OpenTofu', 'TypeScript', 'NestJS', 'Angular', 'AI in production'],
   },
   {
-    roleKey: 'exp.role2.role' as const,
-    company: 'adMixt',
-    meta: 'United States · Remote · Contract',
-    dates: 'Mar 2025 - Dec 2025',
-    current: false,
-    descKey: 'exp.role2.desc' as const,
+    roleKey: 'exp.role2.role',
+    company: { kind: 'name', name: 'adMixt' },
+    meta: ['exp.place.us', 'exp.mode.remote', 'exp.terms.contract'],
+    period: { start: '2025-03', end: '2025-12' },
+    descKey: 'exp.role2.desc',
     tags: ['Vanilla JS', 'PHP', 'Legacy modernization', 'Front-end architecture'],
   },
   {
-    roleKey: 'exp.role3.role' as const,
-    company: 'Howhow',
-    meta: 'São Paulo · Remote · Contract',
-    dates: 'Feb 2024 - Apr 2025',
-    current: false,
-    descKey: 'exp.role3.desc' as const,
+    roleKey: 'exp.role3.role',
+    company: { kind: 'name', name: 'Howhow' },
+    meta: ['exp.place.saoPaulo', 'exp.mode.remote', 'exp.terms.contract'],
+    period: { start: '2024-02', end: '2025-04' },
+    descKey: 'exp.role3.desc',
     tags: ['Architecture', 'AI / NLP', 'Node.js', 'Tech lead'],
   },
   {
-    roleKey: 'exp.role4.role' as const,
-    company: 'João Pster',
-    meta: 'Brazil · Remote · Own company',
-    dates: 'Jan 2020 - Mar 2025',
-    current: false,
-    descKey: 'exp.role4.desc' as const,
+    roleKey: 'exp.role4.role',
+    company: { kind: 'name', name: 'João Pster' },
+    meta: ['exp.place.brazil', 'exp.mode.remote', 'exp.terms.ownCompany'],
+    period: { start: '2020-01', end: '2025-03' },
+    descKey: 'exp.role4.desc',
     tags: ['Consulting', 'Team leadership', 'Teaching', 'Full-stack'],
   },
   {
-    roleKey: 'exp.role5.role' as const,
-    company: 'Artweb · João Pster',
-    meta: 'Brazil · Remote · Outsourced',
-    dates: 'Jan 2023 - Mar 2025',
-    current: false,
-    descKey: 'exp.role5.desc' as const,
+    roleKey: 'exp.role5.role',
+    company: { kind: 'name', name: 'Artweb · João Pster' },
+    meta: ['exp.place.brazil', 'exp.mode.remote', 'exp.terms.outsourced'],
+    period: { start: '2023-01', end: '2025-03' },
+    descKey: 'exp.role5.desc',
     tags: ['React', 'React Native', 'Angular', 'Flutter', 'Google Cloud', 'Firebase'],
   },
   {
-    roleKey: 'exp.role6.role' as const,
-    company: 'AfterSale',
-    meta: 'Brazil · Remote · Fixed-term',
-    dates: 'Oct 2023 - Feb 2024',
-    current: false,
-    descKey: 'exp.role6.desc' as const,
+    roleKey: 'exp.role6.role',
+    company: { kind: 'name', name: 'AfterSale' },
+    meta: ['exp.place.brazil', 'exp.mode.remote', 'exp.terms.fixedTerm'],
+    period: { start: '2023-10', end: '2024-02' },
+    descKey: 'exp.role6.desc',
     tags: ['React', 'Legacy integration'],
   },
   {
-    roleKey: 'exp.role7.role' as const,
-    company: 'Digital Republic',
-    meta: 'São Paulo · On-site',
-    dates: 'Feb 2023 - Jul 2023',
-    current: false,
-    descKey: 'exp.role7.desc' as const,
+    roleKey: 'exp.role7.role',
+    company: { kind: 'name', name: 'Digital Republic' },
+    meta: ['exp.place.saoPaulo', 'exp.mode.onSite'],
+    period: { start: '2023-02', end: '2023-07' },
+    descKey: 'exp.role7.desc',
     tags: ['Next.js', 'Angular', 'Atomic Design'],
   },
   {
-    roleKey: 'exp.role8.role' as const,
-    company: 'Verzel Soluções em Sistemas',
-    meta: 'Brazil · Remote · Contract',
-    dates: 'Nov 2022 - Feb 2023',
-    current: false,
-    descKey: 'exp.role8.desc' as const,
+    roleKey: 'exp.role8.role',
+    company: { kind: 'name', name: 'Verzel Soluções em Sistemas' },
+    meta: ['exp.place.brazil', 'exp.mode.remote', 'exp.terms.contract'],
+    period: { start: '2022-11', end: '2023-02' },
+    descKey: 'exp.role8.desc',
     tags: ['Angular', 'React', 'Node.js', 'AI chatbot'],
   },
   {
-    roleKey: 'exp.role9.role' as const,
-    company: 'Self-employed',
-    meta: 'Brazil · Remote',
-    dates: 'Dec 2019 - Nov 2022',
-    current: false,
-    descKey: 'exp.role9.desc' as const,
+    roleKey: 'exp.role9.role',
+    company: { kind: 'key', key: 'exp.company.selfEmployed' },
+    meta: ['exp.place.brazil', 'exp.mode.remote'],
+    period: { start: '2019-12', end: '2022-11' },
+    descKey: 'exp.role9.desc',
     tags: ['React', 'Angular', 'Vue', 'Node.js', 'C# / .NET', 'WordPress'],
   },
 ];
+
+// "Dez 2025": short month and year in the page language, read in UTC so the month never shifts.
+const monthFormat = new Intl.DateTimeFormat(DATE_LOCALES[lang], { month: 'short', year: 'numeric', timeZone: 'UTC' });
+function formatMonth(month: Month): string {
+  const parts = monthFormat.formatToParts(new Date(`${month}-01T00:00:00Z`));
+  const name = parts.find((p) => p.type === 'month')?.value.replace('.', '') ?? '';
+  const year = parts.find((p) => p.type === 'year')?.value ?? '';
+  return `${name.charAt(0).toUpperCase()}${name.slice(1)} ${year}`;
+}
+const periodText = ({ start, end }: Role['period']) =>
+  `${formatMonth(start)} - ${end === 'present' ? t('exp.present') : formatMonth(end)}`;
+const companyText = (company: Role['company']) => (company.kind === 'name' ? company.name : t(company.key));
 
 const shownRoles = variant === 'summary' ? roles.slice(0, SUMMARY_ROLES) : roles;
 
@@ -127,14 +142,14 @@ function parseDesc(text: string): DescBlock[] {
 
     <div class="exp-timeline">
       {shownRoles.map((r) => (
-        <div class:list={['exp-item', r.current && 'is-current']}>
+        <div class:list={['exp-item', r.period.end === 'present' && 'is-current']}>
           <div class="exp-head">
             <h3 class="exp-role">{t(r.roleKey)}</h3>
-            <span class="exp-dates">{r.dates}</span>
+            <span class="exp-dates">{periodText(r.period)}</span>
           </div>
           <p class="exp-company">
-            <span class="exp-company-name">{r.company}</span>
-            <span class="exp-company-meta">{r.meta}</span>
+            <span class="exp-company-name">{companyText(r.company)}</span>
+            <span class="exp-company-meta">{r.meta.map((key) => t(key)).join(' · ')}</span>
           </p>
           <div class="exp-desc">
             {parseDesc(t(r.descKey)).map((block) => block.kind === 'p'

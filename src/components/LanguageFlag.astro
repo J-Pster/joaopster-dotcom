@@ -1,0 +1,56 @@
+---
+// The flag that stands for each language in the switchers and the language prompt: Brazil for
+// Portuguese (most readers are Brazilian), the United States for English, Spain for Spanish.
+// Drawn inline because emoji flags do not render on Windows.
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Width in px; the height follows the 3:2 shape. */
+  width: number;
+}
+
+const { lang, width } = Astro.props;
+const height = Math.round((width * 2) / 3);
+---
+
+<span class="flag" aria-hidden="true">
+  {lang === 'pt' && (
+    <svg viewBox="0 0 24 16" width={width} height={height}>
+      <rect width="24" height="16" fill="#009c3b" />
+      <polygon points="12,1.5 21.5,8 12,14.5 2.5,8" fill="#ffdf00" />
+      <circle cx="12" cy="8" r="4.2" fill="#002776" />
+      <path d="M8.2 6.8 Q12 5.5 15.8 6.8" stroke="white" stroke-width="0.8" fill="none" />
+    </svg>
+  )}
+  {lang === 'en' && (
+    <svg viewBox="0 0 24 16" width={width} height={height}>
+      <rect width="24" height="16" fill="#bf0a30" />
+      <rect y="1.23" width="24" height="1.23" fill="white" />
+      <rect y="3.69" width="24" height="1.23" fill="white" />
+      <rect y="6.15" width="24" height="1.23" fill="white" />
+      <rect y="8.62" width="24" height="1.23" fill="white" />
+      <rect y="11.08" width="24" height="1.23" fill="white" />
+      <rect y="13.54" width="24" height="1.23" fill="white" />
+      <rect width="10" height="8.62" fill="#002868" />
+    </svg>
+  )}
+  {lang === 'es' && (
+    <svg viewBox="0 0 24 16" width={width} height={height}>
+      <rect width="24" height="16" fill="#c60b1e" />
+      <rect y="4" width="24" height="8" fill="#ffc400" />
+    </svg>
+  )}
+</span>
+
+<style>
+  .flag {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+</style>
