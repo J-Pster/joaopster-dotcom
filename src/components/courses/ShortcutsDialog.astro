@@ -1,0 +1,49 @@
+---
+// Window listing the keyboard shortcuts of the course pages. Opened by the "Shortcuts" button (under the
+// sync card, or in the toolbar while the right column is hidden) or the "?" key (lib/courses/client/shortcuts.ts).
+import type { Lang } from '../../i18n/ui';
+import { shortcutsText, type Key } from '../../lib/courses/shortcutsText';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const text = shortcutsText(lang);
+const keyLabel = (key: Key): string => (key === 'Space' ? text.keyNames.Space : key === 'Mod' ? 'Ctrl' : key);
+---
+
+<dialog class="course-shortcuts" id="course-shortcuts" data-shortcuts aria-labelledby="course-shortcuts-title" autofocus>
+  <div class="course-shortcuts-head">
+    <h2 class="course-shortcuts-title" id="course-shortcuts-title">{text.title}</h2>
+    <button type="button" class="course-shortcuts-close" data-shortcuts-close aria-label={text.close} title={text.close}>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="course-shortcuts-body">
+    {text.groups.map((group) => (
+      <section class="course-shortcuts-group">
+        <h3 class="course-shortcuts-group-title">{group.title}</h3>
+        <dl class="course-shortcuts-list">
+          {group.items.map((item) => (
+            <div class="course-shortcuts-row">
+              <dt>{item.label}</dt>
+              <dd>
+                {item.combos.map((combo, i) => (
+                  <>
+                    {i > 0 && <span class="course-shortcuts-or">{text.or}</span>}
+                    <span class="course-shortcuts-combo">
+                      {combo.map((key) => (
+                        <kbd data-mod-key={key === 'Mod' ? '' : undefined}>{keyLabel(key)}</kbd>
+                      ))}
+                    </span>
+                  </>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
+  </div>
+</dialog>
