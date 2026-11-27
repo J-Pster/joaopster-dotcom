@@ -1,17 +1,26 @@
 ---
+// A date in the page's language: "26 de nov. de 2026" in Portuguese, "Nov 26, 2026" in English.
+// Lists grouped by year pass withYear={false} and get "26 de nov." / "Nov 26".
+import { defaultLang, type Lang } from '../i18n/ui';
+
 interface Props {
 	date: Date;
+	withYear?: boolean;
 }
 
-const { date } = Astro.props;
+const LOCALES: Record<Lang, string> = { pt: 'pt-BR', en: 'en-US', es: 'es' };
+
+const { date, withYear = true } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 ---
 
 <time datetime={date.toISOString()} style="font-size: 13px; color: var(--color-muted); line-height: 1.4;">
 	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
+		date.toLocaleDateString(LOCALES[lang], {
+			...(withYear ? { year: 'numeric' } : {}),
 			month: 'short',
 			day: 'numeric',
+			timeZone: 'UTC',
 		})
 	}
 </time>
