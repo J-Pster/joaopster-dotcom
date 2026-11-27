@@ -339,7 +339,7 @@
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: var(--callout-color);
+  color: var(--callout-text, var(--callout-color));
 }
 .callout-title::before {
   content: '';
@@ -365,11 +365,11 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .callout-body { margin-top: var(--space-xs); font-size: 15px; line-height: 1.65; color: var(--color-body); }
 .callout-body > :last-child { margin-bottom: 0; }
 .callout-body p { margin-bottom: 0.75em; }
-.callout--note, .callout--info, .callout--todo { --callout-color: var(--color-text-link); }
+.callout--note, .callout--info, .callout--todo { --callout-color: var(--color-text-link); --callout-text: var(--color-text-link-on-tint); }
 .callout--abstract, .callout--summary, .callout--question { --callout-color: var(--color-accent-preview); }
-.callout--tip, .callout--hint, .callout--success { --callout-color: var(--color-semantic-success); }
-.callout--warning, .callout--caution { --callout-color: var(--color-accent-warning); }
-.callout--danger, .callout--failure, .callout--bug { --callout-color: #c2413b; }
+.callout--tip, .callout--hint, .callout--success { --callout-color: var(--color-semantic-success); --callout-text: var(--color-text-success); }
+.callout--warning, .callout--caution { --callout-color: var(--color-accent-warning); --callout-text: var(--color-text-warning); }
+.callout--danger, .callout--failure, .callout--bug { --callout-color: #c2413b; --callout-text: var(--color-text-error); }
 .callout--example, .callout--quote { --callout-color: var(--color-ink); }
 
 /* ---------- Reader layout ---------- */
@@ -551,7 +551,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .course-nav-module a[aria-current='page'] .course-nav-title { color: var(--color-ink); font-weight: 600; }
 .course-nav-module details[open] > summary .course-nav-title { color: var(--color-ink); }
 .course-nav-count { flex: none; font-size: 11px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
-.course-nav-count.is-complete { color: var(--color-semantic-success); }
+.course-nav-count.is-complete { color: var(--color-text-success); }
 .course-nav-lessons { margin: 2px 0 var(--space-xs) 30px; border-left: 1px solid var(--color-hairline-strong); }
 .course-nav-lessons a {
   position: relative;
@@ -717,7 +717,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.progress-done { font-size: 14px; font-weight: 600; color: var(--color-semantic-success); }
+.progress-done { font-size: 14px; font-weight: 600; color: var(--color-text-success); }
 .progress-modules { margin: var(--space-base) 0 0 !important; padding: 0 !important; list-style: none; }
 .progress-modules li {
   display: grid;
@@ -914,7 +914,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 .sync-card-hint { margin: 0; font-size: 13px; line-height: 1.55; color: var(--color-body); }
 .sync-card-status { margin: var(--space-xs) 0 0; font-size: 12px; line-height: 1.5; color: var(--color-muted); }
 .sync-card-status:empty { display: none; }
-.sync-card-status.is-error { color: var(--color-accent-warning); }
+.sync-card-status.is-error { color: var(--color-text-warning); }
 
 /* Bar and inline: the title on the left, the buttons on the right when there is room. */
 .sync-card--bar { margin-bottom: var(--space-lg); }

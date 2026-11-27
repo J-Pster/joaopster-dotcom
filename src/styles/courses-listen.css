@@ -113,7 +113,7 @@
   -webkit-line-clamp: 2;
 }
 .listen-status[data-state='loading'], .listen-status[data-state='idle'] { color: var(--color-body); }
-.listen-status[data-state='error'] { color: var(--color-accent-warning); font-weight: 500; }
+.listen-status[data-state='error'] { color: var(--color-text-warning); font-weight: 500; }
 /* The price notice is read in full: it is what the reader agrees to. */
 .listen-status[data-state='confirming'] { display: block; -webkit-line-clamp: unset; }
 

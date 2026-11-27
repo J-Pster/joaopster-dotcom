@@ -12,7 +12,7 @@
   --color-text-link-secondary: #476cff;
   --color-ink: #171717;
   --color-body: #60646c;
-  --color-muted: #999999;
+  --color-muted: #656971; /* 5.6:1 on white, 5:1 on #f0f0f3 (WCAG AA text needs 4.5:1) */
   --color-muted-soft: #cccccc;
   --color-hairline: #f0f0f3;
   --color-hairline-soft: #f5f5f7;
@@ -32,6 +32,11 @@
   --color-accent-preview: #8145b5;
   --color-semantic-success: #16a34a;
   --color-semantic-error: #eb8e90;
+  /* Text variants of the accents above: the fills fall short of 4.5:1 as text on white and light tints. */
+  --color-text-link-on-tint: #0b5cad;
+  --color-text-success: #166534;
+  --color-text-warning: #8f5300;
+  --color-text-error: #b3322c;
 
   /* Spacing */
   --space-xxs: 4px;
@@ -52,6 +57,11 @@
   --radius-xl: 16px;
   --radius-xxl: 24px;
   --radius-pill: 9999px;
+}
+
+html {
+  /* The sticky header is 64px tall plus its 1px border: anchor jumps must land below it. */
+  scroll-padding-top: 72px;
 }
 
 body {

@@ -11,7 +11,7 @@ colors:
   ink: "#171717"
   body: "#60646c"
   body-strong: "#171717"
-  muted: "#999999"
+  muted: "#656971"
   muted-soft: "#cccccc"
   hairline: "#f0f0f3"
   hairline-soft: "#f5f5f7"
@@ -32,6 +32,10 @@ colors:
   accent-link-bright: "#47c2ff"
   semantic-error: "#eb8e90"
   semantic-success: "#16a34a"
+  text-link-on-tint: "#0b5cad"
+  text-success: "#166534"
+  text-warning: "#8f5300"
+  text-error: "#b3322c"
 
 typography:
   display-mega:
@@ -311,7 +315,7 @@ The brand's strongest visual signature is the **device-mockup hero** — a cente
 - **Ink** (`{colors.ink}` — #171717): Display, body emphasis.
 - **Body** (`{colors.body}` — #60646c): Default running-text — slightly cool gray.
 - **Body Strong** (`{colors.body-strong}` — #171717): Same as ink.
-- **Muted** (`{colors.muted}` — #999999): Sub-titles.
+- **Muted** (`{colors.muted}`: #656971): Sub-titles, meta lines, captions. Cool gray like body, and still 4.5:1 (WCAG AA) on white and on `{colors.surface-strong}`.
 - **Muted Soft** (`{colors.muted-soft}` — #cccccc): Disabled text.
 - **On Primary** (`{colors.on-primary}` — #ffffff): White text on black CTA.
 - **On Dark** (`{colors.on-dark}` — #ffffff): White text on dark cards.
@@ -322,6 +326,13 @@ The brand's strongest visual signature is the **device-mockup hero** — a cente
 - **Preview** (`{colors.accent-preview}` — #8145b5): "Preview" tag color.
 - **Success** (`{colors.semantic-success}` — #16a34a): Confirmation.
 - **Error** (`{colors.semantic-error}` — #eb8e90): Validation errors.
+
+### Semantic Text
+The semantic colors above are fills, borders and icons. As text they fall short of 4.5:1 on white and light tints, so text uses these darker variants, everywhere on the site:
+- **Link on Tint** (`{colors.text-link-on-tint}`: #0b5cad): Link-blue text on tinted callouts.
+- **Success Text** (`{colors.text-success}`: #166534): Confirmation text.
+- **Warning Text** (`{colors.text-warning}`: #8f5300): Warning text and callout titles.
+- **Error Text** (`{colors.text-error}`: #b3322c): Error and validation text.
 
 ## Typography
 

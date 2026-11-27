@@ -5,8 +5,8 @@
   --study-right: var(--color-semantic-success);
   --study-right-soft: color-mix(in srgb, var(--color-semantic-success) 8%, var(--color-surface-card));
   --study-right-line: color-mix(in srgb, var(--color-semantic-success) 40%, var(--color-surface-card));
-  /* The error token (#eb8e90) is a light pink meant for fills: text and icons need a readable red. */
-  --study-wrong: #c2414b;
+  /* The error token (#eb8e90) is a light pink meant for fills: text and icons use the readable red. */
+  --study-wrong: var(--color-text-error);
   --study-wrong-soft: color-mix(in srgb, var(--color-semantic-error) 14%, var(--color-surface-card));
   --study-wrong-line: color-mix(in srgb, var(--study-wrong) 40%, var(--color-surface-card));
   --study-warn-soft: color-mix(in srgb, var(--color-accent-warning) 10%, var(--color-surface-card));
@@ -300,14 +300,14 @@
   padding: 4px 10px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--study-right);
+  color: var(--color-text-success);
   background: var(--study-right-soft);
   border: 1px solid var(--study-right-line);
   border-radius: var(--radius-pill);
 }
 .exam-status svg { width: 14px; height: 14px; }
 .exam-result[data-passed='false'] .exam-status {
-  color: var(--color-accent-warning);
+  color: var(--color-text-warning);
   background: var(--study-warn-soft);
   border-color: color-mix(in srgb, var(--color-accent-warning) 35%, var(--color-surface-card));
 }
@@ -333,8 +333,8 @@
 }
 .exam-domain-name { font-weight: 500; color: var(--color-ink); }
 .exam-domain-count { color: var(--color-muted); }
-.exam-domains strong { text-align: right; color: var(--study-right); }
-.exam-domains li[data-below='true'] strong { color: var(--color-accent-warning); }
+.exam-domains strong { text-align: right; color: var(--color-text-success); }
+.exam-domains li[data-below='true'] strong { color: var(--color-text-warning); }
 .exam-domain-track {
   position: relative;
   grid-column: 1 / -1;
@@ -379,7 +379,7 @@
 html.exam-running body { padding-bottom: 104px; }
 .exam-clock { display: flex; flex: none; align-items: center; gap: var(--space-xs); color: var(--color-ink); font-variant-numeric: tabular-nums; }
 .exam-clock strong { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
-.exam-bar[data-warn='true'] .exam-clock { color: var(--color-accent-warning); }
+.exam-bar[data-warn='true'] .exam-clock { color: var(--color-text-warning); }
 .exam-progress { display: flex; flex: 1; align-items: center; gap: 10px; min-width: 0; }
 .exam-progress-count { flex: none; font-size: 14px; color: var(--color-body); font-variant-numeric: tabular-nums; }
 .exam-progress-track { flex: 1; height: 6px; overflow: hidden; background: var(--color-surface-strong); border-radius: var(--radius-pill); }

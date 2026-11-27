@@ -254,7 +254,7 @@
 }
 .assistant-answer-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 6px; font-size: 12px; color: var(--color-muted); }
 .assistant-answer-foot:empty { display: none; }
-.assistant-answer-note { color: var(--color-accent-warning); }
+.assistant-answer-note { color: var(--color-text-warning); }
 .assistant-copy {
   margin-left: auto;
   padding: 2px 6px;
@@ -457,7 +457,7 @@
 .keys-row-name { font-size: 15px; font-weight: 600; }
 .keys-row-use { font-size: 13px; color: var(--color-muted); }
 .keys-row-state { margin: 2px 0 8px; font-size: 13px; color: var(--color-body); font-variant-numeric: tabular-nums; }
-.keys-row-state[data-saved='true'] { color: var(--color-semantic-success); }
+.keys-row-state[data-saved='true'] { color: var(--color-text-success); }
 .keys-row-form { display: flex; gap: 6px; }
 .keys-row-input {
   flex: 1;

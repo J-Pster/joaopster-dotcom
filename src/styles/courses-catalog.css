@@ -238,8 +238,8 @@
 .catalog-module-number { grid-row: span 2; padding-top: 2px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--color-muted); }
 .catalog-module-title { font-size: 14px; font-weight: 500; line-height: 1.4; }
 .catalog-module-meta { font-size: 12px; color: var(--color-body); font-variant-numeric: tabular-nums; }
-.catalog-modules .is-done .catalog-module-number { color: var(--color-semantic-success); }
-.catalog-modules .is-done .catalog-module-meta { color: var(--color-semantic-success); }
+.catalog-modules .is-done .catalog-module-number { color: var(--color-text-success); }
+.catalog-modules .is-done .catalog-module-meta { color: var(--color-text-success); }
 
 .catalog-empty {
   display: flex;
@@ -292,4 +292,23 @@
   .catalog-download { flex-basis: 100%; }
   .catalog-matches { margin: 0 var(--space-base) var(--space-base); }
   .catalog-modules { grid-template-columns: minmax(0, 1fr); padding: 0 var(--space-base) var(--space-sm); }
+}
+
+/* ---------- Study notes, flagship and course facts ---------- */
+
+.catalog-note { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-body); }
+.catalog-course-audience { margin: 0; max-width: 62ch; font-size: 14px; line-height: 1.55; color: var(--color-body); }
+.catalog-course-audience strong { font-weight: 600; color: var(--color-ink); }
+
+/* The flagship takes the black of the primary CTA: an ink outline and an ink badge, no extra color. */
+.catalog-course--flagship { border: 2px solid var(--color-ink); }
+.catalog-badge--flagship { color: var(--color-on-primary); background: var(--color-primary); }
+
+.catalog-about { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg); padding: var(--space-base) var(--space-lg) var(--space-xs); }
+.catalog-about-title { margin: 0 0 var(--space-xs); font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-muted); }
+.catalog-about-list { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--color-body); }
+.catalog-about-list li + li { margin-top: 4px; }
+.catalog-about-none { margin: 0; font-size: 14px; color: var(--color-body); }
+@media (max-width: 720px) {
+  .catalog-about { grid-template-columns: minmax(0, 1fr); padding: var(--space-base) var(--space-base) 0; }
 }
