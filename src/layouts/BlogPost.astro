@@ -13,7 +13,7 @@ import RelatedPosts from '../components/post/RelatedPosts.astro';
 import ShareLinks from '../components/post/ShareLinks.astro';
 import TableOfContents from '../components/post/TableOfContents.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
-import { getBlogAlternates } from '../lib/getLatestPost';
+import { getBlogAlternates, keyOf } from '../lib/getLatestPost';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	readingTime: number;
@@ -98,6 +98,7 @@ const breadcrumbLd = {
           <div class="post-meta">
             <span class="post-date"><FormattedDate date={pubDate} /></span>
             <span class="post-readtime">{readingTime} {t('post.minRead')}</span>
+            <span class="post-views" data-post-views={keyOf(post)} data-count-view data-one={t('post.viewOne')} data-other={t('post.viewOther')} hidden></span>
             {updatedDate && (
               <span class="post-updated">{t('post.updated')} <FormattedDate date={updatedDate} /></span>
             )}
@@ -251,8 +252,8 @@ const breadcrumbLd = {
     border-radius: var(--radius-pill);
   }
   .post-updated { font-size: 12px; color: var(--color-muted); font-style: italic; }
-  .post-readtime { font-size: 13px; font-weight: 500; color: var(--color-muted); }
-  .post-readtime::before {
+  .post-readtime, .post-views { font-size: 13px; font-weight: 500; color: var(--color-muted); }
+  .post-readtime::before, .post-views::before {
     content: '·';
     margin-right: var(--space-md);
     color: var(--color-muted-soft);
@@ -415,6 +416,13 @@ const breadcrumbLd = {
 </style>
 
 <script>
+  import { countViewWhenEngaged, showViewCounts } from '../scripts/postViews';
+
+  const viewCounter = document.querySelector<HTMLElement>('[data-count-view]');
+  if (!viewCounter?.dataset.postViews) throw new Error('[views] the post has no view counter');
+  void showViewCounts();
+  countViewWhenEngaged(viewCounter.dataset.postViews);
+
   const bar = document.getElementById('reading-progress');
   const update = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;

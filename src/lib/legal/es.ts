@@ -3,7 +3,7 @@ import type { LegalLanguage } from './types';
 
 export const es: LegalLanguage = {
   lang: 'es',
-  updatedLabel: 'Última actualización: 26 de noviembre de 2026',
+  updatedLabel: 'Última actualización: 27 de noviembre de 2026',
   onThisPage: 'En esta página',
   privacy: {
     metaTitle: 'Política de Privacidad | João Pster',
@@ -30,7 +30,7 @@ export const es: LegalLanguage = {
             kind: 'ul',
             items: [
               'El sitio no vende datos y no tiene anuncios.',
-              'El sitio no crea cookies propias. Las estadísticas de visitas vienen de Cloudflare Web Analytics, que según Cloudflare funciona sin cookies.',
+              'Las estadísticas de visitas vienen de Cloudflare Web Analytics, que funciona sin cookies, y de Google Analytics, que solo guarda cookies si aceptas el aviso. Puedes cambiar esa elección cuando quieras en "Preferencias de cookies", en el pie de página.',
               'El progreso, los destacados y las notas de los cursos se quedan en tu navegador. Solo llegan a un servidor si creas un código de sincronización.',
               'Las claves de IA y de voz que añades se quedan en tu navegador y van directo de tu página al proveedor. Este sitio no tiene un servidor que las reciba.',
               'La newsletter guarda tu email en Buttondown y puedes darte de baja cuando quieras.',
@@ -49,6 +49,14 @@ export const es: LegalLanguage = {
           {
             kind: 'p',
             html: 'Las direcciones de la API del sitio (/api) tienen un límite de solicitudes por IP para frenar el abuso. Lo aplica Cloudflare y sirve solo para seguridad.',
+          },
+          {
+            kind: 'p',
+            html: 'Contador de visualizaciones del blog: cada artículo muestra cuántas veces se leyó. Una lectura cuenta cuando el artículo queda visible en el navegador unos segundos, una vez al día por persona. Para no contar a la misma persona dos veces en el día, el servidor guarda solo un código (hash SHA-256 con una clave secreta) hecho con el día, tu IP y el artículo. Tu IP no se guarda y el código no permite llegar a ella. De cada artículo queda solo el total de visualizaciones.',
+          },
+          {
+            kind: 'p',
+            html: 'También uso Google Analytics 4 para entender qué páginas se leen y de dónde vienen las visitas. Se carga en todas las páginas en el modo de consentimiento de Google: hasta que aceptes, no guarda cookies y solo envía a Google señales sin cookies ni identificadores (por ejemplo, que se abrió una página). Si aceptas, guarda las cookies _ga para reconocer las visitas siguientes del mismo navegador. Las señales de Google y la personalización de anuncios quedan siempre desactivadas, y el sitio no tiene anuncios. Si rechazas después de haber aceptado, las cookies _ga se borran.',
           },
         ],
       },
@@ -150,7 +158,7 @@ export const es: LegalLanguage = {
             kind: 'ul',
             items: [
               `Cloudflare: alojamiento, entrega de páginas y Web Analytics (static.cloudflareinsights.com). ${ext(POLICIES.cloudflare, 'Política')}.`,
-              `Google Fonts: las fuentes Inter y JetBrains Mono vienen de fonts.googleapis.com y fonts.gstatic.com, así que tu IP llega a Google al abrir una página. ${ext(POLICIES.googleFonts, 'Política')}.`,
+              `Google Analytics: estadísticas de visitas, como se describió arriba (www.googletagmanager.com y google-analytics.com). ${ext(POLICIES.googleAnalytics, 'Cómo usa Google estos datos')}.`,
               `jsDelivr: algunos cursos cargan la biblioteca Mermaid, que dibuja diagramas, desde cdn.jsdelivr.net. ${ext(POLICIES.jsdelivr, 'Política')}.`,
               'Giscus y GitHub: comentarios en los posts, como se describió arriba.',
               'WakaTime: las estadísticas de código que muestra el sitio son las mías, obtenidas por /api/wakatime. No se envía ningún dato de visitantes a WakaTime.',
@@ -169,7 +177,7 @@ export const es: LegalLanguage = {
         blocks: [
           {
             kind: 'p',
-            html: 'El sitio no define cookies propias, por eso no muestra aviso de cookies. Tu navegador guarda preferencias y progreso de los cursos en localStorage, como se explicó arriba. Los servicios incrustados (sobre todo Giscus y GitHub en los posts) pueden usar almacenamiento propio, que yo no controlo.',
+            html: 'El sitio solo guarda cookies de Google Analytics (_ga y _ga_ seguido de un código), y solo después de que aceptas el aviso. Duran hasta 2 años, salvo que las borres o rechaces después. Puedes revisar tu elección en "Preferencias de cookies", en el pie de cualquier página. Tu navegador también guarda en localStorage esa elección, las preferencias y el progreso de los cursos, como se explicó arriba. Los servicios incrustados (sobre todo Giscus y GitHub en los posts) pueden usar almacenamiento propio, que yo no controlo.',
           },
         ],
       },
@@ -180,8 +188,8 @@ export const es: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              'Consentimiento (LGPD art. 7, I; RGPD art. 6(1)(a)): newsletter, código de sincronización, uso del asistente de IA y de las voces con tu clave. Puedes retirar el consentimiento en cualquier momento.',
-              'Interés legítimo (LGPD art. 7, IX; RGPD art. 6(1)(f)): mantener el sitio seguro y en línea, limitar el abuso de la API y medir el uso de forma agregada para mejorar el contenido.',
+              'Consentimiento (LGPD art. 7, I; RGPD art. 6(1)(a)): cookies de Google Analytics, newsletter, código de sincronización, uso del asistente de IA y de las voces con tu clave. Puedes retirar el consentimiento en cualquier momento.',
+              'Interés legítimo (LGPD art. 7, IX; RGPD art. 6(1)(f)): mantener el sitio seguro y en línea, limitar el abuso de la API y medir el uso de forma agregada para mejorar el contenido (Cloudflare Web Analytics, el contador de visualizaciones y las señales sin cookies de Google Analytics).',
             ],
           },
           {
@@ -225,6 +233,8 @@ export const es: LegalLanguage = {
               'Progreso sincronizado: hasta que pidas su eliminación. Hoy no hay caducidad automática.',
               'Comentarios: hasta que se borren en GitHub.',
               'Datos en tu navegador: hasta que los limpies.',
+              'Google Analytics: hasta 14 meses. Después, Google borra los datos de cada visita.',
+              'Códigos del contador de visualizaciones: solo el día en que se crearon. Se borran en la primera lectura contada del día siguiente.',
               'Registros de acceso y estadísticas: durante el plazo que define Cloudflare.',
             ],
           },

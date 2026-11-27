@@ -9,6 +9,7 @@ import '@fontsource/inter/latin-600.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import type { ImageMetadata } from 'astro';
 import { SITE_NAME } from '../consts';
+import { CONSENT_STORAGE_KEY, GA_HOST, GA_MEASUREMENT_ID } from '../lib/analytics/consent';
 import { useTranslations, type Lang } from '../i18n/ui';
 import profilePhoto from '../assets/profile-photo.png';
 import { siteOgImage } from '../lib/og/siteCards';
@@ -153,6 +154,37 @@ const siteLd = {
 <!-- Structured data -->
 <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
 <script type="application/ld+json" set:html={JSON.stringify(siteLd)} />
+
+<!-- Google Analytics 4, Consent Mode v2 (lib/analytics/consent.ts): everything denied until the reader accepts. -->
+<script is:inline define:vars={{ measurementId: GA_MEASUREMENT_ID, gaHost: GA_HOST, storageKey: CONSENT_STORAGE_KEY }}>
+	window.dataLayer = window.dataLayer || [];
+	// gtag.js reads the arguments object itself, so this must stay a plain function.
+	window.gtag = function gtag() {
+		window.dataLayer.push(arguments);
+	};
+	gtag('consent', 'default', {
+		ad_storage: 'denied',
+		ad_user_data: 'denied',
+		ad_personalization: 'denied',
+		analytics_storage: 'denied',
+	});
+	gtag('set', 'ads_data_redaction', true);
+	let savedChoice = null;
+	try {
+		savedChoice = localStorage.getItem(storageKey);
+	} catch {
+		// Storage blocked (private mode, disabled site data): no saved choice, so consent stays denied.
+	}
+	if (savedChoice === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' });
+	gtag('js', new Date());
+	gtag('config', measurementId, { allow_google_signals: false, allow_ad_personalization_signals: false });
+	if (location.hostname === gaHost) {
+		const tag = document.createElement('script');
+		tag.async = true;
+		tag.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+		document.head.append(tag);
+	}
+</script>
 
 <!-- Cloudflare Web Analytics -->
 {cfBeaconToken && (

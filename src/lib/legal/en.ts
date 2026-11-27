@@ -3,7 +3,7 @@ import type { LegalLanguage } from './types';
 
 export const en: LegalLanguage = {
   lang: 'en',
-  updatedLabel: 'Last updated: November 26, 2026',
+  updatedLabel: 'Last updated: November 27, 2026',
   onThisPage: 'On this page',
   privacy: {
     metaTitle: 'Privacy Policy | João Pster',
@@ -30,7 +30,7 @@ export const en: LegalLanguage = {
             kind: 'ul',
             items: [
               'The site does not sell data and has no ads.',
-              'The site sets no cookies of its own. Visit statistics come from Cloudflare Web Analytics, which according to Cloudflare works without cookies.',
+              'Visit statistics come from Cloudflare Web Analytics, which works without cookies, and Google Analytics, which only sets cookies if you accept the notice. You can change that choice any time under "Cookie preferences" in the footer.',
               'Your course progress, highlights and notes stay in your browser. They reach a server only if you create a sync code.',
               'AI and voice keys you add stay in your browser and go straight from your page to the provider. This site has no server that receives them.',
               'The newsletter stores your email at Buttondown, and you can unsubscribe at any time.',
@@ -49,6 +49,14 @@ export const en: LegalLanguage = {
           {
             kind: 'p',
             html: 'The site\'s API endpoints (/api) have per-IP request limits to curb abuse. Cloudflare applies them, and they exist for security only.',
+          },
+          {
+            kind: 'p',
+            html: 'Blog view counter: each post shows how many times it was read. A read counts when the post stays visible in the browser for a few seconds, once a day per person. So the same person is not counted twice in a day, the server keeps only a code (a SHA-256 hash with a secret key) made from the day, your IP and the post. Your IP is not stored and the code cannot be turned back into it. For each post, only the view total is kept.',
+          },
+          {
+            kind: 'p',
+            html: 'I also use Google Analytics 4 to understand which pages are read and where visits come from. It loads on every page in Google\'s consent mode: until you accept, it sets no cookies and sends Google only signals without cookies or identifiers (for example, that a page was opened). If you accept, it sets the _ga cookies to recognize later visits from the same browser. Google signals and ad personalization stay off for good, and the site has no ads. If you decline after accepting, the _ga cookies are deleted.',
           },
         ],
       },
@@ -150,7 +158,7 @@ export const en: LegalLanguage = {
             kind: 'ul',
             items: [
               `Cloudflare: hosting, page delivery and Web Analytics (static.cloudflareinsights.com). ${ext(POLICIES.cloudflare, 'Policy')}.`,
-              `Google Fonts: the Inter and JetBrains Mono fonts come from fonts.googleapis.com and fonts.gstatic.com, so your IP reaches Google when a page opens. ${ext(POLICIES.googleFonts, 'Policy')}.`,
+              `Google Analytics: visit statistics, as described above (www.googletagmanager.com and google-analytics.com). ${ext(POLICIES.googleAnalytics, 'How Google uses this data')}.`,
               `jsDelivr: some courses load the Mermaid library, which draws diagrams, from cdn.jsdelivr.net. ${ext(POLICIES.jsdelivr, 'Policy')}.`,
               'Giscus and GitHub: comments on posts, as described above.',
               'WakaTime: the coding statistics shown on the site are my own, fetched through /api/wakatime. No visitor data is sent to WakaTime.',
@@ -169,7 +177,7 @@ export const en: LegalLanguage = {
         blocks: [
           {
             kind: 'p',
-            html: 'The site sets no cookies of its own, so it shows no cookie banner. Your browser keeps course preferences and progress in localStorage, as explained above. Embedded services (mainly Giscus and GitHub on posts) may use storage of their own, which I do not control.',
+            html: 'The site only sets Google Analytics cookies (_ga and _ga_ followed by a code), and only after you accept the notice. They last up to 2 years unless you delete them or decline later. You can review your choice under "Cookie preferences" in the footer of any page. Your browser also keeps that choice, course preferences and progress in localStorage, as explained above. Embedded services (mainly Giscus and GitHub on posts) may use storage of their own, which I do not control.',
           },
         ],
       },
@@ -180,8 +188,8 @@ export const en: LegalLanguage = {
           {
             kind: 'ul',
             items: [
-              'Consent (LGPD art. 7, I; GDPR art. 6(1)(a)): newsletter, sync code, and using the AI assistant and voices with your key. You can withdraw consent at any time.',
-              'Legitimate interest (LGPD art. 7, IX; GDPR art. 6(1)(f)): keeping the site secure and online, limiting API abuse and measuring usage in aggregate to improve the content.',
+              'Consent (LGPD art. 7, I; GDPR art. 6(1)(a)): Google Analytics cookies, newsletter, sync code, and using the AI assistant and voices with your key. You can withdraw consent at any time.',
+              'Legitimate interest (LGPD art. 7, IX; GDPR art. 6(1)(f)): keeping the site secure and online, limiting API abuse and measuring usage in aggregate to improve the content (Cloudflare Web Analytics, the view counter and the cookieless Google Analytics signals).',
             ],
           },
           {
@@ -225,6 +233,8 @@ export const en: LegalLanguage = {
               'Synced progress: until you ask for deletion. There is no automatic expiry today.',
               'Comments: until they are deleted on GitHub.',
               'Data in your browser: until you clear it.',
+              'Google Analytics: up to 14 months. After that, Google deletes the data of each visit.',
+              'View counter codes: only for the day they were made. They are deleted on the first counted read of the next day.',
               'Access logs and statistics: for the period Cloudflare sets.',
             ],
           },

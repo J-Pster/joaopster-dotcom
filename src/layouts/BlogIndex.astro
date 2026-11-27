@@ -15,7 +15,7 @@ import { coursesHome } from '../lib/courses/catalog';
 import { catalogCourses } from '../lib/courses/catalogView';
 import { courseText } from '../lib/courses/i18n';
 import { siteOgImage } from '../lib/og/siteCards';
-import { blogPostPath, getPostsForLang, readTime, slugOf } from '../lib/getLatestPost';
+import { blogPostPath, getPostsForLang, keyOf, readTime, slugOf } from '../lib/getLatestPost';
 import { TOPIC_IDS, topicColor, topicLabel } from '../lib/blog/topics';
 import TopicChip from '../components/TopicChip.astro';
 
@@ -86,6 +86,7 @@ const feedHref = `${localePrefix}/rss.xml`;
               <FormattedDate date={featured.data.pubDate} />
               <span class="dot-sep">·</span>
               <span class="read-time">{readTime(featured.body)} {t('blog.minRead')}</span>
+              <span class="read-time featured-views" data-post-views={keyOf(featured)} data-one={t('post.viewOne')} data-other={t('post.viewOther')} hidden></span>
             </div>
             <div class="tag-list">
               {featured.data.tags.map((topic) => <TopicChip topic={topic} lang={lang} />)}
@@ -165,6 +166,7 @@ const feedHref = `${localePrefix}/rss.xml`;
                         {post.data.description && <span class="blog-post-desc">{post.data.description}</span>}
                         <span class="blog-post-meta">
                           <span>{readTime(post.body)} {t('blog.minRead')}</span>
+                          <span data-post-views={keyOf(post)} data-one={t('post.viewOne')} data-other={t('post.viewOther')} hidden></span>
                           {post.data.tags.map((topic) => <TopicChip topic={topic} lang={lang} />)}
                         </span>
                       </span>
@@ -214,8 +216,10 @@ const feedHref = `${localePrefix}/rss.xml`;
 
 <script>
   import { initBlogIndex } from '../scripts/blogIndex';
+  import { showViewCounts } from '../scripts/postViews';
 
   initBlogIndex();
+  void showViewCounts();
 </script>
 
 <style>
@@ -284,6 +288,7 @@ const feedHref = `${localePrefix}/rss.xml`;
   }
   .dot-sep { color: var(--color-muted-soft); }
   .read-time { font-size: 13px; color: var(--color-muted); font-weight: 500; }
+  .featured-views::before { content: '·'; margin-right: var(--space-xs); color: var(--color-muted-soft); }
   .featured-read {
     display: inline-block;
     font-size: 14px;

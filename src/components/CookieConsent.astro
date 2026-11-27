@@ -1,0 +1,65 @@
+---
+// The Google Analytics consent notice (lib/analytics/consent.ts). It shows until the reader chooses,
+// and the footer's "cookie preferences" button brings it back. Accept and decline have the same size,
+// so declining takes one click like accepting; accept is the dark primary button.
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { privacyUrl } from '../lib/legalUrls';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<section class="consent" data-consent hidden aria-labelledby="consent-text">
+  <p id="consent-text" class="consent-text">
+    {t('consent.text')} <a href={`${privacyUrl(lang)}#cookies`}>{t('consent.policy')}</a>
+  </p>
+  <div class="consent-actions">
+    <button type="button" class="consent-button" data-consent-choice="denied">{t('consent.decline')}</button>
+    <button type="button" class="consent-button consent-button--accept" data-consent-choice="granted">{t('consent.accept')}</button>
+  </div>
+</section>
+
+<script>
+  import { initConsent } from '../scripts/consent';
+
+  initConsent();
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    right: var(--space-lg);
+    bottom: var(--space-lg);
+    z-index: 150;
+    width: min(400px, calc(100vw - 2 * var(--space-base)));
+    padding: var(--space-md);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  .consent[hidden] { display: none; }
+  .consent-text { margin: 0 0 var(--space-base); font-size: 14px; line-height: 1.5; color: var(--color-body); }
+  .consent-text a { color: var(--color-text-link); }
+  .consent-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xs); }
+  .consent-button {
+    height: 40px;
+    padding: 0 18px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+  .consent-button:hover { background: var(--color-surface-strong); }
+  .consent-button--accept { color: var(--color-on-primary); background: var(--color-primary); border-color: var(--color-primary); }
+  .consent-button--accept:hover,
+  .consent-button--accept:active { background: var(--color-primary-active); }
+  .consent-button:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+  @media (max-width: 640px) {
+    .consent { right: var(--space-base); bottom: var(--space-base); }
+  }
+</style>

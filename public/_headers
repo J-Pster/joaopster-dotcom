@@ -4,16 +4,17 @@
 # notes keep the reader's own API keys in localStorage (lib/courses/client/keys.ts), and localStorage
 # belongs to the whole domain, so the policy covers the whole site:
 # - connect-src: this site, the AI and voice providers the reader brings a key for, and the
-#   Cloudflare Web Analytics beacon. The keys window lists the same hosts (ALLOWED_CONNECTIONS in
-#   lib/courses/assistantText.ts): keep both lists in step.
-# - script-src: this site (with its inline head scripts), Cloudflare Web Analytics, the Mermaid
-#   diagrams build from jsDelivr (lib/courses/client/mermaid.ts) and the Giscus comments of the blog
+#   Cloudflare Web Analytics beacon and Google Analytics 4 (lib/analytics/consent.ts). The keys
+#   window lists the same hosts (ALLOWED_CONNECTIONS in lib/courses/assistantText.ts): keep both
+#   lists in step.
+# - script-src: this site (with its inline head scripts), Cloudflare Web Analytics, the GA4 tag, the
+#   Mermaid diagrams build from jsDelivr (lib/courses/client/mermaid.ts) and the Giscus comments of the blog
 #   (which also add their own stylesheet to the page, hence giscus.app in style-src).
 #   'wasm-unsafe-eval' lets the course search (Pagefind, lib/courses/client/search.ts) compile its
 #   WebAssembly module; it allows WebAssembly only, not eval() of JavaScript.
-# - img-src and media-src stay on this site plus data: and blob: (generated audio, diagrams), so an
-#   image request cannot carry data to another host either.
+# - img-src and media-src stay on this site plus data: and blob: (generated audio, diagrams); img-src
+#   also lets GA4 send its hits as images. No other host can receive data through an image.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://cdn.jsdelivr.net/npm/mermaid@11.4.1/ https://giscus.app; style-src 'self' 'unsafe-inline' https://giscus.app; font-src 'self' data:; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://texttospeech.googleapis.com https://api.elevenlabs.io https://cloudflareinsights.com; frame-src https://giscus.app; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://cdn.jsdelivr.net/npm/mermaid@11.4.1/ https://giscus.app https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://giscus.app; font-src 'self' data:; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self' data: blob:; connect-src 'self' https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://texttospeech.googleapis.com https://api.elevenlabs.io https://cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://*.googletagmanager.com; frame-src https://giscus.app; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

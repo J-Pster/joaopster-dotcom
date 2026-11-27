@@ -523,4 +523,8 @@ export const ALLOWED_CONNECTIONS = [
   'texttospeech.googleapis.com',
   'api.elevenlabs.io',
   'cloudflareinsights.com',
+  '*.google-analytics.com',
+  '*.analytics.google.com',
+  'analytics.google.com',
+  '*.googletagmanager.com',
 ] as const;

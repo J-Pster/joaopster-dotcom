@@ -170,6 +170,11 @@ export const ui = {
     'footer.email': 'E-mail',
     'footer.privacy': 'Privacidade',
     'footer.terms': 'Termos',
+    'footer.cookies': 'Preferências de cookies',
+    'consent.text': 'Posso usar cookies do Google Analytics para medir as visitas? Se você recusar, nenhum cookie é salvo e o Google recebe só sinais sem cookies nem identificadores.',
+    'consent.policy': 'Política de privacidade',
+    'consent.accept': 'Aceitar',
+    'consent.decline': 'Recusar',
     'footer.built': `Feito com ❤️ e Astro por João Pster.`,
 
     'blog.title': 'Blog · joaopster',
@@ -206,6 +211,8 @@ export const ui = {
 
     'post.backToBlog': 'Voltar ao blog',
     'post.minRead': 'min de leitura',
+    'post.viewOne': 'visualização',
+    'post.viewOther': 'visualizações',
     'post.updated': 'Atualizado',
     'post.allPosts': 'Todos os posts',
     'post.openImage': 'Ver imagem em tela cheia',
@@ -391,6 +398,11 @@ export const ui = {
     'footer.email': 'Email',
     'footer.privacy': 'Privacy',
     'footer.terms': 'Terms',
+    'footer.cookies': 'Cookie preferences',
+    'consent.text': 'Can I use Google Analytics cookies to measure visits? If you decline, no cookie is set and Google only gets signals without cookies or identifiers.',
+    'consent.policy': 'Privacy policy',
+    'consent.accept': 'Accept',
+    'consent.decline': 'Decline',
     'footer.built': `Made with ❤️ and Astro by João Pster.`,
 
     'blog.title': 'Blog · joaopster',
@@ -427,6 +439,8 @@ export const ui = {
 
     'post.backToBlog': 'Back to blog',
     'post.minRead': 'min read',
+    'post.viewOne': 'view',
+    'post.viewOther': 'views',
     'post.updated': 'Updated',
     'post.allPosts': 'All posts',
     'post.openImage': 'View image full screen',
@@ -612,6 +626,11 @@ export const ui = {
     'footer.email': 'Email',
     'footer.privacy': 'Privacidad',
     'footer.terms': 'Términos',
+    'footer.cookies': 'Preferencias de cookies',
+    'consent.text': '¿Puedo usar cookies de Google Analytics para medir las visitas? Si las rechazas, no se guarda ninguna cookie y Google solo recibe señales sin cookies ni identificadores.',
+    'consent.policy': 'Política de privacidad',
+    'consent.accept': 'Aceptar',
+    'consent.decline': 'Rechazar',
     'footer.built': `Hecho con ❤️ y Astro por João Pster.`,
 
     'blog.title': 'Blog · joaopster',
@@ -648,6 +667,8 @@ export const ui = {
 
     'post.backToBlog': 'Volver al blog',
     'post.minRead': 'min de lectura',
+    'post.viewOne': 'visualización',
+    'post.viewOther': 'visualizaciones',
     'post.updated': 'Actualizado',
     'post.allPosts': 'Todos los posts',
     'post.openImage': 'Ver imagen en pantalla completa',

@@ -10,7 +10,7 @@ export const POLICIES = {
   elevenlabs: 'https://elevenlabs.io/privacy-policy',
   buttondown: 'https://buttondown.com/legal/privacy',
   cloudflare: 'https://www.cloudflare.com/privacypolicy/',
-  googleFonts: 'https://policies.google.com/privacy',
+  googleAnalytics: 'https://policies.google.com/technologies/partner-sites',
   jsdelivr: 'https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net',
   github: 'https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement',
   giscus: 'https://giscus.app/',
