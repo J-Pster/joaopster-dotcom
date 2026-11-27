@@ -177,10 +177,11 @@ Antes de entregar, rode nos textos escritos do zero, resumidos ou reescritos (o 
   ```
 
   - `pubDate` leva data, hora, minuto, segundo e fuso, o momento real da publicação (a hora do commit que publica o post), igual nos três idiomas. A listagem ordena por ele, e só a data deixa empatados os posts do mesmo dia.
+  - Pegue o horário só com `powershell -NoProfile -Command "Get-Date -Format yyyy-MM-ddTHH:mm:sszzz"`, que já devolve a hora local com o fuso certo, e cole a saída inteira sem mexer. Nunca use o `date` do Git Bash: no Windows ele devolve a hora em UTC, e colar `-03:00` no fim deixa o post 3 horas no futuro, em cima dos posts mais novos. Isso já aconteceu duas vezes. O build agora recusa `pubDate` no futuro.
 
   - Se o texto tiver apóstrofo, use aspas duplas no campo.
   - As tags são ids de tópico de `src/lib/blog/topics.ts`, iguais nos três idiomas (o site mostra o rótulo de cada idioma). O build recusa qualquer outro valor. Hoje: `ai`, `claude-code`, `programming`, `infra-cloud`, `setup`, `workflow`, `career`, `investments`, `courses`, `opinion` e `off-topic` (Baguncinha).
   - De 1 a 4 tags por post, na prática 2 ou 3: o tema principal e, quando couber, um eixo como `opinion`. `claude-code` vai sempre junto com `ai`. Post fora de todos os temas leva `off-topic`.
   - Tópico novo só entra em `topics.ts`, com cor e rótulo nos três idiomas, quando houver uns três posts que o justifiquem e ele não for sinônimo de um existente.
-- Não existe rascunho no schema: qualquer `.md` que chega no `master` é publicado, mesmo com `pubDate` no futuro.
+- Não existe rascunho no schema: qualquer `.md` que chega no `master` é publicado. Também não dá pra agendar post com `pubDate` no futuro, porque o build recusa.
 - Para link interno, use o caminho relativo do idioma: `/blog/<slug>/` em PT, `/en/blog/<slug>/` em EN e `/es/blog/<slug>/` em ES.

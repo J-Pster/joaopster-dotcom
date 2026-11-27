@@ -23,8 +23,14 @@ const blog = defineCollection({
 				.regex(/^[a-z0-9]+(-[a-z0-9]+)*$/)
 				.optional(),
 			description: z.string(),
-			// Transform string to Date object
-			pubDate: z.coerce.date(),
+			// The real publish moment. The blog lists posts by it, so a date in the future (usually a UTC
+			// clock read with a hand-written -03:00 offset) would pin the post above newer ones. The build
+			// rejects it; 10 minutes of slack covers the gap between writing the date and the deploy build.
+			pubDate: z.coerce
+				.date()
+				.refine((date) => date.getTime() <= Date.now() + 10 * 60 * 1000, {
+					message: 'pubDate is in the future. Use the real local publish time with its offset.',
+				}),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
 			// Topic ids from lib/blog/topics.ts, one to four per post.

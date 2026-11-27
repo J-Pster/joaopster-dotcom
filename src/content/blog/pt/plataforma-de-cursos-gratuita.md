@@ -1,7 +1,7 @@
 ---
 title: 'Fiz uma plataforma de estudos gratuita com revisão espaçada, simulado e IA'
 description: 'Eu transformei meus cursos feitos com IA numa plataforma de estudos de graça, com caderno de erros, revisão espaçada com FSRS, simulado cronometrado, sincronização sem login e assistente de IA com a sua chave, e mostro tudo usando o curso de AWS'
-pubDate: '2026-11-27T18:31:01-03:00'
+pubDate: '2026-11-27T15:31:08-03:00'
 tags: ['courses', 'ai']
 ---
 

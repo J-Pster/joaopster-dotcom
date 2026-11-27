@@ -2,7 +2,7 @@
 slug: plataforma-de-estudio-gratis-repaso-espaciado-simulacros-ia
 title: 'Hice una plataforma de estudio gratis con repaso espaciado, simulacros e IA'
 description: 'Convertí mis cursos hechos con IA en una plataforma de estudio gratis, con cuaderno de errores, repaso espaciado con FSRS, simulacro cronometrado, sincronización sin cuenta y un asistente de IA con tu propia clave, y lo muestro todo con mi curso de AWS'
-pubDate: '2026-11-27T18:31:01-03:00'
+pubDate: '2026-11-27T15:31:08-03:00'
 tags: ['courses', 'ai']
 ---
 

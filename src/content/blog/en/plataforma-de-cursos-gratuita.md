@@ -2,7 +2,7 @@
 slug: free-study-platform-spaced-repetition-practice-exams-ai
 title: 'I built a free study platform with spaced repetition, practice exams and AI'
 description: 'I turned my AI-built courses into a free study platform with a mistakes notebook, FSRS spaced repetition, timed practice exams, sync without an account and an AI assistant that runs on your own API key, and I show all of it using my AWS course'
-pubDate: '2026-11-27T18:31:01-03:00'
+pubDate: '2026-11-27T15:31:08-03:00'
 tags: ['courses', 'ai']
 ---
 
