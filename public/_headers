@@ -1,0 +1,17 @@
+# Cloudflare Pages response headers for every static page.
+#
+# The Content Security Policy limits where a page can load code from and send data to. The course
+# notes keep the reader's own API keys in localStorage (lib/courses/client/keys.ts), and localStorage
+# belongs to the whole domain, so the policy covers the whole site:
+# - connect-src: this site, the AI and voice providers the reader brings a key for, and the
+#   Cloudflare Web Analytics beacon. The keys window lists the same hosts (ALLOWED_CONNECTIONS in
+#   lib/courses/assistantText.ts): keep both lists in step.
+# - script-src: this site (with its inline head scripts), Cloudflare Web Analytics, the Mermaid
+#   diagrams build from jsDelivr (lib/courses/client/mermaid.ts) and the Giscus comments of the blog
+#   (which also add their own stylesheet to the page, hence giscus.app in style-src).
+# - img-src and media-src stay on this site plus data: and blob: (generated audio, diagrams), so an
+#   image request cannot carry data to another host either.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cdn.jsdelivr.net/npm/mermaid@11.4.1/ https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://giscus.app; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' data: blob:; connect-src 'self' https://api.anthropic.com https://api.openai.com https://texttospeech.googleapis.com https://api.elevenlabs.io https://cloudflareinsights.com; frame-src https://giscus.app; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
