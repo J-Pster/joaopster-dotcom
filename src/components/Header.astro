@@ -19,6 +19,14 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const prefix = lang === 'pt' ? '' : `/${lang}`;
 const homePath = lang === 'pt' ? '/' : `/${lang}`;
+
+// Phones get the two content sections as links in the bar itself, next to the menu button. The one the
+// reader is in is marked; when the bar is too narrow for both, it gives way to the other section.
+const blogPath = `${prefix}/blog`;
+const coursesPath = coursesSection(lang);
+const pathname = Astro.url.pathname;
+const isIn = (root: string) => pathname === root || pathname.startsWith(`${root}/`);
+const section = isIn(blogPath) ? 'blog' : isIn(coursesPath) ? 'courses' : undefined;
 ---
 
 <header id="site-header" data-auto-hide={autoHide ? '' : undefined}>
@@ -48,6 +56,18 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
           </span>
         </a>
       )}
+    </div>
+    <div class="nav-quick" data-section={section}>
+      <a
+        href={blogPath}
+        class:list={['nav-quick-link', 'nav-quick-link--blog', { current: section === 'blog' }]}
+        aria-current={section === 'blog' ? 'true' : undefined}
+      >{t('nav.blog')}</a>
+      <a
+        href={coursesPath}
+        class:list={['nav-quick-link', 'nav-quick-link--courses', { current: section === 'courses' }]}
+        aria-current={section === 'courses' ? 'true' : undefined}
+      >{t('nav.courses')}</a>
     </div>
     <div class="nav-end">
       <a
@@ -190,6 +210,27 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: -0.3px;
+  }
+  /* Blog and Courses in the bar on phones (see the frontmatter); hidden on wider screens, where the
+     full nav shows them. */
+  .nav-quick { display: none; }
+  .nav-quick-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 var(--space-xs);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-body);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-quick-link:hover { color: var(--color-ink); text-decoration: none; }
+  .nav-quick-link.current {
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
   .nav-center {
     display: flex;
@@ -408,6 +449,8 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     .nav-icon-link { display: none; }
     .nav-bar { position: relative; z-index: 2; padding: 0 var(--space-base); gap: var(--space-md); }
     .nav-end { margin-left: auto; gap: var(--space-xs); }
+    .nav-quick { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+    .nav-quick + .nav-end { margin-left: 0; }
     .nav-mobile { display: flex; }
     .nav-mobile.open {
       opacity: 1;
@@ -418,6 +461,13 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
 
   @media (max-width: 640px) {
     .nav-bar { padding: 0 var(--space-base); }
+  }
+
+  /* Logo, both section links and the menu button need ~318px; below 340px only one link stays: the
+     section the reader is not in, or Blog on pages outside both sections. */
+  @media (max-width: 339px) {
+    .nav-quick-link.current,
+    .nav-quick:not([data-section]) .nav-quick-link--courses { display: none; }
   }
 
   /* Short screens (small phones, landscape): tighter rows so the whole menu fits more often. */
