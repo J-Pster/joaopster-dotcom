@@ -42,15 +42,12 @@ cada domínio da prova (uma aula pode servir a mais de um domínio).
 
 ![[Progresso SAA-C03.base]]
 
-## Como navegar no Obsidian
+## Como estudar este curso
 
-> [!tip] Atalhos que fazem o curso render
-> - **Passe o mouse** sobre qualquer termo sublinhado para ver a definição do glossário (no modo de leitura; no modo de edição, segure Ctrl).
-> - **Ctrl + clique** abre o link numa nova aba, sem perder a aula.
-> - **Ctrl + O** busca qualquer aula ou termo pelo nome (por exemplo, "Aula 6.3" ou "[[NAT Gateway]]").
-> - O painel **Backlinks** (barra lateral direita) mostra em quais aulas um termo aparece; cada nota do glossário também lista isso em "Onde aparece".
-> - O **Graph view** (Ctrl + G) mostra como os módulos e o glossário se ligam.
-> - Nos questionários, clique na caixinha da alternativa e abra o **Gabarito** (recolhido) só depois.
+> [!tip] Hábitos que fazem o curso render
+> - **Passe o mouse** sobre qualquer termo sublinhado para ver a definição do glossário sem sair da aula.
+> - Cada nota do glossário lista em "Onde aparece" as aulas que usam o termo.
+> - Nos questionários, marque a sua alternativa e abra o **Gabarito** (recolhido) só depois.
 
 ## Filosofia da trilha: o porquê antes do como
 

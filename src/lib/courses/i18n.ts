@@ -52,6 +52,15 @@ export interface CourseText {
   readonly start: string;
   readonly continue: string;
   readonly downloadZip: string;
+  /** The download dialog: the only place the site talks about Obsidian. */
+  readonly downloadTitle: string;
+  readonly downloadIntro: string;
+  readonly downloadObsidianTitle: string;
+  readonly downloadObsidianHtml: string;
+  readonly downloadSiteNote: string;
+  readonly downloadConfirm: string;
+  readonly downloadReadHere: string;
+  readonly downloadClose: string;
   readonly lessonsDone: (done: number, total: number) => string;
   readonly ctaTitle: string;
   readonly ctaText: string;
@@ -131,11 +140,11 @@ const pt: CourseText = {
 
   landingMetaTitle: 'Cursos gratuitos criados com IA | João Pster',
   landingMetaDescription:
-    'Cursos autodidatas em português que eu crio com IA para estudar e publico para qualquer pessoa ler no site ou no Obsidian.',
+    'Cursos autodidatas em português que eu crio com IA para estudar e publico para qualquer pessoa ler de graça, aqui no site ou baixados.',
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
   catalogLead:
-    'Cursos gratuitos que eu crio com IA para estudar. Leia aqui no site, salve o progresso entre dispositivos ou baixe para o Obsidian.',
+    'Cursos gratuitos que eu crio com IA para estudar. Leia aqui no site, salve o progresso entre dispositivos ou baixe o curso inteiro.',
   catalogFacts: (courses, lessons, hours) =>
     `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} aulas · ${hours} h de leitura · grátis`,
   howToLink: 'Como eu crio os cursos',
@@ -169,7 +178,16 @@ const pt: CourseText = {
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'curso' : 'cursos'} em ${language}`,
   start: 'Começar',
   continue: 'Continuar',
-  downloadZip: 'Baixar para o Obsidian (.zip)',
+  downloadZip: 'Baixar curso',
+  downloadTitle: 'Baixar o curso',
+  downloadIntro: 'O curso vem num .zip com uma pasta de notas em Markdown: todas as aulas, o glossário e os questionários, para ler offline.',
+  downloadObsidianTitle: 'Melhor no Obsidian',
+  downloadObsidianHtml:
+    'Os cursos foram escritos para o <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>, um app gratuito de notas. Descompacte o .zip, abra a pasta como vault e você ganha links com prévia, painel de progresso, gráfico de conexões e busca.',
+  downloadSiteNote: 'Aqui no site você lê sem instalar nada, vê a definição dos termos sem sair da aula e pode sincronizar o progresso entre dispositivos.',
+  downloadConfirm: 'Baixar .zip',
+  downloadReadHere: 'Ler aqui no site',
+  downloadClose: 'Fechar',
   lessonsDone: (done, total) => `${done}/${total} aulas`,
   ctaTitle: 'Crie o seu curso',
   ctaText:
@@ -242,11 +260,11 @@ const en: CourseText = {
 
   landingMetaTitle: 'Free courses made with AI | João Pster',
   landingMetaDescription:
-    'Self-study courses I create with AI for my own learning and publish for anyone to read on the site or in Obsidian.',
+    'Self-study courses I create with AI for my own learning and publish for anyone to read for free, here on the site or downloaded.',
   section: 'Courses',
   catalogTitle: 'Course catalog',
   catalogLead:
-    'Free courses I create with AI to study. Read them here, sync your progress across devices or download them for Obsidian.',
+    'Free courses I create with AI to study. Read them here, sync your progress across devices or download the whole course.',
   catalogFacts: (courses, lessons, hours) =>
     `${courses} ${courses === 1 ? 'course' : 'courses'} · ${lessons} lessons · ${hours} h of reading · free`,
   howToLink: 'How I make the courses',
@@ -280,7 +298,16 @@ const en: CourseText = {
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'course' : 'courses'} in ${language}`,
   start: 'Start',
   continue: 'Continue',
-  downloadZip: 'Download for Obsidian (.zip)',
+  downloadZip: 'Download course',
+  downloadTitle: 'Download the course',
+  downloadIntro: 'The course comes as a .zip with a folder of Markdown notes: every lesson, the glossary and the quizzes, to read offline.',
+  downloadObsidianTitle: 'Best in Obsidian',
+  downloadObsidianHtml:
+    'The courses were written for <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>, a free notes app. Unzip the file, open the folder as a vault and you get links with previews, a progress dashboard, the connections graph and search.',
+  downloadSiteNote: 'Here on the site you read without installing anything, see what a term means without leaving the lesson and can sync your progress across devices.',
+  downloadConfirm: 'Download .zip',
+  downloadReadHere: 'Read it here',
+  downloadClose: 'Close',
   lessonsDone: (done, total) => `${done}/${total} lessons`,
   ctaTitle: 'Create your own course',
   ctaText:
@@ -353,11 +380,11 @@ const es: CourseText = {
 
   landingMetaTitle: 'Cursos gratuitos creados con IA | João Pster',
   landingMetaDescription:
-    'Cursos autodidactas que creo con IA para estudiar y publico para que cualquiera los lea en el sitio o en Obsidian.',
+    'Cursos autodidactas que creo con IA para estudiar y publico para que cualquiera los lea gratis, aquí en el sitio o descargados.',
   section: 'Cursos',
   catalogTitle: 'Catálogo de cursos',
   catalogLead:
-    'Cursos gratuitos que creo con IA para estudiar. Léelos aquí, sincroniza tu progreso entre dispositivos o descárgalos para Obsidian.',
+    'Cursos gratuitos que creo con IA para estudiar. Léelos aquí, sincroniza tu progreso entre dispositivos o descarga el curso completo.',
   catalogFacts: (courses, lessons, hours) =>
     `${courses} ${courses === 1 ? 'curso' : 'cursos'} · ${lessons} clases · ${hours} h de lectura · gratis`,
   howToLink: 'Cómo creo los cursos',
@@ -391,7 +418,16 @@ const es: CourseText = {
   coursesInLanguage: (language, count) => `${count} ${count === 1 ? 'curso' : 'cursos'} en ${language}`,
   start: 'Empezar',
   continue: 'Continuar',
-  downloadZip: 'Descargar para Obsidian (.zip)',
+  downloadZip: 'Descargar curso',
+  downloadTitle: 'Descargar el curso',
+  downloadIntro: 'El curso viene en un .zip con una carpeta de notas en Markdown: todas las clases, el glosario y los cuestionarios, para leer sin conexión.',
+  downloadObsidianTitle: 'Mejor en Obsidian',
+  downloadObsidianHtml:
+    'Los cursos se escribieron para <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>, una app de notas gratuita. Descomprime el .zip, abre la carpeta como vault y tendrás enlaces con vista previa, panel de progreso, gráfico de conexiones y búsqueda.',
+  downloadSiteNote: 'Aquí en el sitio lees sin instalar nada, ves qué significa un término sin salir de la clase y puedes sincronizar tu progreso entre dispositivos.',
+  downloadConfirm: 'Descargar .zip',
+  downloadReadHere: 'Leer aquí en el sitio',
+  downloadClose: 'Cerrar',
   lessonsDone: (done, total) => `${done}/${total} clases`,
   ctaTitle: 'Crea tu propio curso',
   ctaText:

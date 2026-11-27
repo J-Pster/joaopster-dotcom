@@ -11,8 +11,8 @@ export interface HowToCopy {
   readonly readingTitle: string;
   readonly readingSiteTitle: string;
   readonly readingSiteText: string;
-  readonly readingObsidianTitle: string;
-  readonly readingObsidianHtml: string;
+  readonly readingDownloadTitle: string;
+  readonly readingDownloadText: string;
   readonly ruleTitle: string;
   readonly ruleIntroHtml: string;
   readonly ruleItems: readonly string[];
@@ -45,7 +45,7 @@ export interface HowToCopy {
 
 const pt: HowToCopy = {
   metaTitle: 'Como eu crio os cursos com IA | João Pster',
-  metaDescription: 'O método, a skill do Claude para baixar e o passo a passo para criar o seu próprio curso autodidata no Obsidian.',
+  metaDescription: 'O método, a skill do Claude para baixar e o passo a passo para criar o seu próprio curso autodidata.',
   current: 'Como eu crio os cursos',
   eyebrow: 'Método',
   lead:
@@ -54,9 +54,9 @@ const pt: HowToCopy = {
   readingSiteTitle: 'Aqui no site',
   readingSiteText:
     'Passe o mouse sobre um termo para ver a definição sem sair da aula, marque as aulas lidas e as respostas dos questionários. O progresso fica salvo só neste navegador, sem conta e sem cadastro.',
-  readingObsidianTitle: 'No Obsidian',
-  readingObsidianHtml:
-    'Baixe o .zip do curso, descompacte e abra a pasta como vault no <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>. Os cursos foram escritos para o modo de leitura dele: links com prévia, painel de progresso, gráfico de conexões e busca.',
+  readingDownloadTitle: 'Baixado',
+  readingDownloadText:
+    'Baixe o curso inteiro no catálogo: uma pasta de notas em Markdown com todas as aulas, o glossário e os questionários, para ler offline.',
   ruleTitle: 'A regra que decide tudo',
   ruleIntroHtml:
     'Eu só aceito um conhecimento novo depois de entender de onde ele vem. Por isso todo curso segue a mesma ordem: <strong>fundamento</strong> (por que é assim), <strong>mecanismo</strong> (como funciona por dentro), <strong>ferramenta</strong> (como se faz) e <strong>projeto</strong> (aplicar tudo num caso real).',
@@ -76,9 +76,8 @@ const pt: HowToCopy = {
     '<strong>Verificar:</strong> nenhum link quebrado, nenhum termo sem link, gabaritos sem viés (a resposta certa não pode ser sempre a mais longa) e URLs conferidas.',
   ],
   folderTitle: 'Como fica a pasta',
-  folderIntro: 'Cada curso é um vault do Obsidian. Esta é a estrutura que a skill monta:',
+  folderIntro: 'Cada curso é uma pasta de notas em Markdown. Esta é a estrutura que a skill monta:',
   tree: `Aprendendo <Tema>/
-├── .obsidian/                configuração do vault
 ├── <Tema> - Inicio.md        objetivo, ordem dos módulos e painel de progresso
 ├── Progresso.base            painel com as aulas lidas e as próximas
 ├── Parte N - <Nome>.md       mapa de cada parte (cursos grandes)
@@ -107,7 +106,7 @@ const pt: HowToCopy = {
   requestIntro: 'Diga o tema e aonde você quer chegar, assim:',
   requestExample: 'Aprendendo fotografia, quero chegar em fotografar um casamento sozinho.',
   requestAfterHtml:
-    'O Claude mostra o currículo para você aprovar, escreve os módulos e verifica tudo no fim. Depois abra a pasta <code>Aprendendo &lt;Tema&gt;</code> como vault no Obsidian.',
+    'O Claude mostra o currículo para você aprovar, escreve os módulos e verifica tudo no fim. Depois é só abrir a pasta <code>Aprendendo &lt;Tema&gt;</code> e estudar.',
   sendTitle: 'Mande o seu curso',
   sendText:
     'Criou um curso com a skill? Mande a pasta zipada (ou um link para baixar, se passar de 20 MB). Eu leio, reviso e, se estiver bom, publico aqui com os créditos para você.',
@@ -119,7 +118,7 @@ const pt: HowToCopy = {
 
 const en: HowToCopy = {
   metaTitle: 'How I make the courses with AI | João Pster',
-  metaDescription: 'The method, the Claude skill to download and the steps to create your own self-study course in Obsidian.',
+  metaDescription: 'The method, the Claude skill to download and the steps to create your own self-study course.',
   current: 'How I make the courses',
   eyebrow: 'Method',
   lead:
@@ -128,9 +127,9 @@ const en: HowToCopy = {
   readingSiteTitle: 'Here on the site',
   readingSiteText:
     'Hover over a term to see its definition without leaving the lesson, and tick the lessons you read and your quiz answers. Progress is saved only in this browser, with no account and no sign-up.',
-  readingObsidianTitle: 'In Obsidian',
-  readingObsidianHtml:
-    'Download the course .zip, unzip it and open the folder as a vault in <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>. The courses were written for its reading view: links with previews, a progress dashboard, the connections graph and search.',
+  readingDownloadTitle: 'Downloaded',
+  readingDownloadText:
+    'Download the whole course from the catalog: a folder of Markdown notes with every lesson, the glossary and the quizzes, to read offline.',
   ruleTitle: 'The rule behind everything',
   ruleIntroHtml:
     'I only accept new knowledge after I understand where it comes from. That is why every course follows the same order: <strong>foundation</strong> (why it is like this), <strong>mechanism</strong> (how it works inside), <strong>tool</strong> (how it is done) and <strong>project</strong> (applying everything to a real case).',
@@ -150,9 +149,8 @@ const en: HowToCopy = {
     '<strong>Verify:</strong> no broken link, no unlinked term, unbiased answer keys (the right answer cannot always be the longest one) and checked URLs.',
   ],
   folderTitle: 'What the folder looks like',
-  folderIntro: 'Each course is an Obsidian vault. This is the structure the skill builds:',
+  folderIntro: 'Each course is a folder of Markdown notes. This is the structure the skill builds:',
   tree: `Aprendendo <Topic>/
-├── .obsidian/                vault settings
 ├── <Topic> - Inicio.md       goal, module order and progress dashboard
 ├── Progresso.base            dashboard with the lessons read and the next ones
 ├── Parte N - <Name>.md       map of each part (large courses)
@@ -182,7 +180,7 @@ const en: HowToCopy = {
   requestIntro: 'Say the topic and where you want to get to, like this:',
   requestExample: 'Learning photography, I want to be able to shoot a wedding on my own. Write the course in English.',
   requestAfterHtml:
-    'Claude shows you the curriculum to approve, writes the modules and checks everything at the end. Then open the <code>Aprendendo &lt;Topic&gt;</code> folder as a vault in Obsidian.',
+    'Claude shows you the curriculum to approve, writes the modules and checks everything at the end. Then open the <code>Aprendendo &lt;Topic&gt;</code> folder and start studying.',
   sendTitle: 'Send me your course',
   sendText:
     'Made a course with the skill? Send the zipped folder (or a download link, if it is over 20 MB). I read it, review it and, if it is good, publish it here with credit to you, in the section of its language.',
@@ -194,7 +192,7 @@ const en: HowToCopy = {
 
 const es: HowToCopy = {
   metaTitle: 'Cómo creo los cursos con IA | João Pster',
-  metaDescription: 'El método, la skill de Claude para descargar y el paso a paso para crear tu propio curso autodidacta en Obsidian.',
+  metaDescription: 'El método, la skill de Claude para descargar y el paso a paso para crear tu propio curso autodidacta.',
   current: 'Cómo creo los cursos',
   eyebrow: 'Método',
   lead:
@@ -203,9 +201,9 @@ const es: HowToCopy = {
   readingSiteTitle: 'Aquí en el sitio',
   readingSiteText:
     'Pasa el mouse sobre un término para ver la definición sin salir de la clase, y marca las clases leídas y las respuestas de los cuestionarios. El progreso se guarda solo en este navegador, sin cuenta y sin registro.',
-  readingObsidianTitle: 'En Obsidian',
-  readingObsidianHtml:
-    'Descarga el .zip del curso, descomprímelo y abre la carpeta como vault en <a href="https://obsidian.md" target="_blank" rel="noopener noreferrer">Obsidian</a>. Los cursos se escribieron para su modo de lectura: enlaces con vista previa, panel de progreso, gráfico de conexiones y búsqueda.',
+  readingDownloadTitle: 'Descargado',
+  readingDownloadText:
+    'Descarga el curso completo en el catálogo: una carpeta de notas en Markdown con todas las clases, el glosario y los cuestionarios, para leer sin conexión.',
   ruleTitle: 'La regla que lo decide todo',
   ruleIntroHtml:
     'Solo acepto un conocimiento nuevo después de entender de dónde viene. Por eso todo curso sigue el mismo orden: <strong>fundamento</strong> (por qué es así), <strong>mecanismo</strong> (cómo funciona por dentro), <strong>herramienta</strong> (cómo se hace) y <strong>proyecto</strong> (aplicarlo todo en un caso real).',
@@ -225,9 +223,8 @@ const es: HowToCopy = {
     '<strong>Verificar:</strong> ningún enlace roto, ningún término sin enlace, respuestas sin sesgo (la correcta no puede ser siempre la más larga) y URLs revisadas.',
   ],
   folderTitle: 'Cómo queda la carpeta',
-  folderIntro: 'Cada curso es un vault de Obsidian. Esta es la estructura que arma la skill:',
+  folderIntro: 'Cada curso es una carpeta de notas en Markdown. Esta es la estructura que arma la skill:',
   tree: `Aprendendo <Tema>/
-├── .obsidian/                configuración del vault
 ├── <Tema> - Inicio.md        objetivo, orden de los módulos y panel de progreso
 ├── Progresso.base            panel con las clases leídas y las siguientes
 ├── Parte N - <Nombre>.md     mapa de cada parte (cursos grandes)
@@ -257,7 +254,7 @@ const es: HowToCopy = {
   requestIntro: 'Di el tema y adónde quieres llegar, así:',
   requestExample: 'Aprendiendo fotografía, quiero llegar a fotografiar una boda yo solo. Escribe el curso en español.',
   requestAfterHtml:
-    'Claude te muestra el currículo para que lo apruebes, escribe los módulos y lo verifica todo al final. Después abre la carpeta <code>Aprendendo &lt;Tema&gt;</code> como vault en Obsidian.',
+    'Claude te muestra el currículo para que lo apruebes, escribe los módulos y lo verifica todo al final. Después abre la carpeta <code>Aprendendo &lt;Tema&gt;</code> y a estudiar.',
   sendTitle: 'Envíame tu curso',
   sendText:
     '¿Creaste un curso con la skill? Envía la carpeta comprimida (o un enlace para descargarla, si pasa de 20 MB). La leo, la reviso y, si está bien, la publico aquí con los créditos para ti, en la sección de su idioma.',

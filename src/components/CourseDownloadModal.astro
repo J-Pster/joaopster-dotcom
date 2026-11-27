@@ -1,0 +1,117 @@
+---
+// The course download, behind a dialog. Every [data-download-open] button (one per catalog card) opens
+// it with its course's zip, title and start page. This dialog is the only place the site mentions
+// Obsidian: the rest of the site invites people to read here.
+import { courseText } from '../lib/courses/i18n';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const text = courseText(Astro.props.lang);
+---
+
+<dialog class="download-modal" aria-labelledby="download-modal-title" data-download-modal>
+  <button type="button" class="download-modal-close" aria-label={text.downloadClose} data-download-close>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </button>
+  <p class="download-modal-eyebrow">{text.downloadTitle}</p>
+  <h2 class="download-modal-title" id="download-modal-title" data-download-course></h2>
+  <p class="download-modal-text">{text.downloadIntro}</p>
+  <div class="download-modal-box">
+    <h3>{text.downloadObsidianTitle}</h3>
+    <p set:html={text.downloadObsidianHtml} />
+  </div>
+  <p class="download-modal-note">{text.downloadSiteNote}</p>
+  <div class="download-modal-actions">
+    <a class="course-btn" href="" download data-download-zip>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+      {text.downloadConfirm}
+    </a>
+    <a class="course-btn course-btn--secondary" href="" data-download-read>{text.downloadReadHere}</a>
+  </div>
+</dialog>
+
+<style>
+  .download-modal {
+    width: calc(100% - 2 * var(--space-base));
+    max-width: 480px;
+    padding: 32px 32px 28px;
+    color: var(--color-ink);
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .download-modal::backdrop {
+    background: rgba(23, 23, 23, 0.48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  :global(html:has(.download-modal[open])) { overflow: hidden; }
+  .download-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: var(--color-muted);
+    background: var(--color-surface-strong);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .download-modal-close:hover { color: var(--color-ink); background: var(--color-hairline-strong); }
+  .download-modal-eyebrow { margin: 0 40px var(--space-xxs) 0; font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-body); }
+  .download-modal-title { margin: 0 40px var(--space-sm) 0; font-size: 22px; font-weight: 600; line-height: 1.25; letter-spacing: -0.5px; }
+  .download-modal-text,
+  .download-modal-note { margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-body); }
+  .download-modal-box { margin: var(--space-base) 0; padding: var(--space-base); background: var(--color-canvas-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); }
+  .download-modal-box h3 { margin: 0 0 var(--space-xxs); font-size: 16px; font-weight: 600; line-height: 1.4; }
+  .download-modal-box p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-body); }
+  .download-modal-box :global(a) { color: var(--color-text-link); }
+  .download-modal-note { font-size: 14px; }
+  .download-modal-actions { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-lg); }
+  .download-modal-actions .course-btn { display: inline-flex; align-items: center; gap: 6px; }
+  @media (max-width: 480px) {
+    .download-modal { padding: 28px 20px 20px; }
+    .download-modal-actions .course-btn { flex: 1 1 100%; justify-content: center; }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-download-modal]');
+  if (!dialog) throw new Error('Course download dialog is missing');
+  const part = <T extends HTMLElement>(selector: string): T => {
+    const element = dialog.querySelector<T>(selector);
+    if (!element) throw new Error(`Course download dialog is missing ${selector}`);
+    return element;
+  };
+  const title = part<HTMLElement>('[data-download-course]');
+  const zip = part<HTMLAnchorElement>('[data-download-zip]');
+  const read = part<HTMLAnchorElement>('[data-download-read]');
+
+  for (const trigger of document.querySelectorAll<HTMLButtonElement>('[data-download-open]')) {
+    trigger.addEventListener('click', () => {
+      const { zip: zipUrl, title: courseTitle, url } = trigger.dataset;
+      if (!zipUrl || !courseTitle || !url) throw new Error('Download button is missing data-zip, data-title or data-url');
+      title.textContent = courseTitle;
+      zip.href = zipUrl;
+      read.href = url;
+      dialog.showModal();
+    });
+  }
+  part<HTMLButtonElement>('[data-download-close]').addEventListener('click', () => dialog.close());
+  // A click on the dialog element itself (not its content) is a click on the backdrop.
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  // Once the download starts, the dialog has done its job.
+  zip.addEventListener('click', () => dialog.close());
+</script>

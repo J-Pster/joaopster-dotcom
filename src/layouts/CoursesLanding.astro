@@ -5,6 +5,7 @@
 // (lib/courses/client/catalog.ts). With no course in the language yet, it points to the languages
 // that have some.
 import BaseHead from '../components/BaseHead.astro';
+import CourseDownloadModal from '../components/CourseDownloadModal.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SyncCard from '../components/courses/SyncCard.astro';
@@ -194,10 +195,19 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
                       >
                         {text.syllabusShow}
                       </button>
-                      <a class="catalog-download" href={courseZipUrl(course)} aria-describedby={`course-${course.slug}`} download>
+                      <button
+                        type="button"
+                        class="catalog-download"
+                        aria-haspopup="dialog"
+                        aria-describedby={`course-${course.slug}`}
+                        data-download-open
+                        data-zip={courseZipUrl(course)}
+                        data-title={course.title}
+                        data-url={url}
+                      >
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
                         {text.downloadZip}
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -242,6 +252,7 @@ const searchIndex = JSON.stringify(Object.fromEntries(courses.map((c) => [c.cour
       </div>
     </section>
     <Footer />
+    {courses.length > 0 && <CourseDownloadModal lang={lang} />}
     {courses.length > 0 && <script is:inline type="application/json" id="catalog-lessons" set:html={searchIndex} />}
   </body>
 </html>

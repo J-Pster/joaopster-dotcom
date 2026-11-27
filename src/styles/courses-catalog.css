@@ -201,9 +201,14 @@
   justify-content: center;
   gap: 6px;
   min-height: 32px;
+  padding: 0;
+  font: inherit;
   font-size: 13px;
   color: var(--color-body);
   text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 .catalog-download:hover { color: var(--color-ink); text-decoration: underline; }
 

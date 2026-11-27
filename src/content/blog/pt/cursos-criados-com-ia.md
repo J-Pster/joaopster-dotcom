@@ -22,7 +22,7 @@ Cada curso é uma trilha de módulos em ordem, com aulas escritas em texto, glos
 
 ![Página de cursos do joaopster.com com os cartões dos cursos de AWS e de Primeiros Socorros](../../../assets/blog/cursos-criados-com-ia/pagina-de-cursos.png)
 
-Dá pra ler de dois jeitos. No site, a aula tem a lista de módulos na esquerda e o índice da aula na direita, e quando você passa o mouse num termo aparece a definição dele ali mesmo, sem sair da página. O progresso fica salvo no seu navegador, então você vê quantas aulas já leu em cada módulo. E cada curso tem um botão que baixa um .zip pra abrir no [Obsidian](https://obsidian.md/), que é um editor de notas em Markdown e é onde eu estudo hoje (a ideia é começar a estudar pelo site agora).
+Dá pra ler de dois jeitos. No site, a aula tem a lista de módulos na esquerda e o índice da aula na direita, e quando você passa o mouse num termo aparece a definição dele ali mesmo, sem sair da página. O progresso fica salvo no seu navegador, então você vê quantas aulas já leu em cada módulo. E se você preferir ler offline, cada curso tem um botão que baixa o curso inteiro num .zip.
 
 ![Aula do curso de AWS com a definição de Zona de Disponibilidade aberta ao passar o mouse no termo](../../../assets/blog/cursos-criados-com-ia/aula-com-glossario.png)
 
@@ -76,6 +76,6 @@ E a skill tá aberta junto, na página [Como eu crio os cursos](/cursos/como-cri
 Aprendendo fotografia, quero chegar em fotografar um casamento sozinho.
 ```
 
-Ela te mostra o currículo pra aprovar, escreve os módulos e verifica tudo no fim, e aí você abre a pasta `Aprendendo Fotografia` como vault no Obsidian.
+Ela te mostra o currículo pra aprovar, escreve os módulos e verifica tudo no fim, e aí é só abrir a pasta `Aprendendo Fotografia` e começar a estudar.
 
 Se você criar um curso, me manda no joao@joaopster.com. Eu leio, reviso e, se estiver bom, publico no site com os créditos pra você, pra mais gente aprender também.

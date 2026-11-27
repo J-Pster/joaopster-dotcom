@@ -35,15 +35,11 @@ por onde continuar e "Por parte" agrupa pelas 6 partes.
 
 ![[Progresso.base]]
 
-## Como navegar no Obsidian
+## Como estudar este curso
 
-> [!tip] Atalhos que fazem o curso render
-> - **Passe o mouse** sobre qualquer termo sublinhado para ver a definição do glossário (no modo de leitura; no modo de edição, segure Ctrl).
-> - **Ctrl + clique** abre o link numa nova aba, sem perder a aula.
-> - **Ctrl + O** busca qualquer aula ou termo pelo nome (por exemplo, "Aula 5.3" ou "torniquete").
-> - O painel **Backlinks** (barra lateral direita) mostra em quais aulas um termo aparece.
-> - O **Graph view** (Ctrl + G) mostra como os módulos e o glossário se ligam.
-> - Nos questionários, clique na caixinha da alternativa e abra o **Gabarito** (recolhido) só depois.
+> [!tip] Hábitos que fazem o curso render
+> - **Passe o mouse** sobre qualquer termo sublinhado para ver a definição do glossário sem sair da aula.
+> - Nos questionários, marque a sua alternativa e abra o **Gabarito** (recolhido) só depois.
 
 ## Filosofia da trilha: o porquê antes do como
 

@@ -22,7 +22,7 @@ Each course is a path of modules in order, with written lessons, a glossary, qui
 
 ![The courses page on joaopster.com with the AWS and First Aid course cards](../../../assets/blog/cursos-criados-com-ia/pagina-de-cursos.png)
 
-You can read them two ways. On the site, each lesson has the module list on the left and the lesson outline on the right, and when you hover over a term its definition pops up right there, without leaving the page. Your progress is saved in your browser, so you can see how many lessons you've read in each module. And every course has a button that downloads a .zip to open in [Obsidian](https://obsidian.md/), a Markdown note editor, which is where I study today (the plan is to start studying on the site now).
+You can read them two ways. On the site, each lesson has the module list on the left and the lesson outline on the right, and when you hover over a term its definition pops up right there, without leaving the page. Your progress is saved in your browser, so you can see how many lessons you've read in each module. And if you'd rather read offline, every course has a button that downloads the whole course as a .zip.
 
 ![AWS course lesson with the Availability Zone definition open after hovering over the term](../../../assets/blog/cursos-criados-com-ia/aula-com-glossario.png)
 
@@ -76,6 +76,6 @@ The skill is open too, on the [How I make the courses](/en/courses/how-i-make-th
 Learning photography, I want to be able to shoot a wedding on my own. Write the course in English.
 ```
 
-It shows you the curriculum to approve, writes the modules and checks everything at the end, and then you open the `Aprendendo <Topic>` folder as a vault in Obsidian.
+It shows you the curriculum to approve, writes the modules and checks everything at the end, and then you just open the `Aprendendo <Topic>` folder and start studying.
 
 If you make a course, send it to me at joao@joaopster.com. I'll read it, review it and, if it's good, publish it on the site with credit to you, so more people can learn too.

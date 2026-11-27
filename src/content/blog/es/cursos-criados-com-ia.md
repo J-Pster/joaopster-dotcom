@@ -22,7 +22,7 @@ Cada curso es un recorrido de módulos en orden, con clases escritas en texto, g
 
 ![Página de cursos de joaopster.com con las tarjetas de los cursos de AWS y de Primeros Auxilios](../../../assets/blog/cursos-criados-com-ia/pagina-de-cursos.png)
 
-Se pueden leer de dos maneras. En el sitio, la clase tiene la lista de módulos a la izquierda y el índice de la clase a la derecha, y cuando pasas el mouse sobre un término aparece su definición ahí mismo, sin salir de la página. El progreso queda guardado en tu navegador, así ves cuántas clases ya leíste en cada módulo. Y cada curso tiene un botón que descarga un .zip para abrir en [Obsidian](https://obsidian.md/), que es un editor de notas en Markdown y es donde estudio hoy (la idea es empezar a estudiar en el sitio ahora).
+Se pueden leer de dos maneras. En el sitio, la clase tiene la lista de módulos a la izquierda y el índice de la clase a la derecha, y cuando pasas el mouse sobre un término aparece su definición ahí mismo, sin salir de la página. El progreso queda guardado en tu navegador, así ves cuántas clases ya leíste en cada módulo. Y si prefieres leer sin conexión, cada curso tiene un botón que descarga el curso completo en un .zip.
 
 ![Clase del curso de AWS con la definición de Zona de Disponibilidad abierta al pasar el mouse sobre el término](../../../assets/blog/cursos-criados-com-ia/aula-com-glossario.png)
 
@@ -76,6 +76,6 @@ La skill también está abierta, en la página [Cómo creo los cursos](/es/curso
 Aprendiendo fotografía, quiero llegar a fotografiar una boda yo solo. Escribe el curso en español.
 ```
 
-Te muestra el plan de estudios para que lo apruebes, escribe los módulos y verifica todo al final, y después abres la carpeta `Aprendendo <Tema>` como vault en Obsidian.
+Te muestra el plan de estudios para que lo apruebes, escribe los módulos y verifica todo al final, y después solo abres la carpeta `Aprendendo <Tema>` y empiezas a estudiar.
 
 Si creas un curso, mándamelo a joao@joaopster.com. Lo leo, lo reviso y, si está bueno, lo publico en el sitio con los créditos para ti, para que más gente pueda aprender también.
