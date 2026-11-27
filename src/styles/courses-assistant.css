@@ -51,15 +51,36 @@
     border-radius: var(--radius-lg);
     transition: top 0.25s ease, height 0.25s ease;
   }
-  :root.assistant-open .course-layout { grid-template-columns: 220px minmax(0, 1fr) 300px; grid-template-areas: 'nav article assistant'; max-width: 1360px; }
+  :root.assistant-open .course-layout { grid-template-columns: 220px minmax(0, 1fr) 300px; grid-template-areas: 'nav article assistant'; }
   :root.assistant-open.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 380px); grid-template-areas: 'article assistant'; }
   :root.assistant-open .course-rail--toc,
   :root.assistant-open .course-panel-toggle--toc { display: none; }
-  :root.assistant-open .course-article { max-width: 740px; }
+  :root.assistant-open .course-article { max-width: var(--course-article-width); }
 }
 @media (min-width: 1280px) {
-  :root.assistant-open .course-layout { grid-template-columns: 260px minmax(0, 1fr) 340px; }
-  :root.assistant-open.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr) 400px; }
+  :root.assistant-open .course-layout { grid-template-columns: var(--course-nav-width) minmax(0, 1fr) var(--course-assistant-width); }
+  :root.assistant-open.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr) var(--course-assistant-wide); }
+}
+/* Wide enough for the table of contents to stay next to the assistant. */
+@media (min-width: 1920px) {
+  :root.assistant-open .course-layout {
+    grid-template-columns: var(--course-nav-width) minmax(0, 1fr) var(--course-toc-width) var(--course-assistant-width);
+    grid-template-areas: 'nav article toc assistant';
+  }
+  :root.assistant-open.course-nav-hidden .course-layout {
+    grid-template-columns: minmax(0, 1fr) var(--course-toc-width) var(--course-assistant-wide);
+    grid-template-areas: 'article toc assistant';
+  }
+  :root.assistant-open.course-toc-hidden .course-layout {
+    grid-template-columns: var(--course-nav-width) minmax(0, 1fr) var(--course-assistant-width);
+    grid-template-areas: 'nav article assistant';
+  }
+  :root.assistant-open.course-nav-hidden.course-toc-hidden .course-layout {
+    grid-template-columns: minmax(0, 1fr) var(--course-assistant-wide);
+    grid-template-areas: 'article assistant';
+  }
+  :root.assistant-open:not(.course-toc-hidden) .course-rail--toc { display: block; }
+  :root.assistant-open .course-panel-toggle--toc { display: inline-flex; }
 }
 
 @media (max-width: 1023px) {

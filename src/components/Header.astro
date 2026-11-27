@@ -160,9 +160,10 @@ const homePath = lang === 'pt' ? '/' : `/${lang}`;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
   nav {
-    max-width: 1200px;
+    /* A page can line the header up with its own layout (the course reader does). */
+    max-width: var(--site-width, 1200px);
     margin: 0 auto;
-    padding: 0 var(--space-xl);
+    padding: 0 var(--site-gutter, var(--space-xl));
     height: 64px;
     display: flex;
     align-items: center;

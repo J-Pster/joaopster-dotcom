@@ -374,15 +374,29 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 
 /* ---------- Reader layout ---------- */
 
-.course-main { padding: var(--space-xl) var(--space-base) var(--space-section); }
+/* Column sizes of the reader. They grow with the screen (the wide steps at the end of this block), so a
+   big monitor gets wider rails, bigger type and room for the assistant next to the table of contents,
+   while a line of text stays short enough to read. */
+:root {
+  --course-width: 1200px;
+  --course-nav-width: 260px;
+  --course-toc-width: 220px;
+  --course-assistant-width: 340px;
+  --course-assistant-wide: 400px;
+  --course-article-width: 740px;
+  --course-article-wide: 820px;
+}
+
+/* global.css caps every <main> at 1200px; the reader sets its own width on .course-layout. */
+.course-main { max-width: none; padding: var(--space-xl) var(--space-base) var(--space-section); }
 .course-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-xl);
-  max-width: 1200px;
+  max-width: var(--course-width);
   margin: 0 auto;
 }
-.course-article { min-width: 0; max-width: 740px; width: 100%; margin: 0 auto; }
+.course-article { min-width: 0; max-width: var(--course-article-width); width: 100%; margin: 0 auto; }
 .course-rail--toc { display: none; }
 
 /* The rails sit under the sticky header, and move up when it hides while reading. */
@@ -390,7 +404,7 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 :root.header-hidden { --course-rail-top: 16px; }
 
 @media (min-width: 1024px) {
-  .course-layout { grid-template-columns: 260px minmax(0, 1fr); grid-template-areas: 'nav article'; }
+  .course-layout { grid-template-columns: var(--course-nav-width) minmax(0, 1fr); grid-template-areas: 'nav article'; }
   .course-rail--nav {
     grid-area: nav;
     position: sticky;
@@ -409,10 +423,16 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 
   :root.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'article'; }
   :root.course-nav-hidden .course-rail--nav { display: none; }
-  :root.course-nav-hidden .course-article { max-width: 820px; }
+  :root.course-nav-hidden .course-article { max-width: var(--course-article-wide); }
 }
 @media (min-width: 1280px) {
-  .course-layout { grid-template-columns: 260px minmax(0, 1fr) 220px; grid-template-areas: 'nav article toc'; max-width: 1360px; }
+  :root { --course-width: 1360px; }
+  /* The site header lines up with the reader's edges (Header.astro reads both). */
+  :root:has(.course-main) {
+    --site-gutter: var(--space-base);
+    --site-width: calc(var(--course-width) + 2 * var(--space-base));
+  }
+  .course-layout { grid-template-columns: var(--course-nav-width) minmax(0, 1fr) var(--course-toc-width); grid-template-areas: 'nav article toc'; }
   .course-rail--toc { display: block; }
   .course-rail--toc .course-rail-inner {
     position: sticky;
@@ -425,11 +445,46 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   .course-article .toc--inline { display: none; }
   .course-panel-toggle--toc { display: inline-flex; }
 
-  :root.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr) 220px; grid-template-areas: 'article toc'; }
-  :root.course-toc-hidden .course-layout { grid-template-columns: 260px minmax(0, 1fr); grid-template-areas: 'nav article'; }
+  :root.course-nav-hidden .course-layout { grid-template-columns: minmax(0, 1fr) var(--course-toc-width); grid-template-areas: 'article toc'; }
+  :root.course-toc-hidden .course-layout { grid-template-columns: var(--course-nav-width) minmax(0, 1fr); grid-template-areas: 'nav article'; }
   :root.course-nav-hidden.course-toc-hidden .course-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'article'; }
   :root.course-toc-hidden .course-rail--toc { display: none; }
-  :root.course-toc-hidden .course-article { max-width: 820px; }
+  :root.course-toc-hidden .course-article { max-width: var(--course-article-wide); }
+}
+@media (min-width: 1600px) {
+  :root {
+    --course-width: 1520px;
+    --course-nav-width: 280px;
+    --course-toc-width: 250px;
+    --course-assistant-width: 380px;
+    --course-assistant-wide: 440px;
+  }
+}
+/* From here the type grows a step, and the text column grows with it: a line keeps about the same
+   number of characters at every size (740px at 16px). */
+@media (min-width: 1920px) {
+  :root {
+    --course-width: 1800px;
+    --course-nav-width: 300px;
+    --course-toc-width: 250px;
+    --course-assistant-width: 420px;
+    --course-assistant-wide: 480px;
+    --course-article-width: 790px;
+    --course-article-wide: 870px;
+  }
+  .course-article .prose { font-size: 17px; }
+}
+@media (min-width: 2400px) {
+  :root {
+    --course-width: 2080px;
+    --course-nav-width: 320px;
+    --course-toc-width: 300px;
+    --course-assistant-width: 480px;
+    --course-assistant-wide: 560px;
+    --course-article-width: 840px;
+    --course-article-wide: 920px;
+  }
+  .course-article .prose { font-size: 18px; }
 }
 
 /* Sidebar: below 1024px it is a collapsible block above the note. */

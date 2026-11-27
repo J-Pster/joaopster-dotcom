@@ -180,7 +180,7 @@
 :root.course-focus .backlinks,
 :root.course-focus .course-toolbar > :not(.reader-tools, .reader-focus-exit, .listen-open) { display: none; }
 :root.course-focus .course-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'article'; }
-:root.course-focus .course-article { max-width: 700px; }
+:root.course-focus .course-article { max-width: calc(var(--course-article-width) - 40px); }
 :root.course-focus .course-toolbar { justify-content: flex-end; }
 :root.course-focus .reader-focus-exit { display: inline-flex; }
 :root.course-focus .course-main { padding-top: var(--space-base); }
