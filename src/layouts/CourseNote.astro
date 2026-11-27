@@ -137,11 +137,6 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
               <span>{assistant.open}</span>
             </button>
-            <button type="button" class="course-shortcuts-open course-shortcuts-open--rail" data-shortcuts-open aria-haspopup="dialog" aria-controls="course-shortcuts">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
-              <span class="course-shortcuts-open-label">{shortcuts.open}</span>
-              <kbd>?</kbd>
-            </button>
             <TableOfContents headings={headings} variant="rail" title={text.onThisNote} />
           </div>
         </aside>
@@ -176,11 +171,11 @@ const description = note.kind === 'home' ? course.goal : text.noteDescription(no
               <span class="course-search-open-label">{search.open}</span>
               <kbd data-search-shortcut>Ctrl K</kbd>
             </button>
+            <ListenButton lang={course.lang} />
+            <ReaderTools lang={course.lang} />
             <button type="button" class="course-shortcuts-open course-shortcuts-open--toolbar" data-shortcuts-open aria-haspopup="dialog" aria-controls="course-shortcuts" aria-label={shortcuts.title} title={`${shortcuts.title} (?)`}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
             </button>
-            <ListenButton lang={course.lang} />
-            <ReaderTools lang={course.lang} />
             <button type="button" class="course-panel-toggle course-panel-toggle--toc" data-panel-toggle="toc" aria-controls="course-panel-toc" aria-expanded="true" aria-label={text.hideToc} title={text.hideToc}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
             </button>

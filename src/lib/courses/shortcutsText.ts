@@ -18,7 +18,6 @@ export interface ShortcutGroup {
 }
 
 export interface ShortcutsText {
-  readonly open: string;
   readonly title: string;
   readonly close: string;
   readonly or: string;
@@ -28,7 +27,6 @@ export interface ShortcutsText {
 
 const TEXT: Record<Lang, ShortcutsText> = {
   pt: {
-    open: 'Atalhos',
     title: 'Atalhos do teclado',
     close: 'Fechar',
     or: 'ou',
@@ -67,7 +65,6 @@ const TEXT: Record<Lang, ShortcutsText> = {
     ],
   },
   en: {
-    open: 'Shortcuts',
     title: 'Keyboard shortcuts',
     close: 'Close',
     or: 'or',
@@ -106,7 +103,6 @@ const TEXT: Record<Lang, ShortcutsText> = {
     ],
   },
   es: {
-    open: 'Atajos',
     title: 'Atajos de teclado',
     close: 'Cerrar',
     or: 'o',

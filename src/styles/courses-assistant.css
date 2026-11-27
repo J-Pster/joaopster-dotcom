@@ -26,6 +26,11 @@
 .assistant-open-btn:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
 .assistant-open-btn[aria-expanded='true'] { color: var(--color-ink); background: var(--color-surface-strong); }
 .assistant-open-btn--toolbar { width: 32px; }
+/* The right column has its own "AI assistant" row; the toolbar icon only stands in while that column is
+   not on screen (below 1280px, or hidden by the reader). */
+@media (min-width: 1280px) {
+  :root:not(.course-toc-hidden) .course-toolbar .assistant-open-btn--toolbar { display: none; }
+}
 .assistant-open-btn--rail { width: 100%; height: 36px; margin-bottom: var(--space-sm); padding: 0 12px; justify-content: flex-start; }
 .assistant-open-btn--rail span { flex: 1; text-align: left; }
 .reader-bar .reader-bar-assistant { flex: none; justify-content: center; width: 44px; padding: 0; }

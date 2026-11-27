@@ -1018,9 +1018,8 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
   .progress-modules .progress-bar { display: none; }
 }
 
-/* Keyboard shortcuts (components/courses/ShortcutsDialog.astro). The button is a row under the sync card
-   in the right column, and an icon in the toolbar while that column is not shown. Touch screens, with no
-   keyboard, get neither. */
+/* Keyboard shortcuts (components/courses/ShortcutsDialog.astro): a keyboard icon in the toolbar, next to
+   the text size button. Touch screens, with no keyboard, do not get it. */
 .course-shortcuts-open {
   flex: none;
   display: none;
@@ -1038,25 +1037,8 @@ details.callout[open] > summary.callout-title::after { transform: rotate(45deg);
 }
 .course-shortcuts-open:hover { color: var(--color-ink); background: var(--color-canvas-soft); }
 .course-shortcuts-open--toolbar { justify-content: center; width: 32px; padding: 0; }
-.course-shortcuts-open--rail { width: 100%; margin-bottom: var(--space-lg); padding: 0 12px; }
-.course-shortcuts-open-label { flex: 1; text-align: left; }
-.course-shortcuts-open--rail kbd {
-  padding: 0 6px;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-body);
-  background: var(--color-surface-strong);
-  border-radius: var(--radius-xs);
-}
-@media (hover: hover) {
-  .course-shortcuts-open--rail { display: flex; }
-}
-@media (hover: hover) and (min-width: 768px) and (max-width: 1279px) {
+@media (hover: hover) and (min-width: 768px) {
   .course-shortcuts-open--toolbar { display: inline-flex; }
-}
-@media (hover: hover) and (min-width: 1280px) {
-  :root.course-toc-hidden .course-shortcuts-open--toolbar { display: inline-flex; }
 }
 
 .course-shortcuts {
