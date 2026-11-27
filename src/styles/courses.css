@@ -1126,7 +1126,9 @@ body:has(.toc--inline) .reader-bar-title { display: none; }
 .course-sheet-close:active { background: var(--color-surface-strong); }
 .course-sheet-body {
   position: relative;
-  flex: 1;
+  /* Sized by its content and shrunk to the sheet's max-height. Not flex: 1: its 0% basis in a column
+     of auto height collapses the body to its padding in Safari (WebKit). */
+  flex: 0 1 auto;
   min-height: 0;
   padding: var(--space-sm) var(--space-base) calc(var(--space-base) + env(safe-area-inset-bottom));
   overflow-y: auto;
