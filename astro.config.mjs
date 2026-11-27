@@ -7,7 +7,7 @@ import { cpSync, existsSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import { rehypePostLinks } from './src/lib/markdown/rehypePostLinks.ts';
-import { LANGS, coursesHome, coursesIn } from './src/lib/courses/catalog.ts';
+import { COURSES, LANGS, courseUrl, coursesHome, coursesIn } from './src/lib/courses/catalog.ts';
 
 // Glossary term pages (/cursos/<course>/glossario/<term>/ and the en and es equivalents) are thin
 // pages kept out of search; the glossary index (.../glossario/) stays. The 404 pages are not content.
@@ -18,8 +18,13 @@ const SITE = 'https://joaopster.com';
 const EMPTY_COURSE_LANDINGS = new Set(
 	LANGS.filter((lang) => coursesIn(lang).length === 0).map((lang) => new URL(coursesHome(lang), SITE).href),
 );
+// Every page of a course marked noindex in the catalog (CourseNote renders them noindex).
+const NOINDEX_COURSES = COURSES.filter((course) => course.indexing === 'noindex').map((course) => new URL(courseUrl(course), SITE).href);
 const isIndexablePage = (/** @type {string} */ page) =>
-	!GLOSSARY_TERM.test(page) && !NOT_FOUND_PAGE.test(page) && !EMPTY_COURSE_LANDINGS.has(page);
+	!GLOSSARY_TERM.test(page) &&
+	!NOT_FOUND_PAGE.test(page) &&
+	!EMPTY_COURSE_LANDINGS.has(page) &&
+	!NOINDEX_COURSES.some((course) => page.startsWith(course));
 
 // Cloudflare Pages serves the nearest 404.html up the directory tree. Astro writes only the root page
 // as 404.html (the others as <lang>/404/index.html), so move the localized ones next to it.

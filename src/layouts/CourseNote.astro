@@ -43,13 +43,17 @@ interface Props {
   headings: readonly MarkdownHeading[];
   /** Set on simulated exams: the note's quiz runs as a timed exam. */
   exam?: ExamRules;
-  /** "noindex" on glossary terms: thin pages that stay reachable (previews, in-lesson links) but out of search. */
+  /**
+   * "noindex" on glossary terms: thin pages that stay reachable (previews, in-lesson links) but out of search.
+   * A course marked noindex in the catalog overrides this for all of its pages.
+   */
   indexing?: 'index' | 'noindex';
 }
 
 const BACKLINKS_SHOWN = 24;
 
-const { vault, note, html, headings, exam, indexing = 'index' } = Astro.props;
+const { vault, note, html, headings, exam, indexing: pageIndexing = 'index' } = Astro.props;
+const indexing = vault.course.indexing === 'noindex' ? 'noindex' : pageIndexing;
 const { course } = vault;
 const text = courseText(course.lang);
 const search = searchText(course.lang);

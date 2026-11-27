@@ -30,6 +30,11 @@ export interface CourseInfo {
   readonly objectives: CourseObjectives;
   /** The flagship course gets the leading place on the catalog; the others are study notes. */
   readonly standing: CourseStanding;
+  /**
+   * Whether search engines may index the course. "noindex" keeps every page of the course reachable
+   * from the catalog but out of search and the sitemap (health content without expert review).
+   */
+  readonly indexing: 'index' | 'noindex';
 }
 
 export const COURSE_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
@@ -79,6 +84,7 @@ export const COURSES: readonly CourseInfo[] = [
       'Resolver questões no estilo da prova nos quatro domínios, com dois simulados completos',
     ],
     standing: 'flagship',
+    indexing: 'index',
   },
   {
     slug: 'primeiros-socorros',
@@ -100,6 +106,7 @@ export const COURSES: readonly CourseInfo[] = [
       'Decidir entre esperar, pronto atendimento e SAMU a partir do exame',
     ],
     standing: 'study-notes',
+    indexing: 'noindex',
   },
   {
     slug: 'radio',
@@ -121,6 +128,7 @@ export const COURSES: readonly CourseInfo[] = [
       'Planejar a rede respeitando o regime legal da Anatel',
     ],
     standing: 'study-notes',
+    indexing: 'index',
   },
   {
     slug: 'modelagem-de-casas',
@@ -142,6 +150,7 @@ export const COURSES: readonly CourseInfo[] = [
       'Montar o dossiê do projeto para validar com um arquiteto ou engenheiro',
     ],
     standing: 'study-notes',
+    indexing: 'index',
   },
 ];
 
