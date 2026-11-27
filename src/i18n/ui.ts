@@ -30,6 +30,7 @@ export const ui = {
     'hero.log.freelance': 'freelance, mais de 50 projetos',
     'hero.log.firstPlugin': 'primeiro plugin pro Rust',
     'hero.readBlog': 'Ler o blog',
+    'hero.seeCourses': 'Ver os cursos',
 
     'about.label': 'Sobre mim',
     'about.heading1': `Oi, eu sou o João,`,
@@ -230,6 +231,7 @@ export const ui = {
     'hero.log.freelance': 'freelance, 50+ projects',
     'hero.log.firstPlugin': 'first Rust plugin',
     'hero.readBlog': 'Read the blog',
+    'hero.seeCourses': 'See the courses',
 
     'about.label': 'About me',
     'about.heading1': `Hi, I'm João,`,
@@ -430,6 +432,7 @@ export const ui = {
     'hero.log.freelance': 'freelance, más de 50 proyectos',
     'hero.log.firstPlugin': 'primer plugin para Rust',
     'hero.readBlog': 'Leer el blog',
+    'hero.seeCourses': 'Ver los cursos',
 
     'about.label': 'Sobre mí',
     'about.heading1': `Hola, soy João,`,
