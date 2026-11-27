@@ -1,7 +1,16 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 import { uptimeText } from '../../lib/lifeUptime';
+import { aboutPath } from '../../lib/aboutPath';
 
+interface Props {
+  /** "summary": the two latest roles and a link to the about page (home). "full": every role (about page). */
+  variant: 'summary' | 'full';
+}
+
+const SUMMARY_ROLES = 2;
+
+const { variant } = Astro.props;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
@@ -93,6 +102,8 @@ const roles = [
   },
 ];
 
+const shownRoles = variant === 'summary' ? roles.slice(0, SUMMARY_ROLES) : roles;
+
 type DescBlock = { kind: 'p'; text: string } | { kind: 'ul'; items: string[] };
 
 const BULLET = '• ';
@@ -115,8 +126,8 @@ function parseDesc(text: string): DescBlock[] {
     <p class="exp-sub">{t('exp.sub')}</p>
 
     <div class="exp-timeline">
-      {roles.map((r, i) => (
-        <div class:list={['exp-item', r.current && 'is-current', i >= 2 && 'exp-extra']}>
+      {shownRoles.map((r) => (
+        <div class:list={['exp-item', r.current && 'is-current']}>
           <div class="exp-head">
             <h3 class="exp-role">{t(r.roleKey)}</h3>
             <span class="exp-dates">{r.dates}</span>
@@ -138,25 +149,13 @@ function parseDesc(text: string): DescBlock[] {
       ))}
     </div>
 
-    {roles.length > 2 && (
+    {variant === 'summary' && (
       <div class="exp-more-wrap">
-        <button type="button" class="exp-more-btn" aria-expanded="false" data-more={t('exp.showMore')} data-less={t('exp.showLess')}>
-          {t('exp.showMore')}
-        </button>
+        <a href={`${aboutPath(lang)}#experience`} class="exp-more-btn">{t('exp.fullHistory')}</a>
       </div>
     )}
   </div>
 </section>
-
-<script>
-  const btn = document.querySelector('.exp-more-btn') as HTMLButtonElement | null;
-  const timeline = document.querySelector('.exp-timeline');
-  btn?.addEventListener('click', () => {
-    const expanded = timeline?.classList.toggle('is-expanded') ?? false;
-    btn.setAttribute('aria-expanded', String(expanded));
-    btn.textContent = expanded ? btn.dataset.less ?? '' : btn.dataset.more ?? '';
-  });
-</script>
 
 <style>
   .experience {
@@ -226,8 +225,6 @@ function parseDesc(text: string): DescBlock[] {
     background: var(--color-surface-strong); border-radius: var(--radius-pill); padding: 3px 10px;
   }
 
-  .exp-extra { display: none; }
-  .exp-timeline.is-expanded .exp-extra { display: block; }
   .exp-more-wrap { display: flex; justify-content: center; margin-top: var(--space-xl); }
   .exp-more-btn {
     display: inline-flex; align-items: center; gap: var(--space-xs);
@@ -235,9 +232,9 @@ function parseDesc(text: string): DescBlock[] {
     font-size: 14px; font-weight: 500; font-family: inherit;
     padding: 9px 17px; height: 40px;
     border: 1px solid var(--color-hairline-strong); border-radius: var(--radius-md);
-    cursor: pointer; transition: border-color 0.15s;
+    text-decoration: none; transition: border-color 0.15s;
   }
-  .exp-more-btn:hover { border-color: var(--color-muted); }
+  .exp-more-btn:hover { border-color: var(--color-muted); text-decoration: none; }
 
   .exp-note {
     margin: var(--space-xl) 0 0;

@@ -1,8 +1,17 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { aboutPath } from '../../lib/aboutPath';
 
+interface Props {
+  /** "summary": the first paragraph and a link to the about page (home). "full": the whole story and specialties. */
+  variant: 'summary' | 'full';
+}
+
+const { variant } = Astro.props;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
+const story = t('about.sub').split('\n\n');
+const paragraphs = variant === 'summary' ? story.slice(0, 1) : story;
 
 const specialties = [
   { title: t('about.spec.g1.title'), items: t('about.spec.g1.items').split(' | ') },
@@ -14,13 +23,14 @@ const specialties = [
 ---
 <section id="about" class="dark-about">
   <div class="dark-about-inner">
-    <div class="da-top">
+    <div class:list={['da-top', variant === 'summary' && 'da-top--single']}>
       <div class="da-intro">
         <p class="da-label">{t('about.label')}</p>
         <h2 class="da-heading">{t('about.heading1')}<br/>{t('about.heading2')}</h2>
-        {t('about.sub').split('\n\n').map((paragraph) => <p class="da-sub">{paragraph}</p>)}
+        {paragraphs.map((paragraph) => <p class="da-sub">{paragraph}</p>)}
+        {variant === 'summary' && <a href={aboutPath(lang)} class="da-more">{t('about.readMore')} →</a>}
       </div>
-      <div id="specialties" class="da-specialties">
+      {variant === 'full' && <div id="specialties" class="da-specialties">
         <p class="da-spec-label">{t('about.specialties.label')}</p>
         <div class="da-spec-frame">
           <div class="da-spec-scroll" tabindex="0" aria-label={t('about.specialties.label')}>
@@ -34,7 +44,7 @@ const specialties = [
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   </div>
 </section>
@@ -50,6 +60,10 @@ const specialties = [
   .da-sub { font-size: 16px; color: var(--color-on-dark-soft); line-height: 1.6; max-width: 480px; margin: 0 0 var(--space-base); }
   .da-sub:last-of-type { margin-bottom: 0; }
   .da-top { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-xxl); }
+  .da-top--single { grid-template-columns: 1fr; }
+  .da-top--single .da-sub { max-width: 640px; }
+  .da-more { display: inline-block; margin-top: var(--space-lg); font-size: 14px; font-weight: 500; color: var(--color-on-dark); text-decoration: underline; text-underline-offset: 3px; }
+  .da-more:hover { color: var(--color-on-dark-soft); }
 
   /* The specialties column takes the intro's height; the list scrolls inside it instead of growing the section. */
   .da-specialties { display: flex; flex-direction: column; min-height: 0; }

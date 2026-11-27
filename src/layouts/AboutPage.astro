@@ -1,0 +1,153 @@
+---
+// The about page: the full résumé (story, experience, skills, open source, publications), one per
+// language. The home keeps a summary of the same sections and links here.
+import { Image } from 'astro:assets';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DarkAboutSection from '../components/sections/DarkAboutSection.astro';
+import ExperienceSection from '../components/sections/ExperienceSection.astro';
+import SkillsSection from '../components/sections/SkillsSection.astro';
+import ProjectsSection from '../components/sections/ProjectsSection.astro';
+import StatsBandSection from '../components/sections/StatsBandSection.astro';
+import CTASection from '../components/sections/CTASection.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import profilePhoto from '../assets/profile-photo.png';
+import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
+import { ABOUT_PATHS, CV_PDF_PATH } from '../lib/aboutPath';
+import { blogPostPath, getPostsForLang } from '../lib/getLatestPost';
+import { COURSES, courseUrl } from '../lib/courses/catalog';
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const site = Astro.site ?? new URL('https://joaopster.com');
+const pageUrl = new URL(ABOUT_PATHS[lang], site).href;
+
+// Newest first, as getPostsForLang returns them.
+const posts = await getPostsForLang(lang);
+
+const profileLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: pageUrl,
+  inLanguage: lang,
+  mainEntity: { '@id': new URL('/#person', site).href },
+};
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={t('aboutPage.metaTitle')} description={t('aboutPage.metaDescription')} alternates={ABOUT_PATHS} />
+    <script type="application/ld+json" set:html={JSON.stringify(profileLd)} />
+  </head>
+  <body>
+    <Header />
+    <main class="page-sections">
+      <section class="about-intro">
+        <div class="about-intro-inner">
+          <Image src={profilePhoto} alt="João Pster" width={112} height={112} densities={[1, 2]} class="about-photo" loading="eager" fetchpriority="high" />
+          <h1>{t('aboutPage.heading')}</h1>
+          <p class="about-name">{t('aboutPage.legalName')}</p>
+          <p class="about-role">{t('hero.role')}</p>
+          <p class="about-lead">{t('hero.sub')}</p>
+          <div class="about-actions">
+            <a href={CV_PDF_PATH} class="about-btn-primary" download>{t('aboutPage.downloadCv')}</a>
+            <a href="mailto:joao@joaopster.com" class="about-btn-secondary" data-contact-open>{t('nav.getInTouch')}</a>
+            <a href="https://www.linkedin.com/in/joaopster/" class="about-btn-secondary" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+            <a href="https://github.com/J-Pster" class="about-btn-secondary" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <DarkAboutSection variant="full" />
+      <ExperienceSection variant="full" />
+      <SkillsSection />
+      <ProjectsSection />
+
+      <section class="publications" id="publications" aria-labelledby="publications-heading">
+        <div class="publications-inner">
+          <p class="pub-label">{t('aboutPage.publications.label')}</p>
+          <h2 class="pub-heading" id="publications-heading">{t('aboutPage.publications.heading')}</h2>
+          <div class="pub-cols">
+            <div>
+              <h3 class="pub-col-title">{t('aboutPage.publications.posts')}</h3>
+              <ul class="pub-list">
+                {posts.map((post) => (
+                  <li>
+                    <a href={blogPostPath(lang, post)}>{post.data.title}</a>
+                    <span class="pub-meta"><FormattedDate date={post.data.pubDate} /></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 class="pub-col-title">{t('aboutPage.publications.courses')}</h3>
+              <ul class="pub-list">
+                {COURSES.map((course) => (
+                  <li>
+                    <a href={courseUrl(course)}>{course.title}</a>
+                    <span class="pub-meta">{t('aboutPage.publications.courseLang')}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <StatsBandSection />
+      <CTASection />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Full-bleed sections: undo the global main width cap (global.css) that article pages rely on. */
+  .page-sections { width: 100%; max-width: none; margin: 0; padding: 0; }
+  .about-intro {
+    background: var(--color-canvas);
+    padding: var(--space-section) var(--space-xl) var(--space-xxl);
+    text-align: center;
+  }
+  .about-intro-inner { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .about-photo { border-radius: var(--radius-pill); margin-bottom: var(--space-lg); }
+  .about-intro h1 { font-size: 48px; font-weight: 600; letter-spacing: -1.44px; line-height: 1.1; color: var(--color-ink); margin: 0 0 var(--space-xs); }
+  .about-name { font-size: 14px; color: var(--color-body); margin: 0 0 var(--space-base); }
+  .about-role { font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 0 0 var(--space-sm); }
+  .about-lead { font-size: 16px; line-height: 1.6; color: var(--color-body); margin: 0 0 var(--space-xl); }
+  .about-actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center; }
+  .about-btn-primary,
+  .about-btn-secondary {
+    display: inline-flex; align-items: center; height: 40px; padding: 0 18px;
+    font-size: 14px; font-weight: 500; border-radius: var(--radius-md); text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .about-btn-primary { background: var(--color-primary); color: var(--color-on-primary); }
+  .about-btn-primary:hover { background: var(--color-primary-active); text-decoration: none; }
+  .about-btn-secondary { background: var(--color-surface-card); color: var(--color-ink); border: 1px solid var(--color-hairline-strong); }
+  .about-btn-secondary:hover { border-color: var(--color-ink); text-decoration: none; }
+
+  .publications { background: var(--color-canvas-soft); padding: var(--space-section) var(--space-xl); border-top: 1px solid var(--color-hairline); }
+  .publications-inner { max-width: 1000px; margin: 0 auto; }
+  .pub-label { font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; color: var(--color-body); margin: 0 0 var(--space-lg); }
+  .pub-heading { font-size: 36px; font-weight: 600; letter-spacing: -1.08px; line-height: 1.15; color: var(--color-ink); margin: 0 0 var(--space-xxl); }
+  .pub-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xxl); }
+  .pub-col-title { font-size: 18px; font-weight: 600; color: var(--color-ink); margin: 0 0 var(--space-base); }
+  .pub-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-base); }
+  .pub-list li { display: flex; flex-direction: column; gap: 2px; padding-bottom: var(--space-base); border-bottom: 1px solid var(--color-hairline); }
+  .pub-list a { font-size: 16px; font-weight: 500; color: var(--color-ink); text-decoration: none; }
+  .pub-list a:hover { text-decoration: underline; }
+  .pub-meta { font-size: 13px; color: var(--color-body); }
+
+  @media (max-width: 768px) {
+    .pub-cols { grid-template-columns: 1fr; }
+    .about-intro h1 { font-size: 36px; }
+  }
+  @media (max-width: 640px) {
+    .about-intro { padding: var(--space-xxl) var(--space-base); }
+    .publications { padding: var(--space-section) var(--space-base); }
+    .about-intro h1 { font-size: 32px; }
+    .pub-heading { font-size: 28px; }
+  }
+</style>

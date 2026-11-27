@@ -5,7 +5,7 @@ interface Props { lang?: Lang; }
 const { lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 ---
-<div class="modal-backdrop" id="contact-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+<div class="modal-backdrop" id="contact-modal" aria-hidden="true" inert role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
   <div class="modal-card">
     <button class="modal-close" id="modal-close" aria-label={t('modal.close')}>
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -251,6 +251,7 @@ const t = useTranslations(lang);
   function openModal() {
     backdrop?.classList.add('open');
     backdrop?.removeAttribute('aria-hidden');
+    backdrop?.removeAttribute('inert');
     document.body.style.overflow = 'hidden';
     closeBtn?.focus();
   }
@@ -258,6 +259,7 @@ const t = useTranslations(lang);
   function closeModal() {
     backdrop?.classList.remove('open');
     backdrop?.setAttribute('aria-hidden', 'true');
+    backdrop?.setAttribute('inert', '');
     document.body.style.overflow = '';
   }
 

@@ -4,11 +4,11 @@ import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
 import profilePhoto from '../../assets/profile-photo.png';
 import { countUniqueSkills } from '../../data/skills';
 import { uptimeText } from '../../lib/lifeUptime';
-import { coursesSection } from '../../lib/courses/catalog';
+import { aboutPath } from '../../lib/aboutPath';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
-const prefix = lang === 'pt' ? '' : `/${lang}`;
+const about = aboutPath(lang);
 const skillCount = countUniqueSkills(lang);
 // Build-time snapshot; the client script below redraws these with today's date.
 const uptime = uptimeText(new Date(), lang);
@@ -39,29 +39,28 @@ const lifeLog = [
     </div>
     <p class="hero-sub">{t('hero.sub')}</p>
     <div class="hero-stats">
-      <a class="stat" href="#experience">
+      <a class="stat" href={`${about}#experience`}>
         <span class="stat-n" data-uptime="devYears">{uptime.devYears}</span>
         <span class="stat-l">{t('hero.yearsBuilding')}</span>
       </a>
       <div class="stat-divider"></div>
-      <a class="stat" href="#stats">
-        <span class="stat-n">3</span>
-        <span class="stat-l">{t('hero.languages')}</span>
-      </a>
+      <div class="stat">
+        <span class="stat-n">500+</span>
+        <span class="stat-l">{t('hero.usersInProduction')}</span>
+      </div>
       <div class="stat-divider"></div>
-      <a class="stat" href="#skills">
-        <span class="stat-n">{skillCount}</span>
-        <span class="stat-l">{t('hero.skills')}</span>
-      </a>
+      <div class="stat">
+        <span class="stat-n">{t('hero.codeShare.n')}</span>
+        <span class="stat-l">{t('hero.codeShare')}</span>
+      </div>
     </div>
     <div class="hero-ctas">
-      <a href={`${prefix}/blog`} class="btn-primary btn-hero">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6M8 13h8M8 17h5"/></svg>
-        {t('hero.readBlog')}
+      <a href={about} class="btn-primary btn-hero">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        {t('hero.knowMe')}
       </a>
-      <a href={coursesSection(lang)} class="btn-primary btn-hero">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/></svg>
-        {t('hero.seeCourses')}
+      <a href="mailto:joao@joaopster.com" class="btn-secondary btn-hero" data-contact-open>
+        {t('nav.getInTouch')}
       </a>
       <div class="hero-social">
         <a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="btn-icon" aria-label="GitHub" title="GitHub">
@@ -315,12 +314,12 @@ const lifeLog = [
     margin-bottom: var(--space-xxl);
   }
   .stat { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: var(--space-xxs) var(--space-xs); border-radius: var(--radius-md); text-decoration: none; transition: background 0.15s; }
-  .stat:hover { background: var(--color-surface-strong); text-decoration: none; }
-  .stat:hover .stat-l { color: var(--color-ink); }
+  a.stat:hover { background: var(--color-surface-strong); text-decoration: none; }
+  a.stat:hover .stat-l { color: var(--color-ink); }
   .stat-n { font-size: 28px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.84px; line-height: 1; }
   .stat-l { font-size: 13px; color: var(--color-muted); line-height: 1.4; }
   .stat-divider { width: 1px; height: 36px; background: var(--color-hairline-strong); flex-shrink: 0; }
-  /* Blog and courses lead, side by side; GitHub and LinkedIn follow as plain icon buttons. */
+  /* The about page leads, contact follows; GitHub and LinkedIn come last as plain icon buttons. */
   .hero-ctas { display: flex; gap: var(--space-sm); justify-content: center; align-items: center; flex-wrap: wrap; }
   .hero-social { display: flex; gap: var(--space-sm); }
   .btn-primary {
@@ -330,6 +329,13 @@ const lifeLog = [
     border-radius: var(--radius-md); text-decoration: none; transition: background 0.15s;
   }
   .btn-primary:hover { background: var(--color-primary-active); text-decoration: none; }
+  .btn-secondary {
+    display: inline-flex; align-items: center;
+    background: var(--color-surface-card); color: var(--color-ink);
+    border: 1px solid var(--color-hairline-strong);
+    font-weight: 500; border-radius: var(--radius-md); text-decoration: none; transition: border-color 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--color-ink); text-decoration: none; }
   .btn-hero { gap: var(--space-xs); height: 48px; padding: 0 22px; font-size: 16px; }
   .btn-icon {
     display: inline-flex; align-items: center; justify-content: center;

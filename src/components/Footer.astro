@@ -1,6 +1,7 @@
 ---
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { privacyUrl, termsUrl } from '../lib/legalUrls';
+import { aboutPath } from '../lib/aboutPath';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -35,7 +36,7 @@ const today = new Date();
         <h3 class="footer-col-heading">{t('footer.explore')}</h3>
         <ul class="footer-links">
           <li><a href={`${prefix}/blog`} class="footer-link">{t('nav.blog')}</a></li>
-          <li><a href="/rss.xml" class="footer-link">{t('footer.rss')}</a></li>
+          <li><a href={lang === 'pt' ? '/rss.xml' : `/${lang}/rss.xml`} class="footer-link">{t('footer.rss')}</a></li>
           <li><a href={privacyUrl(lang)} class="footer-link">{t('footer.privacy')}</a></li>
           <li><a href={termsUrl(lang)} class="footer-link">{t('footer.terms')}</a></li>
         </ul>
@@ -44,7 +45,7 @@ const today = new Date();
       <div class="footer-col">
         <h3 class="footer-col-heading">{t('footer.work')}</h3>
         <ul class="footer-links">
-          <li><a href={`${homePath}#projects`} class="footer-link">{t('footer.projects')}</a></li>
+          <li><a href={`${aboutPath(lang)}#projects`} class="footer-link">{t('footer.projects')}</a></li>
           <li><a href="https://github.com/J-Pster" target="_blank" rel="noopener noreferrer" class="footer-link">{t('footer.allGithub')}</a></li>
         </ul>
       </div>

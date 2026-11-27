@@ -3,10 +3,10 @@
 import { Image } from 'astro:assets';
 import profilePhoto from '../../assets/profile-photo.png';
 import { useTranslations, defaultLang, type Lang } from '../../i18n/ui';
+import { aboutPath } from '../../lib/aboutPath';
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
-const homePath = lang === 'pt' ? '/' : `/${lang}/`;
 const profiles = [
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/joaopster/' },
   { name: 'X', href: 'https://x.com/JoaoPster' },
@@ -22,7 +22,7 @@ const profiles = [
     <p class="author-role">{t('hero.role')}</p>
     <p class="author-bio">{t('hero.sub')}</p>
     <p class="author-links">
-      <a href={`${homePath}#about`}>{t('nav.about')}</a>
+      <a href={aboutPath(lang)}>{t('nav.about')}</a>
       {profiles.map((p) => (
         <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name} ↗</a>
       ))}

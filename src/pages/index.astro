@@ -9,9 +9,6 @@ import FeaturesGridSection from '../components/sections/FeaturesGridSection.astr
 import WorkflowSection from '../components/sections/WorkflowSection.astro';
 import RecentPosts from '../components/RecentPosts.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
-import ProjectsSection from '../components/sections/ProjectsSection.astro';
-import SkillsSection from '../components/sections/SkillsSection.astro';
-import StatsBandSection from '../components/sections/StatsBandSection.astro';
 import CTASection from '../components/sections/CTASection.astro';
 import { useTranslations, defaultLang, type Lang } from '../i18n/ui';
 import { getRecentPosts } from '../lib/getLatestPost';
@@ -42,10 +39,10 @@ const addendum = buildAddendum(t('workflow.opensource.addendum'), wakatimeData, 
   </head>
   <body>
     <Header />
-    <div class="page-sections">
+    <main class="page-sections">
       <HeroSection />
-      <DarkAboutSection />
-      <ExperienceSection />
+      <DarkAboutSection variant="summary" />
+      <ExperienceSection variant="summary" />
       <FeaturesGridSection />
       <WorkflowSection
         variant="write"
@@ -71,15 +68,13 @@ const addendum = buildAddendum(t('workflow.opensource.addendum'), wakatimeData, 
         cta={{ text: t('workflow.opensource.cta'), href: 'https://wakatime.com/@JoaoPster' }}
         wakatimeData={wakatimeData}
       />
-      <ProjectsSection />
-      <SkillsSection />
-      <StatsBandSection />
       <CTASection />
-    </div>
+    </main>
     <Footer />
   </body>
 </html>
 
 <style>
-  .page-sections { width: 100%; }
+  /* Full-bleed sections: undo the global main width cap (global.css) that article pages rely on. */
+  .page-sections { width: 100%; max-width: none; margin: 0; padding: 0; }
 </style>
