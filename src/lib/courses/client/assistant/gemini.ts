@@ -55,9 +55,9 @@ export async function askGemini({ key, model, context, turns, onText, signal }: 
     let finish: string | undefined;
     let blocked = false;
     let usage: UsageMetadata | undefined;
-    await readEvents(opened.response, (data) => {
+    const broken = await readEvents(opened.response, (event) => {
       if (signal.aborted) return;
-      const chunk = JSON.parse(data) as Chunk;
+      const chunk = event as Chunk;
       if (chunk.usageMetadata) usage = chunk.usageMetadata;
       if (chunk.promptFeedback?.blockReason) blocked = true;
       const candidate = chunk.candidates?.[0];
@@ -72,6 +72,10 @@ export async function askGemini({ key, model, context, turns, onText, signal }: 
       onText(text);
     });
     if (signal.aborted) return { kind: 'stopped', text };
+    if (broken) return { kind: 'error', error: broken };
+    // Every answer ends with a finish reason (a blocked question has none, but says so in promptFeedback);
+    // a stream that closed without either was cut on the way.
+    if (finish === undefined && !blocked) return { kind: 'error', error: { kind: 'network' } };
     const prompt = usage?.promptTokenCount ?? 0;
     const cached = usage?.cachedContentTokenCount ?? 0;
     const output = (usage?.candidatesTokenCount ?? 0) + (usage?.thoughtsTokenCount ?? 0);
@@ -79,8 +83,6 @@ export async function askGemini({ key, model, context, turns, onText, signal }: 
     return { kind: 'answer', text, end: endOf(finish, blocked), costUsd };
   } catch (error) {
     if (isAbort(error) || signal.aborted) return { kind: 'stopped', text };
-    if (error instanceof TypeError) return { kind: 'error', error: { kind: 'network' } };
-    if (error instanceof SyntaxError) return { kind: 'error', error: { kind: 'other', detail: error.message } };
     throw error;
   }
 }

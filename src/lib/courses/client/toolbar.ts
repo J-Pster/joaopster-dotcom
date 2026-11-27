@@ -66,7 +66,16 @@ export function initToolbar(): void {
   function layout(): void {
     collapse();
     if (more.hidden) closeMenu(false);
-    else if (!menu.hidden) fillMenu();
+    else if (!menu.hidden) refillMenu();
+  }
+
+  // The rows are rebuilt while open, so focus goes back to the row at the same place.
+  function refillMenu(): void {
+    const at = menuRows().indexOf(document.activeElement as HTMLButtonElement);
+    fillMenu();
+    if (at < 0) return;
+    const rows = menuRows();
+    rows[Math.min(at, rows.length - 1)]?.focus();
   }
 
   function menuRows(): HTMLButtonElement[] {
@@ -96,17 +105,21 @@ export function initToolbar(): void {
           event.stopPropagation();
           closeMenu(false);
           trigger.click();
+          // A trigger that opens a popover moves focus there; a plain toggle leaves it in the hidden menu.
+          const focused = document.activeElement;
+          if (focused === null || focused === document.body || menu.contains(focused)) moreOpen.focus();
         });
         return row;
       }),
     );
   }
 
-  function openMenu(): void {
+  function openMenu(focusLast = false): void {
     fillMenu();
     menu.hidden = false;
     moreOpen.setAttribute('aria-expanded', 'true');
-    menuRows()[0]?.focus();
+    const rows = menuRows();
+    rows[focusLast ? rows.length - 1 : 0]?.focus();
   }
 
   function closeMenu(returnFocus: boolean): void {
@@ -119,6 +132,12 @@ export function initToolbar(): void {
   moreOpen.addEventListener('click', () => {
     if (menu.hidden) openMenu();
     else closeMenu(false);
+  });
+  // Menu button keys: arrow down opens on the first row, arrow up on the last.
+  moreOpen.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    event.preventDefault();
+    openMenu(event.key === 'ArrowUp');
   });
   document.addEventListener('click', (event) => {
     if (event.target instanceof Node && !more.contains(event.target)) closeMenu(false);

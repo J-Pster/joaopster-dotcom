@@ -55,9 +55,9 @@ export async function askOpenAI({ key, model, context, turns, onText, signal }: 
     let finish: string | undefined;
     let refused = false;
     let usage: Usage | undefined;
-    await readEvents(opened.response, (data) => {
-      if (data === '[DONE]' || signal.aborted) return;
-      const chunk = JSON.parse(data) as Chunk;
+    const broken = await readEvents(opened.response, (event) => {
+      if (signal.aborted) return;
+      const chunk = event as Chunk;
       if (chunk.usage) usage = chunk.usage;
       const choice = chunk.choices?.[0];
       if (!choice) return;
@@ -69,6 +69,9 @@ export async function askOpenAI({ key, model, context, turns, onText, signal }: 
       onText(text);
     });
     if (signal.aborted) return { kind: 'stopped', text };
+    if (broken) return { kind: 'error', error: broken };
+    // Every answer ends with a finish reason; a stream that closed without one was cut on the way.
+    if (finish === undefined) return { kind: 'error', error: { kind: 'network' } };
     const cached = usage?.prompt_tokens_details?.cached_tokens ?? 0;
     const costUsd = usage
       ? costOf(model.price, { fresh: usage.prompt_tokens - cached, cached, output: usage.completion_tokens })
@@ -76,8 +79,6 @@ export async function askOpenAI({ key, model, context, turns, onText, signal }: 
     return { kind: 'answer', text, end: endOf(finish, refused), costUsd };
   } catch (error) {
     if (isAbort(error) || signal.aborted) return { kind: 'stopped', text };
-    if (error instanceof TypeError) return { kind: 'error', error: { kind: 'network' } };
-    if (error instanceof SyntaxError) return { kind: 'error', error: { kind: 'other', detail: error.message } };
     throw error;
   }
 }
